@@ -1,9 +1,14 @@
+import { useEffect } from "react";
 import { Leva, useControls, folder } from "leva";
 import { FluidParticlesBackground } from "@/components/ui/fluid-particles-background";
 import { GrainLayer } from "@/components/layers/GrainLayer";
 import { Vignette } from "@/components/layers/Vignette";
+import { Defs } from "@/components/Defs";
 import { Hud } from "@/components/Hud";
+import { Scene } from "@/scene/Scene";
 import { Entry } from "@/beats/Entry";
+import { Passage } from "@/beats/Passage";
+import { useLenis } from "@/lib/useLenis";
 import { useSequence, LAYER_MIX } from "@/store/sequence";
 
 /** Panel is on in dev, and reachable on the deployed build with ?debug. */
@@ -14,7 +19,19 @@ const PANEL =
 
 export default function App() {
   const phase = useSequence((s) => s.phase);
+  const passageProgress = useSequence((s) => s.passageProgress);
+  const setPhase = useSequence((s) => s.setPhase);
   const mix = LAYER_MIX[phase];
+
+  useLenis();
+
+  // The road runs out and the galaxy is what is left.
+  useEffect(() => {
+    if (phase === "passage" && passageProgress > 0.995) {
+      useSequence.setState({ passageProgress: 1 });
+      setPhase("galaxy");
+    }
+  }, [phase, passageProgress, setPhase]);
 
   // Multipliers over the per-phase mix, so tuning by eye never destroys the
   // relative balance between phases - it scales the whole curve.
@@ -54,7 +71,10 @@ export default function App() {
         opacity={mix.particles * c.particles}
       />
 
+      <Defs />
+      <Scene />
       <Entry boost={c.nebulaBoost} />
+      <Passage />
 
       <GrainLayer
         opacity={mix.grain * c.grain}

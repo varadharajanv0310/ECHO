@@ -120,3 +120,9 @@ export const useSequence = create<SequenceState>((set, get) => ({
 
 /** Convenience selector - the layer mix for whatever phase is current. */
 export const useLayerMix = () => LAYER_MIX[useSequence((s) => s.phase)];
+
+// Dev-only handle so the sequence can be inspected and driven from the console
+// while tuning: echo.getState(), echo.setState({ passageProgress: 0.5 }).
+if (import.meta.env.DEV) {
+  (window as unknown as { echo: typeof useSequence }).echo = useSequence;
+}

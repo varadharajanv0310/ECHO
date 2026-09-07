@@ -1,0 +1,72 @@
+.pl {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(1.1rem, 2.6vh, 2.2rem);
+  padding: 0 6vw;
+  text-align: center;
+
+  /* k is 0 at centre and 1 at the edges of the stop window. Everything about
+     the treatment is a function of it. */
+  opacity: calc(1 - var(--k));
+  transform: translateY(calc(var(--local) * -7vh));
+}
+
+.pl__kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  filter: blur(calc(var(--k) * 5px));
+}
+
+.pl__type {
+  display: grid;
+  max-width: 15ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 6.1vw, 6.2rem);
+  font-weight: 800;
+  font-variation-settings: "wdth" 100, "wght" 800;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.pl__layer {
+  grid-area: 1 / 1;
+}
+
+/* Vertical light streaming through the letters, as in the reference. It only
+   appears while the line is moving - at rest the type is perfectly crisp. */
+.pl__layer--streak {
+  color: #b026ff;
+  filter: url(#echo-bleed-tight);
+  opacity: calc(var(--k) * 0.85);
+  transform: scaleY(calc(1 + var(--k) * 0.7));
+  transform-origin: 50% 40%;
+}
+
+.pl__layer--chroma-a {
+  color: #7b2bff;
+  mix-blend-mode: screen;
+  transform: translateX(calc(var(--k) * -0.075em));
+  filter: blur(calc(var(--k) * 7px));
+}
+
+.pl__layer--chroma-b {
+  color: #ff2fa0;
+  mix-blend-mode: screen;
+  transform: translateX(calc(var(--k) * 0.075em));
+  filter: blur(calc(var(--k) * 7px));
+}
+
+.pl__layer--core {
+  color: #fff;
+  filter: blur(calc(var(--k) * 3px))
+    drop-shadow(0 0 46px rgba(176, 38, 255, 0.32));
+}

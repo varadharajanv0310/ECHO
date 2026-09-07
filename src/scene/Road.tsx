@@ -1,0 +1,75 @@
+import { useMemo, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
+import frag from "@/shaders/road.frag.glsl";
+import vert from "@/shaders/road.vert.glsl";
+import { damp, remap } from "@/lib/utils";
+import { useSequence } from "@/store/sequence";
+
+/**
+ * The road at beats 3 to 5.
+ *
+ * A full-screen shader rather than geometry: the reference is flowing liquid
+ * light with no surface and no edges, which is a fragment problem, not a mesh
+ * problem. Scroll drives travel, so the road is still whenever the reader is.
+ */
+export function Road() {
+  const mat = useRef<THREE.ShaderMaterial>(null);
+  const { size } = useThree();
+
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uRes: { value: new THREE.Vector2(1, 1) },
+      uScroll: { value: 0 },
+      uNarrow: { value: 0 },
+      uFade: { value: 0 },
+      uDest: { value: 0 },
+    }),
+    [],
+  );
+
+  useFrame((_, dt) => {
+    const m = mat.current;
+    if (!m) return;
+    const { phase, passageProgress: p } = useSequence.getState();
+    const u = m.uniforms;
+
+    u.uTime.value += dt;
+    u.uRes.value.set(size.width, size.height);
+
+    const active = phase === "passage" || phase === "galaxy";
+    // Arrives as the wordmark leaves, holds through the passage.
+    const fade = active ? Math.min(1, remap(p, 0, 0.09, 0.35, 1)) : 0;
+
+    u.uFade.value = damp(u.uFade.value, fade, 2.4, dt);
+    u.uScroll.value = damp(u.uScroll.value, p, 8, dt);
+    // The passage constricts over the last third.
+    u.uNarrow.value = damp(u.uNarrow.value, remap(p, 0.62, 1, 0, 1), 3, dt);
+    // The galaxy resolves at the end of the road.
+    u.uDest.value = damp(
+      u.uDest.value,
+      phase === "galaxy" ? 1.5 : remap(p, 0.55, 1, 0.06, 1.15),
+      2.5,
+      dt,
+    );
+  });
+
+  return (
+    <mesh frustumCulled={false}>
+      <planeGeometry args={[2, 2]} />
+      <shaderMaterial
+        ref={mat}
+        vertexShader={vert}
+        fragmentShader={frag}
+        uniforms={uniforms}
+        transparent
+        depthTest={false}
+        depthWrite={false}
+        blending={THREE.CustomBlending}
+        blendSrc={THREE.OneFactor}
+        blendDst={THREE.OneMinusSrcAlphaFactor}
+      />
+    </mesh>
+  );
+}

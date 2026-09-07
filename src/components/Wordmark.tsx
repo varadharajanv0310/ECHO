@@ -36,31 +36,6 @@ function Row({ className }: { className: string }) {
 export function Wordmark({ state }: { state: "out" | "in" }) {
   return (
     <div className="wm-wrap">
-      <svg className="wm-defs" aria-hidden focusable="false">
-        <defs>
-          <filter
-            id="echo-bleed-soft"
-            x="-30%"
-            y="-20%"
-            width="160%"
-            height="150%"
-          >
-            <feGaussianBlur stdDeviation="8 52" />
-          </filter>
-          <filter
-            id="echo-bleed-tight"
-            x="-30%"
-            y="-20%"
-            width="160%"
-            height="150%"
-          >
-            <feGaussianBlur stdDeviation="2.4 22" />
-          </filter>
-          <filter id="echo-chroma" x="-25%" y="-25%" width="150%" height="150%">
-            <feGaussianBlur stdDeviation="4 6" />
-          </filter>
-        </defs>
-      </svg>
 
       <h1 className="wm" data-state={state} aria-label={copy.wordmark}>
         <Row className="wm__layer wm__layer--bleed-amber" />

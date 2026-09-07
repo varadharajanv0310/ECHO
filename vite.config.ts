@@ -13,6 +13,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), glsl({ compress: false })],
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    // react-three-fiber renders through its own reconciler. If Vite hands it a
+    // pre-bundled React while the app holds the source copy, hooks blow up with
+    // "more than one copy of React". Dedupe pins one instance of each.
+    dedupe: ["react", "react-dom", "three"],
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "three", "@react-three/fiber"],
   },
   build: { target: "es2022", assetsInlineLimit: 0 },
 });

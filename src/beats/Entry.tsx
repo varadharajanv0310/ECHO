@@ -4,7 +4,7 @@ import { FallingFigure } from "@/components/FallingFigure";
 import { Wordmark } from "@/components/Wordmark";
 import { copy } from "@/copy";
 import { useSequence } from "@/store/sequence";
-import { easeInOutCubic } from "@/lib/utils";
+import { easeInOutCubic, remap } from "@/lib/utils";
 import "./entry.css";
 
 /** Minimum dwell on the void. Long enough to land, short enough not to annoy. */
@@ -33,6 +33,14 @@ export function Entry({ boost = 1 }: { boost?: number }) {
   const setPhase = useSequence((s) => s.setPhase);
 
   const revealed = phase !== "void";
+
+  // The wordmark does not cut away when the passage starts - it rises out of
+  // frame as the road comes up underneath it, so the bleed and the road read
+  // as one continuous body of light.
+  const passageProgress = useSequence((s) => s.passageProgress);
+  const exit = phase === "passage" || phase === "galaxy"
+    ? remap(passageProgress, 0, 0.085, 0, 1)
+    : 0;
 
   // The preload gate. Real work happens behind it - fonts have to be resident
   // before the wordmark resolves or the width-axis animation will pop - but it
@@ -114,7 +122,16 @@ export function Entry({ boost = 1 }: { boost?: number }) {
   }, [phase, bootProgress, boost]);
 
   return (
-    <div className="entry" data-revealed={revealed}>
+    <div
+      className="entry"
+      data-revealed={revealed}
+      style={{
+        transform: `translateY(${-exit * 34}vh)`,
+        opacity: 1 - exit,
+        filter: exit > 0 ? `blur(${exit * 10}px)` : undefined,
+        pointerEvents: exit >= 1 ? "none" : undefined,
+      }}
+    >
       <div className="entry__nebula">
         <NebulaShader
           intensity={nebula.intensity}
