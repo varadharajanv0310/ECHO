@@ -12,6 +12,9 @@ const MIN_DWELL = 3200;
 
 type NebulaMix = {
   intensity: number;
+  cloud: number;
+  lights: number;
+  starAmt: number;
   warpAmt: number;
   riseAmt: number;
   speed: number;
@@ -74,19 +77,40 @@ export function Entry({ boost = 1 }: { boost?: number }) {
     if (phase === "void") {
       const w = easeInOutCubic(bootProgress);
       return {
-        // The void has to actually be a void. It starts almost entirely dark
-        // and only wakes as the gate completes.
-        intensity: (0.05 + w * 0.38) * boost,
+        // The void is a sky, not an empty screen. Stars are there from the
+        // first frame; the cloud swells as the gate completes.
+        intensity: (0.55 + w * 0.5) * boost,
+        cloud: 0.35 + w * 0.75,
+        lights: 0.02 + w * 0.1,
+        starAmt: 0.85 + w * 0.25,
         warpAmt: 0.05,
-        riseAmt: 0.1 + w * 0.25,
+        riseAmt: 0.08 + w * 0.22,
         speed: 0.3 + w * 0.08,
       };
     }
     if (phase === "reveal") {
-      return { intensity: 1.25 * boost, warpAmt: 0.063, riseAmt: 1, speed: 0.5 };
+      // The field surges: the point lights come up behind the wordmark and
+      // the cloud rises with them.
+      return {
+        intensity: 1.15 * boost,
+        cloud: 1.35,
+        lights: 0.62,
+        starAmt: 0.7,
+        warpAmt: 0.063,
+        riseAmt: 1,
+        speed: 0.5,
+      };
     }
     // Past the entry the field is gone; the passage has its own world.
-    return { intensity: 0, warpAmt: 0.06, riseAmt: 1, speed: 0.5 };
+    return {
+      intensity: 0,
+      cloud: 0,
+      lights: 0,
+      starAmt: 0,
+      warpAmt: 0.06,
+      riseAmt: 1,
+      speed: 0.5,
+    };
   }, [phase, bootProgress, boost]);
 
   return (
@@ -94,12 +118,17 @@ export function Entry({ boost = 1 }: { boost?: number }) {
       <div className="entry__nebula">
         <NebulaShader
           intensity={nebula.intensity}
+          cloud={nebula.cloud}
+          lights={nebula.lights}
+          starAmt={nebula.starAmt}
           warpAmt={nebula.warpAmt}
           riseAmt={nebula.riseAmt}
           speed={nebula.speed}
           responsiveness={revealed ? 0.9 : 2.2}
         />
       </div>
+
+      <p className="entry__caption">{copy.voidCaption}</p>
 
       {/* The figure sits behind the wordmark and sinks through it as ECHO
           resolves, so the light it carries shows between the letters. */}

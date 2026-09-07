@@ -130,3 +130,41 @@
     opacity: 0;
   }
 }
+
+/* Small centred caption at the top of the void, as in the loading reference.
+   It disappears the moment the wordmark starts to resolve. */
+.entry__caption {
+  position: absolute;
+  top: clamp(3.5rem, 13vh, 8rem);
+  left: 50%;
+  z-index: var(--z-content);
+  translate: -50% 0;
+  margin: 0;
+
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+
+  animation: caption-in 2600ms ease 600ms both;
+  transition:
+    opacity 900ms ease,
+    filter 900ms ease;
+}
+
+.entry[data-revealed="true"] .entry__caption {
+  opacity: 0;
+  filter: blur(6px);
+}
+
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}

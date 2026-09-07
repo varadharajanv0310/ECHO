@@ -5,6 +5,9 @@
 export const copy = {
   wordmark: "ECHO",
 
+  /** The one line on the loading screen. Not a tagline - a state of affairs. */
+  voidCaption: "No one is carrying this yet",
+
   hud: {
     mark: "ECHO",
     index: "NO. 001",

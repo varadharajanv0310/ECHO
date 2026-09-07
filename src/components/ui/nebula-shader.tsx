@@ -18,6 +18,12 @@ type Props = {
   speed?: number;
   /** Master brightness. Ramped from the sequence, not baked in. */
   intensity?: number;
+  /** Nebula cloud amount - the body of the loading image. */
+  cloud?: number;
+  /** Polar point-light field amount. Low in the void, high for the reveal. */
+  lights?: number;
+  /** Starfield amount. */
+  starAmt?: number;
   /** Tunnel tightness of the polar warp. */
   warpAmt?: number;
   /** 0 = even field, 1 = light gathers toward the bottom edge. */
@@ -41,6 +47,9 @@ export function NebulaShader({
   paused = false,
   speed = 0.35,
   intensity = 1,
+  cloud = 1,
+  lights = 0.35,
+  starAmt = 1,
   warpAmt = 0.05,
   riseAmt = 0,
   fragmentSource = ECHO_FRAG,
@@ -51,8 +60,12 @@ export function NebulaShader({
 
   // Props are targets. The loop chases them, so a phase change eases the
   // field open instead of snapping it, and nothing here re-renders per frame.
-  const live = useRef({ paused, speed, intensity, warpAmt, riseAmt, responsiveness });
-  live.current = { paused, speed, intensity, warpAmt, riseAmt, responsiveness };
+  const live = useRef({
+    paused, speed, intensity, cloud, lights, starAmt, warpAmt, riseAmt, responsiveness,
+  });
+  live.current = {
+    paused, speed, intensity, cloud, lights, starAmt, warpAmt, riseAmt, responsiveness,
+  };
 
   const errRef = useRef(onShaderError);
   errRef.current = onShaderError;
@@ -118,6 +131,9 @@ export function NebulaShader({
       time: gl.getUniformLocation(program, "time"),
       resolution: gl.getUniformLocation(program, "resolution"),
       intensity: gl.getUniformLocation(program, "intensity"),
+      cloud: gl.getUniformLocation(program, "cloud"),
+      lights: gl.getUniformLocation(program, "lights"),
+      starAmt: gl.getUniformLocation(program, "starAmt"),
       warpAmt: gl.getUniformLocation(program, "warpAmt"),
       riseAmt: gl.getUniformLocation(program, "riseAmt"),
     };
@@ -153,6 +169,9 @@ export function NebulaShader({
     const cur = {
       speed: live.current.speed,
       intensity: live.current.intensity,
+      cloud: live.current.cloud,
+      lights: live.current.lights,
+      starAmt: live.current.starAmt,
       warpAmt: live.current.warpAmt,
       riseAmt: live.current.riseAmt,
     };
@@ -168,6 +187,9 @@ export function NebulaShader({
       const k = s.responsiveness;
       cur.speed = damp(cur.speed, s.speed, k, dt);
       cur.intensity = damp(cur.intensity, s.intensity, k, dt);
+      cur.cloud = damp(cur.cloud, s.cloud, k, dt);
+      cur.lights = damp(cur.lights, s.lights, k, dt);
+      cur.starAmt = damp(cur.starAmt, s.starAmt, k, dt);
       cur.warpAmt = damp(cur.warpAmt, s.warpAmt, k, dt);
       cur.riseAmt = damp(cur.riseAmt, s.riseAmt, k, dt);
 
@@ -176,6 +198,9 @@ export function NebulaShader({
       gl.useProgram(program);
       gl.uniform1f(u.time, shaderTime);
       gl.uniform1f(u.intensity, cur.intensity);
+      gl.uniform1f(u.cloud, cur.cloud);
+      gl.uniform1f(u.lights, cur.lights);
+      gl.uniform1f(u.starAmt, cur.starAmt);
       gl.uniform1f(u.warpAmt, cur.warpAmt);
       gl.uniform1f(u.riseAmt, cur.riseAmt);
       gl.clear(gl.COLOR_BUFFER_BIT);
