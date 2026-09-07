@@ -1,0 +1,299 @@
+.wm-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.wm-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.wm {
+  display: grid;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 19vw, 17rem);
+  font-weight: 800;
+  line-height: 0.84;
+  text-transform: uppercase;
+  letter-spacing: -0.055em;
+  user-select: none;
+}
+
+.wm__layer {
+  grid-area: 1 / 1;
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  font-variation-settings: "wdth" 100, "wght" 800;
+}
+
+.wm__ch {
+  display: inline-block;
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------- the bleed */
+/* Three solid colours, each stretched further and masked deeper, so the drip
+   runs violet at the letters, through magenta, into amber as it dies. */
+
+.wm__layer--bleed-violet {
+  color: #b026ff;
+  transform-origin: 50% 4%;
+  filter: url(#echo-bleed-soft);
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.12) 0%,
+    rgba(0, 0, 0, 0.8) 16%,
+    rgba(0, 0, 0, 0.26) 52%,
+    transparent 76%
+  );
+}
+
+.wm__layer--bleed-magenta {
+  color: #fa42b0;
+  transform-origin: 50% 3%;
+  filter: url(#echo-bleed-soft);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 8%,
+    rgba(0, 0, 0, 0.5) 34%,
+    rgba(0, 0, 0, 0.18) 62%,
+    transparent 82%
+  );
+}
+
+.wm__layer--bleed-amber {
+  color: #ff7326;
+  transform-origin: 50% 2%;
+  filter: url(#echo-bleed-soft);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 24%,
+    rgba(0, 0, 0, 0.34) 52%,
+    rgba(0, 0, 0, 0.12) 74%,
+    transparent 90%
+  );
+}
+
+/* Bright, tight strands falling straight out of each stem. */
+.wm__layer--strand {
+  color: #efe2ff;
+  transform-origin: 50% 6%;
+  filter: url(#echo-bleed-tight);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 2%,
+    rgba(0, 0, 0, 0.85) 14%,
+    transparent 56%
+  );
+  mix-blend-mode: screen;
+}
+
+/* ---------------------------------------------------------------- chroma */
+
+.wm__layer--chroma-a {
+  color: #7b2bff;
+  filter: url(#echo-chroma);
+  mix-blend-mode: screen;
+}
+
+.wm__layer--chroma-b {
+  color: #ff2fa0;
+  filter: url(#echo-chroma);
+  mix-blend-mode: screen;
+}
+
+/* ------------------------------------------------------------------ core */
+
+.wm__layer--core {
+  color: #fff;
+}
+
+/* Amber burning at the base of the letterforms only.
+   Deliberately NOT screen-blended: screening amber over a white core returns
+   white, so the burn would be invisible. It has to replace the white. */
+.wm__layer--burn {
+  color: #ff8a3d;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 76%,
+    rgba(0, 0, 0, 0.28) 88%,
+    rgba(0, 0, 0, 0.8) 97%,
+    #000 100%
+  );
+  filter: blur(1.5px) drop-shadow(0 4px 22px rgba(255, 115, 38, 0.5));
+}
+
+/* ------------------------------------------------------------- animation */
+
+.wm[data-state="in"] .wm__layer {
+  animation: wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+.wm[data-state="in"] .wm__ch {
+  animation: wm-letter 1600ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+  animation-delay: calc(var(--i) * 115ms);
+}
+
+@keyframes wm-widen {
+  from {
+    font-variation-settings: "wdth" 66, "wght" 830;
+    letter-spacing: 0.05em;
+  }
+  to {
+    font-variation-settings: "wdth" 100, "wght" 800;
+    letter-spacing: -0.055em;
+  }
+}
+
+@keyframes wm-letter {
+  from {
+    opacity: 0;
+    transform: translateY(0.09em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The bleed does not exist until the letters do - it grows out of them. */
+
+.wm[data-state="in"] .wm__layer--bleed-violet {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    bleed-violet 2600ms 780ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.wm[data-state="in"] .wm__layer--bleed-magenta {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    bleed-magenta 3000ms 900ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.wm[data-state="in"] .wm__layer--bleed-amber {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    bleed-amber 3400ms 1150ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.wm[data-state="in"] .wm__layer--strand {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    strand 2800ms 860ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+@keyframes bleed-violet {
+  from {
+    opacity: 0;
+    transform: scaleY(1.02);
+  }
+  to {
+    opacity: 0.5;
+    transform: scaleY(2.9);
+  }
+}
+
+@keyframes bleed-magenta {
+  from {
+    opacity: 0;
+    transform: scaleY(1.02);
+  }
+  to {
+    opacity: 0.34;
+    transform: scaleY(4.1);
+  }
+}
+
+@keyframes bleed-amber {
+  from {
+    opacity: 0;
+    transform: scaleY(1.02);
+  }
+  to {
+    opacity: 0.24;
+    transform: scaleY(5.4);
+  }
+}
+
+@keyframes strand {
+  from {
+    opacity: 0;
+    transform: scaleY(1.02);
+  }
+  to {
+    opacity: 0.55;
+    transform: scaleY(2.2);
+  }
+}
+
+/* Chromatic aberration arrives wide and resolves inward. */
+
+.wm[data-state="in"] .wm__layer--chroma-a {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    chroma-a 2600ms 140ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+.wm[data-state="in"] .wm__layer--chroma-b {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    chroma-b 2600ms 140ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+@keyframes chroma-a {
+  from {
+    transform: translate(-0.11em, 0.015em);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-0.028em, 0);
+    opacity: 0.9;
+  }
+}
+
+@keyframes chroma-b {
+  from {
+    transform: translate(0.11em, -0.015em);
+    opacity: 1;
+  }
+  to {
+    transform: translate(0.028em, 0);
+    opacity: 0.9;
+  }
+}
+
+.wm[data-state="in"] .wm__layer--core {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    core-glow 2600ms 200ms ease-out both;
+}
+
+@keyframes core-glow {
+  from {
+    filter: drop-shadow(0 0 0 rgba(176, 38, 255, 0));
+  }
+  to {
+    filter: drop-shadow(0 0 38px rgba(176, 38, 255, 0.45))
+      drop-shadow(0 0 110px rgba(79, 6, 248, 0.3));
+  }
+}
+
+.wm[data-state="in"] .wm__layer--burn {
+  animation:
+    wm-widen 2400ms cubic-bezier(0.16, 0.84, 0.3, 1) both,
+    burn 1800ms 1400ms ease-out both;
+}
+
+@keyframes burn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.85;
+  }
+}

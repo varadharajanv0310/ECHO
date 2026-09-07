@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  /* Ground. Near-total black, shifted a few degrees toward violet so nothing
+     in the palette ever sits on a neutral. */
+  --color-void: #04030a;
+  --color-void-lift: #0a0616;
+
+  /* Life. Sampled from the reference set, which masses at hue 258-300. */
+  --color-violet-deep: #4f06f8;
+  --color-violet: #8b2ff8;
+  --color-violet-bright: #b026ff;
+  --color-magenta: #fa42b0;
+
+  /* Decay. Rare by design - it barely appears in the references either. */
+  --color-amber: #ff7326;
+  --color-amber-hot: #ffb066;
+
+  /* Ignition. */
+  --color-spark: #ffffff;
+
+  --font-display: "Archivo Variable", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* Layer stack. Every fixed layer in the app references these so the
+       compositing order lives in one place instead of scattered z-indexes. */
+    --z-particles: 0;
+    --z-nebula: 10;
+    --z-scene: 20;
+    --z-content: 30;
+    --z-grain: 40;
+    --z-vignette: 45;
+    --z-hud: 60;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-void);
+    color: #fff;
+    font-family: var(--font-mono);
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-violet-bright);
+    color: #fff;
+  }
+}
+
+@utility hud-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Slow breathing dot beside the system status. The only thing on the loading
+   screen that moves on its own, and it moves because the system is alive. */
+.hud-pulse {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-violet-bright);
+  box-shadow: 0 0 8px var(--color-violet-bright);
+  animation: hud-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes hud-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
