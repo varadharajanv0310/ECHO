@@ -43,7 +43,11 @@ export function Passage() {
   );
 
   // The final line lands after the last stop, as the road runs out.
-  const lastK = Math.pow(clamp(Math.abs(remap(p, 0.83, 0.97, -1, 0.35)), 0, 1), 1.3);
+  // The last line belongs to the road. Once the galaxy has the frame, it is gone.
+  const lastK =
+    phase === "galaxy"
+      ? 1
+      : Math.pow(clamp(Math.abs(remap(p, 0.83, 0.96, -1, 1)), 0, 1), 1.3);
 
   const visible = phase === "passage" || phase === "galaxy";
 

@@ -1,0 +1,44 @@
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--z-hud);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.cursor--dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+}
+
+.cursor--ring {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(176, 38, 255, 0.85);
+  box-shadow:
+    0 0 14px rgba(176, 38, 255, 0.5),
+    inset 0 0 14px rgba(176, 38, 255, 0.25);
+}
+
+/* Pointer devices only. A touch screen has no cursor to replace, and the
+   native caret still has to be available inside text fields. */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  input,
+  textarea {
+    cursor: text;
+  }
+}
+
+@media not all and (hover: hover) {
+  .cursor {
+    display: none;
+  }
+}

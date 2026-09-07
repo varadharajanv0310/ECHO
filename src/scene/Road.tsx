@@ -15,6 +15,7 @@ import { useSequence } from "@/store/sequence";
  */
 export function Road() {
   const mat = useRef<THREE.ShaderMaterial>(null);
+  const first = useRef(true);
   const { size } = useThree();
 
   const uniforms = useMemo(
@@ -42,17 +43,15 @@ export function Road() {
     // Arrives as the wordmark leaves, holds through the passage.
     const fade = active ? Math.min(1, remap(p, 0, 0.09, 0.35, 1)) : 0;
 
-    u.uFade.value = damp(u.uFade.value, fade, 2.4, dt);
-    u.uScroll.value = damp(u.uScroll.value, p, 8, dt);
-    // The passage constricts over the last third.
-    u.uNarrow.value = damp(u.uNarrow.value, remap(p, 0.62, 1, 0, 1), 3, dt);
-    // The galaxy resolves at the end of the road.
-    u.uDest.value = damp(
-      u.uDest.value,
-      phase === "galaxy" ? 1.5 : remap(p, 0.55, 1, 0.06, 1.15),
-      2.5,
-      dt,
-    );
+    const snap = first.current;
+    const narrow = remap(p, 0.62, 1, 0, 1);
+    const dest = phase === "galaxy" ? 1.5 : remap(p, 0.55, 1, 0.06, 1.15);
+
+    u.uFade.value = snap ? fade : damp(u.uFade.value, fade, 2.4, dt);
+    u.uScroll.value = snap ? p : damp(u.uScroll.value, p, 8, dt);
+    u.uNarrow.value = snap ? narrow : damp(u.uNarrow.value, narrow, 3, dt);
+    u.uDest.value = snap ? dest : damp(u.uDest.value, dest, 2.5, dt);
+    first.current = false;
   });
 
   return (

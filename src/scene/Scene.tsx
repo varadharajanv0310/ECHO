@@ -1,5 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { Road } from "./Road";
+import { Galaxy } from "./Galaxy";
 
 /**
  * The persistent canvas.
@@ -30,6 +31,7 @@ export function Scene() {
         style={{ background: "transparent" }}
       >
         <Road />
+        <Galaxy />
       </Canvas>
     </div>
   );

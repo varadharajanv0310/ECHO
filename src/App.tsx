@@ -6,8 +6,12 @@ import { Vignette } from "@/components/layers/Vignette";
 import { Defs } from "@/components/Defs";
 import { Hud } from "@/components/Hud";
 import { Scene } from "@/scene/Scene";
+import { Cursor } from "@/components/Cursor";
 import { Entry } from "@/beats/Entry";
 import { Passage } from "@/beats/Passage";
+import { GalaxyBeat } from "@/beats/GalaxyBeat";
+import { Ignition } from "@/beats/Ignition";
+import { Profile } from "@/beats/Profile";
 import { useLenis } from "@/lib/useLenis";
 import { useSequence, LAYER_MIX } from "@/store/sequence";
 
@@ -75,6 +79,9 @@ export default function App() {
       <Scene />
       <Entry boost={c.nebulaBoost} />
       <Passage />
+      <GalaxyBeat />
+      {phase === "ignition" && <Ignition />}
+      {phase === "profile" && <Profile />}
 
       <GrainLayer
         opacity={mix.grain * c.grain}
@@ -84,6 +91,7 @@ export default function App() {
       />
       <Vignette opacity={mix.vignette * c.vignette} />
       <Hud />
+      <Cursor />
     </>
   );
 }

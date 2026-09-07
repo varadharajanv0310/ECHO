@@ -3,7 +3,7 @@ import { NebulaShader } from "@/components/ui/nebula-shader";
 import { FallingFigure } from "@/components/FallingFigure";
 import { Wordmark } from "@/components/Wordmark";
 import { copy } from "@/copy";
-import { useSequence } from "@/store/sequence";
+import { PHASES, useSequence } from "@/store/sequence";
 import { easeInOutCubic, remap } from "@/lib/utils";
 import "./entry.css";
 
@@ -38,9 +38,12 @@ export function Entry({ boost = 1 }: { boost?: number }) {
   // frame as the road comes up underneath it, so the bleed and the road read
   // as one continuous body of light.
   const passageProgress = useSequence((s) => s.passageProgress);
-  const exit = phase === "passage" || phase === "galaxy"
-    ? remap(passageProgress, 0, 0.085, 0, 1)
-    : 0;
+  const exit =
+    PHASES.indexOf(phase) > PHASES.indexOf("passage")
+      ? 1
+      : phase === "passage"
+        ? remap(passageProgress, 0, 0.085, 0, 1)
+        : 0;
 
   // The preload gate. Real work happens behind it - fonts have to be resident
   // before the wordmark resolves or the width-axis animation will pop - but it

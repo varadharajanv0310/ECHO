@@ -46,4 +46,36 @@ export const copy = {
 
   /** The last line of the passage, and the last feed. */
   lastLine: "This is the last feed you will ever scroll.",
+
+  /** Beat 6. One line under the galaxy, inviting entry. */
+  galaxy: {
+    invite: "Everything inside was carried here by someone.",
+    action: "Enter",
+  },
+
+  /** Beat 8. It must not read as a form. */
+  profile: {
+    title: "Before you can be carried",
+    nameLabel: "Name",
+    nameHint: "Not a username. Not unique. Not searchable.",
+    namePlaceholder: "Say what to call you",
+    markLabel: "Mark",
+    markHint: "How you appear in someone else's sky.",
+    colourLabel: "Colour",
+    colourHint: "Amber is reserved for what is dying.",
+    worldsLabel: "Worlds",
+    worldsHint: "Where you will be listening. Choose at least one.",
+    submit: "Emit",
+    submitHint: "No email. No password. Nothing leaves this browser.",
+  },
+
+  /** Places, topics and moments. A signal belongs to one of these, never to you. */
+  worlds: [
+    "3AM",
+    "The Commons",
+    "Dead Air",
+    "First Light",
+    "The Long Now",
+    "Open Sky",
+  ],
 } as const;

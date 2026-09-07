@@ -92,10 +92,23 @@ function initialPhase(): Phase {
   return readProfile() ? "constellation" : "void";
 }
 
+/**
+ * Jumping straight to a beat past the passage has to arrive with the passage
+ * already spent, or the entry sequence is still sitting on top of it.
+ */
+function initialPassageProgress(phase: Phase): number {
+  if (typeof window === "undefined") return 0;
+  const jump = new URLSearchParams(window.location.search).get("p");
+  if (jump !== null) return Math.min(1, Math.max(0, parseFloat(jump) || 0));
+  return PHASES.indexOf(phase) > PHASES.indexOf("passage") ? 1 : 0;
+}
+
+const START: Phase = initialPhase();
+
 export const useSequence = create<SequenceState>((set, get) => ({
-  phase: initialPhase(),
+  phase: START,
   bootProgress: 0,
-  passageProgress: 0,
+  passageProgress: initialPassageProgress(START),
   profile: readProfile(),
 
   setPhase: (phase) => set({ phase }),
