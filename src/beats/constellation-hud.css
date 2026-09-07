@@ -1,0 +1,146 @@
+.ch {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  animation: ch-in 2200ms ease 400ms both;
+}
+
+@keyframes ch-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ self */
+
+.ch__self {
+  position: absolute;
+  left: clamp(1.5rem, 2.4vw, 2.4rem);
+  bottom: clamp(3.4rem, 7vh, 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ch__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.9vw, 1.6rem);
+  font-weight: 600;
+  font-variation-settings: "wdth" 96, "wght" 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.ch__worlds {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+/* --------------------------------------------------------------- arrival */
+
+.ch__arrival {
+  position: absolute;
+  left: 50%;
+  top: clamp(3.5rem, 12vh, 8rem);
+  translate: -50% 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  font-weight: 400;
+  font-variation-settings: "wdth" 96, "wght" 400;
+  color: rgba(255, 255, 255, 0.66);
+  white-space: nowrap;
+  transition:
+    opacity 1600ms ease,
+    filter 1600ms ease;
+}
+
+.ch__arrival[data-gone="true"] {
+  opacity: 0;
+  filter: blur(6px);
+}
+
+.ch__hint {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(3.4rem, 7vh, 5rem);
+  translate: -50% 0;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.26);
+  transition: opacity 800ms ease;
+}
+
+.ch__hint[data-gone="true"] {
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------ signal card */
+
+.ch__card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 30ch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem 1.05rem;
+  border-left: 1px solid var(--color-violet-bright);
+  background: rgba(4, 3, 10, 0.72);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 260ms ease;
+  will-change: transform;
+  transform: translate3d(-9999px, -9999px, 0);
+}
+
+.ch__card[data-on="true"] {
+  opacity: 1;
+}
+
+.ch__card-text {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-variation-settings: "wdth" 98, "wght" 400;
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+  color: #fff;
+}
+
+.ch__card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ch__card-meta i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.ch__card-meta em {
+  font-style: normal;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.ch__fading {
+  font-weight: 500;
+  color: var(--color-amber);
+}

@@ -1,6 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Road } from "./Road";
 import { Galaxy } from "./Galaxy";
+import { WarpField } from "./WarpField";
+import { Constellation } from "./Constellation";
 
 /**
  * The persistent canvas.
@@ -32,6 +34,8 @@ export function Scene() {
       >
         <Road />
         <Galaxy />
+        <WarpField />
+        <Constellation />
       </Canvas>
     </div>
   );

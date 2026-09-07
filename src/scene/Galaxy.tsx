@@ -105,20 +105,30 @@ export function Galaxy() {
     const p = points.current;
     if (!m || !p) return;
 
-    const { phase, passageProgress } = useSequence.getState();
+    const { phase, passageProgress, diveProgress } = useSequence.getState();
     const u = m.uniforms;
     u.uTime.value += dt;
 
     // Resolves in over the last stretch of the road, then holds.
-    const past = phase === "galaxy" || phase === "ignition" || phase === "profile" || phase === "dive";
+    const past =
+      phase === "galaxy" ||
+      phase === "ignition" ||
+      phase === "profile" ||
+      phase === "dive" ||
+      phase === "constellation";
     const reveal = past ? 1 : remap(passageProgress, 0.72, 1, 0, 0.9);
     // It holds the frame at beat 6, then drops back to a backdrop while the
     // profile is being made, so the form is the brightest thing on screen.
-    const opacity = past
-      ? phase === "profile" || phase === "ignition"
-        ? 0.16
-        : 1
-      : remap(passageProgress, 0.7, 1, 0, 1);
+    const opacity =
+      phase === "constellation"
+        ? 0
+        : phase === "dive"
+          ? 1 - clamp(diveProgress / 0.55)
+          : past
+            ? phase === "profile" || phase === "ignition"
+              ? 0.16
+              : 1
+            : remap(passageProgress, 0.7, 1, 0, 1);
 
     // Cursor proximity, measured against where the galaxy actually is on screen.
     let target = 0;
@@ -147,14 +157,19 @@ export function Galaxy() {
     u.uReveal.value = snap ? reveal : damp(u.uReveal.value, reveal, 2.2, dt);
     u.uOpacity.value = snap ? opacity : damp(u.uOpacity.value, opacity, 2.2, dt);
     u.uSpin.value = damp(u.uSpin.value, 0.16 + hover.current * 0.22, 3, dt);
+    // The dive stretches the galaxy past the camera as the warp takes over.
+    u.uDive.value = phase === "dive" ? clamp(diveProgress / 0.5) : 0;
 
     // A destination at the end of the road, not the whole sky. It only fills
     // the frame once the camera is actually going there.
-    const scale = past
-      ? phase === "profile" || phase === "ignition"
-        ? 0.5
-        : 0.34
-      : remap(passageProgress, 0.7, 1, 0.08, 0.34);
+    const scale =
+      phase === "dive"
+        ? 0.34 + clamp(diveProgress / 0.5) * 2.2
+        : past
+          ? phase === "profile" || phase === "ignition"
+            ? 0.5
+            : 0.34
+          : remap(passageProgress, 0.7, 1, 0.08, 0.34);
     p.scale.setScalar(snap ? scale : damp(p.scale.x, scale, 2, dt));
     first.current = false;
   });

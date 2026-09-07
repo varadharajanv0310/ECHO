@@ -12,6 +12,7 @@ import { Passage } from "@/beats/Passage";
 import { GalaxyBeat } from "@/beats/GalaxyBeat";
 import { Ignition } from "@/beats/Ignition";
 import { Profile } from "@/beats/Profile";
+import { ConstellationHud } from "@/beats/ConstellationHud";
 import { useLenis } from "@/lib/useLenis";
 import { useSequence, LAYER_MIX } from "@/store/sequence";
 
@@ -82,6 +83,7 @@ export default function App() {
       <GalaxyBeat />
       {phase === "ignition" && <Ignition />}
       {phase === "profile" && <Profile />}
+      <ConstellationHud />
 
       <GrainLayer
         opacity={mix.grain * c.grain}

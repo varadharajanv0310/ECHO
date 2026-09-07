@@ -69,6 +69,40 @@ export const copy = {
     submitHint: "No email. No password. Nothing leaves this browser.",
   },
 
+  /** Beat 10. */
+  constellation: {
+    arrival: "You are here. Nothing has been carried yet.",
+    hint: "Drag to look. Scroll to move.",
+    hops: "hops",
+    fading: "Fading",
+  },
+
+  /**
+   * Seeded signals. These are the only user content a stranger will ever read
+   * here, so they are written rather than filled with lorem: short, specific,
+   * and the kind of thing a person actually says into a room at night.
+   */
+  signals: [
+    "Someone else is awake. That is all I wanted to know.",
+    "The bakery on Cross Street closes at four now. Nobody told me.",
+    "I have rewritten this six times and it still is not true.",
+    "Third night of rain. The gutters are singing.",
+    "Left the party early and do not regret it.",
+    "My father called for no reason. We talked about nothing for an hour.",
+    "There is a fox that uses my street like a corridor.",
+    "I keep a list of things I will never say. It is getting long.",
+    "Finished it. Eleven months. Nobody will notice and that is fine.",
+    "The last train smells like wet coats and cheap oranges.",
+    "Told her the truth. Waiting.",
+    "Every song from that year still works. Unfair.",
+    "Woke at 4 and the sky was already deciding something.",
+    "I have started walking the long way home on purpose.",
+    "It turns out I did want to be found.",
+    "Nothing happened today. Recording it anyway.",
+    "The heating finally kicked in and I nearly cried.",
+    "Somebody carried mine last week. I still think about it.",
+  ],
+
   /** Places, topics and moments. A signal belongs to one of these, never to you. */
   worlds: [
     "3AM",
