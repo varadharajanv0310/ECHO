@@ -7,6 +7,7 @@ import { Defs } from "@/components/Defs";
 import { Hud } from "@/components/Hud";
 import { Scene } from "@/scene/Scene";
 import { Cursor } from "@/components/Cursor";
+import { Sound } from "@/components/Sound";
 import { Entry } from "@/beats/Entry";
 import { Passage } from "@/beats/Passage";
 import { GalaxyBeat } from "@/beats/GalaxyBeat";
@@ -15,6 +16,7 @@ import { Profile } from "@/beats/Profile";
 import { ConstellationHud } from "@/beats/ConstellationHud";
 import { useLenis } from "@/lib/useLenis";
 import { useSequence, LAYER_MIX } from "@/store/sequence";
+import { tuning } from "@/lib/tuning";
 
 /** Panel is on in dev, and reachable on the deployed build with ?debug. */
 const PANEL =
@@ -61,11 +63,22 @@ export default function App() {
       { nebulaBoost: { value: 1, min: 0, max: 3, step: 0.01, label: "boost" } },
       { collapsed: true },
     ),
+    Scene: folder(
+      {
+        road: { value: 1, min: 0, max: 3, step: 0.01, label: "road" },
+        galaxy: { value: 1, min: 0, max: 3, step: 0.01, label: "galaxy" },
+      },
+      { collapsed: true },
+    ),
     Frame: folder(
       { vignette: { value: 1, min: 0, max: 2, step: 0.01, label: "vignette" } },
       { collapsed: true },
     ),
   });
+
+  // Exposure knobs are read inside animation frames, never rendered from.
+  tuning.road = c.road;
+  tuning.galaxy = c.galaxy;
 
   return (
     <>
@@ -93,6 +106,7 @@ export default function App() {
       />
       <Vignette opacity={mix.vignette * c.vignette} />
       <Hud />
+      <Sound />
       <Cursor />
     </>
   );

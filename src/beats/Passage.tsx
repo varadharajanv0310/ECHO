@@ -87,7 +87,7 @@ export function Passage() {
 
       {/* Reading position. The only progress indicator in the build, and it is
           about where you are rather than how long you have left. */}
-      <div className="passage__rail" data-visible={visible} aria-hidden>
+      <div className="passage__rail" data-visible={phase === "passage"} aria-hidden>
         <span
           className="passage__rail-fill"
           style={{ transform: `scaleY(${p})` }}

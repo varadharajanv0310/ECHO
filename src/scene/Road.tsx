@@ -5,6 +5,7 @@ import frag from "@/shaders/road.frag.glsl";
 import vert from "@/shaders/road.vert.glsl";
 import { damp, remap } from "@/lib/utils";
 import { useSequence } from "@/store/sequence";
+import { tuning } from "@/lib/tuning";
 
 /**
  * The road at beats 3 to 5.
@@ -26,6 +27,7 @@ export function Road() {
       uNarrow: { value: 0 },
       uFade: { value: 0 },
       uDest: { value: 0 },
+      uBoost: { value: 1 },
     }),
     [],
   );
@@ -51,6 +53,7 @@ export function Road() {
     u.uScroll.value = snap ? p : damp(u.uScroll.value, p, 8, dt);
     u.uNarrow.value = snap ? narrow : damp(u.uNarrow.value, narrow, 3, dt);
     u.uDest.value = snap ? dest : damp(u.uDest.value, dest, 2.5, dt);
+    u.uBoost.value = tuning.road;
     first.current = false;
   });
 

@@ -5,6 +5,7 @@ import vert from "@/shaders/galaxy.vert.glsl";
 import frag from "@/shaders/galaxy.frag.glsl";
 import { clamp, damp, remap } from "@/lib/utils";
 import { useSequence } from "@/store/sequence";
+import { tuning } from "@/lib/tuning";
 
 const COUNT = 140000;
 const RADIUS = 9;
@@ -155,7 +156,9 @@ export function Galaxy() {
 
     u.uHover.value = hover.current;
     u.uReveal.value = snap ? reveal : damp(u.uReveal.value, reveal, 2.2, dt);
-    u.uOpacity.value = snap ? opacity : damp(u.uOpacity.value, opacity, 2.2, dt);
+    u.uOpacity.value =
+      (snap ? opacity : damp(u.uOpacity.value / tuning.galaxy, opacity, 2.2, dt)) *
+      tuning.galaxy;
     u.uSpin.value = damp(u.uSpin.value, 0.16 + hover.current * 0.22, 3, dt);
     // The dive stretches the galaxy past the camera as the warp takes over.
     u.uDive.value = phase === "dive" ? clamp(diveProgress / 0.5) : 0;

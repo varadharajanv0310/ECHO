@@ -6,6 +6,7 @@ uniform float uScroll; // 0-1 across the whole passage
 uniform float uNarrow; // 0-1, the passage constricting toward the end
 uniform float uFade;   // master opacity, so the road can arrive and leave
 uniform float uDest;   // brightness of the thing at the end of the road
+uniform float uBoost;  // live exposure, tuned by eye
 
 const vec3 VIOLET = vec3(0.690, 0.149, 1.000);
 const vec3 VIOLET_DEEP = vec3(0.310, 0.024, 0.973);
@@ -124,5 +125,5 @@ void main() {
   col += MAGENTA * exp(-d * 2.6) * uDest * 0.35;
 
   float lum = clamp(dot(col, vec3(0.2126, 0.7152, 0.0722)), 0.0, 1.0);
-  gl_FragColor = vec4(col * uFade, lum * uFade);
+  gl_FragColor = vec4(col * uFade * uBoost, lum * uFade * uBoost);
 }

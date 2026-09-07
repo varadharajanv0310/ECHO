@@ -1,0 +1,82 @@
+.snd {
+  position: fixed;
+  right: clamp(1.5rem, 2.4vw, 2.4rem);
+  top: 50%;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: none;
+  opacity: 0.42;
+  transition: opacity 400ms ease;
+  animation: snd-in 1400ms ease both;
+}
+
+.snd:hover,
+.snd:focus-visible {
+  opacity: 1;
+  outline: none;
+}
+
+@keyframes snd-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.42;
+  }
+}
+
+.snd__bars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+}
+
+.snd__bars i {
+  display: block;
+  width: 1px;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(176, 38, 255, 0.9);
+  animation: snd-bar 1.4s ease-in-out infinite;
+}
+
+.snd__bars i:nth-child(1) {
+  height: 40%;
+  animation-delay: 0ms;
+}
+.snd__bars i:nth-child(2) {
+  height: 100%;
+  animation-delay: 180ms;
+}
+.snd__bars i:nth-child(3) {
+  height: 62%;
+  animation-delay: 90ms;
+}
+.snd__bars i:nth-child(4) {
+  height: 84%;
+  animation-delay: 260ms;
+}
+
+/* Muted is a flat line, not a crossed-out speaker. */
+.snd__bars[data-off="true"] i {
+  height: 1px !important;
+  animation: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+@keyframes snd-bar {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
