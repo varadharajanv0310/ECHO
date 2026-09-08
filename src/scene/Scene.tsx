@@ -3,6 +3,7 @@ import { Road } from "./Road";
 import { Galaxy } from "./Galaxy";
 import { WarpField } from "./WarpField";
 import { Sky } from "@/scene/Sky";
+import { renderDpr } from "@/lib/dpr";
 
 /**
  * The persistent canvas.
@@ -22,7 +23,10 @@ export function Scene() {
       style={{ zIndex: "var(--z-scene)" }}
     >
       <Canvas
-        dpr={[1, 3]}
+        // Capped rather than [1, 3]. See lib/dpr - the cost of these shaders is
+        // fill rate, and nothing on this canvas has an edge sharp enough to
+        // show the difference.
+        dpr={renderDpr()}
         gl={{
           alpha: true,
           antialias: true,

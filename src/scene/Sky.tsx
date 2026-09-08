@@ -18,6 +18,10 @@ import { tuning } from "@/lib/tuning";
 /** Camera distance at each level. Flying in is a real approach, not a swap. */
 const DIST = { cluster: 74, constellation: 17, star: 2.6 };
 
+/** Where the camera stands before the sky exists. Constant, so it is not
+ *  rebuilt sixty times a second. */
+const ENTRY_EYE = new THREE.Vector3(0, 0, 5);
+
 
 
 /**
@@ -371,6 +375,8 @@ export function Sky() {
 
   /* --------------------------------------------------------------- frame */
   const v = useMemo(() => new THREE.Vector3(), []);
+  const placedRef = useRef<number[]>([]);
+  const outRef = useRef<SkyLabel[]>([]);
 
   useFrame((state, dt) => {
     const m = mat.current;
@@ -433,7 +439,7 @@ export function Sky() {
       look.y + Math.cos(c.phi) * c.dist,
       look.z + Math.sin(c.phi) * Math.sin(c.theta) * c.dist,
     );
-    camera.position.lerpVectors(new THREE.Vector3(0, 0, 5), v, blend);
+    camera.position.lerpVectors(ENTRY_EYE, v, blend);
     camera.lookAt(look);
 
     // Dev handle for the rig, alongside window.sky and window.ui. Framing the
@@ -549,30 +555,48 @@ export function Sky() {
     // twice over.
     const W = size.width;
     const H = size.height;
-    const chrome = [
-      [W * 0.5 - 260, 0, W * 0.5 + 260, 54],
-      [0, 150, 62, 310],
-      [0, H - 120, 150, H],
-      [W * 0.5 - 250, H - 62, W * 0.5 + 250, H],
-    ];
     const clear = (x: number, y: number) =>
-      !chrome.some((r) => x > r[0] && x < r[2] && y > r[1] && y < r[3]);
+      // Breadcrumb, rail, identity plate, compose bar. Written out rather than
+      // built as an array of rectangles each frame, for the same reason as
+      // below: none of it would survive the frame.
+      !(x > W * 0.5 - 260 && x < W * 0.5 + 260 && y < 54) &&
+      !(x < 62 && y > 150 && y < 310) &&
+      !(x < 150 && y > H - 120) &&
+      !(x > W * 0.5 - 250 && x < W * 0.5 + 250 && y > H - 62);
 
-    const placed: { x: number; y: number; w: number }[] = [];
+    // Placement records are kept flat - x, y, half-width, repeating - in one
+    // array that is reused between frames. The readable spelling of all this
+    // is filter / concat / filter with an object per placed label, which
+    // allocates four arrays, two closures and a few hundred objects every
+    // frame before it has decided anything. None of it survives the frame, so
+    // all of it is garbage the collector has to come back for.
+    const placed = placedRef.current;
+    const out = outRef.current;
+    placed.length = 0;
+    out.length = 0;
+
     const LINE = 19;
-    const fits = (l: SkyLabel) => {
-      if (!clear(l.x, l.y)) return false;
+    const take = (l: SkyLabel) => {
+      if (!clear(l.x, l.y)) return;
       const w = l.text.length * 5.6 + 16;
-      const ok = placed.every(
-        (q) => Math.abs(q.y - l.y) >= LINE || Math.abs(q.x - l.x) * 2 >= q.w + w,
-      );
-      if (ok) placed.push({ x: l.x, y: l.y, w });
-      return ok;
+      for (let k = 0; k < placed.length; k += 3) {
+        if (
+          Math.abs(placed[k + 1] - l.y) < LINE &&
+          Math.abs(placed[k] - l.x) * 2 < placed[k + 2] + w
+        ) {
+          return;
+        }
+      }
+      placed.push(l.x, l.y, w);
+      out.push(l);
     };
-    skyLabels.list = labels
-      .filter((l) => l.hovered)
-      .concat(labels.filter((l) => !l.hovered))
-      .filter(fits);
+
+    // Hovered first, then everything else in the order it was found - two
+    // passes rather than a sort, because at most one label is ever hovered.
+    for (let i = 0; i < labels.length; i++) if (labels[i].hovered) take(labels[i]);
+    for (let i = 0; i < labels.length; i++) if (!labels[i].hovered) take(labels[i]);
+
+    skyLabels.list = out;
   });
 
   return (

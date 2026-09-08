@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import ECHO_FRAG from "@/shaders/echo-nebula.frag.glsl";
 import { damp } from "@/lib/utils";
+import { renderDpr } from "@/lib/dpr";
 
 const VERT = `#version 300 es
 precision highp float;
@@ -147,7 +148,7 @@ export function NebulaShader({
     const resize = () => {
       // Uncapped device pixel ratio. The grain is applied at screen density on
       // a layer above this, so the shader wants every pixel it can get.
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = renderDpr();
       const w = canvas.clientWidth || window.innerWidth;
       const h = canvas.clientHeight || window.innerHeight;
       canvas.width = Math.floor(w * dpr);

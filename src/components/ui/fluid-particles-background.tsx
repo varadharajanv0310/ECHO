@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { damp } from "@/lib/utils";
+import { renderDpr } from "@/lib/dpr";
 
 interface FluidParticlesProps {
   particleCount?: number;
@@ -127,7 +128,7 @@ export const FluidParticlesBackground = ({
     let h = 0;
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = renderDpr();
       w = window.innerWidth;
       h = window.innerHeight;
       canvas.width = Math.floor(w * dpr);
