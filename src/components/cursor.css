@@ -2,7 +2,7 @@
   position: fixed;
   left: 0;
   top: 0;
-  z-index: var(--z-hud);
+  z-index: var(--z-cursor);
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -41,4 +41,18 @@
   .cursor {
     display: none;
   }
+}
+
+/* On a light ground a white dot and a thin violet ring both disappear, so the
+   pointer inverts with the theme. */
+:root[data-mode="light"] .cursor--dot {
+  background: #16111f;
+  box-shadow: 0 0 8px rgba(22, 17, 31, 0.55);
+}
+
+:root[data-mode="light"] .cursor--ring {
+  border-color: rgba(90, 20, 160, 0.9);
+  box-shadow:
+    0 0 12px rgba(120, 40, 200, 0.35),
+    inset 0 0 12px rgba(120, 40, 200, 0.16);
 }

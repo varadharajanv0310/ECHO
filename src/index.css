@@ -37,6 +37,8 @@
     --z-grain: 40;
     --z-vignette: 45;
     --z-hud: 60;
+    /* Above everything, including windows. Nothing may paint over the pointer. */
+    --z-cursor: 500;
   }
 
   html,
@@ -150,11 +152,23 @@
   color: #16111f;
 }
 
-/* Invert the rendered layers rather than trying to restyle them. */
+/* Invert the rendered layers rather than trying to restyle them.
+   Inverted glow is very heavy - what was a faint haze on black becomes a solid
+   wash on white - so the layers are also pulled well back and their contrast
+   raised, which keeps the ground reading as paper rather than as fog. */
 :root[data-mode="light"] .scene-layer,
 :root[data-mode="light"] .entry__nebula,
 :root[data-mode="light"] .particles-layer {
-  filter: invert(1) hue-rotate(180deg) saturate(1.15);
+  filter: invert(1) hue-rotate(180deg) saturate(1.35) contrast(1.25)
+    brightness(1.06);
+}
+
+:root[data-mode="light"] .scene-layer {
+  opacity: 0.62;
+}
+
+:root[data-mode="light"] .particles-layer {
+  opacity: 0.35;
 }
 
 /* Grain has to bite into a light ground instead of lifting a dark one. */
@@ -168,10 +182,22 @@
 
 /* Chrome flips to ink on paper. */
 :root[data-mode="light"] {
-  --glass: rgba(255, 253, 255, 0.86);
-  --glass-soft: rgba(20, 10, 40, 0.045);
-  --hair: rgba(20, 10, 40, 0.16);
-  --hair-soft: rgba(20, 10, 40, 0.09);
+  --glass: rgba(252, 250, 255, 0.94);
+  --glass-soft: rgba(28, 12, 56, 0.05);
+  --hair: rgba(28, 12, 56, 0.24);
+  --hair-soft: rgba(28, 12, 56, 0.13);
+}
+
+/* On black a window is defined by being lighter than its surroundings. On
+   paper it has nothing to separate it, so it gets a real edge and a shadow. */
+:root[data-mode="light"] .win {
+  box-shadow:
+    0 1px 2px rgba(28, 12, 56, 0.08),
+    0 18px 60px -20px rgba(28, 12, 56, 0.28);
+}
+
+:root[data-mode="light"] .rail {
+  box-shadow: 0 8px 30px -14px rgba(28, 12, 56, 0.35);
 }
 
 :root[data-mode="light"] .win__title,
