@@ -1,0 +1,388 @@
+/* =========================================================================
+   The tour. Built from the same glass as everything else, because it is not a
+   layer bolted on top of the product - it is the product introducing itself.
+   ========================================================================= */
+
+.tour {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 3vh, 2.5rem);
+}
+
+.tour__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 50% 50%,
+    rgba(6, 3, 14, 0.5),
+    rgba(6, 3, 14, 0.82)
+  );
+  animation: tour-scrim 260ms ease both;
+}
+
+:root[data-mode="light"] .tour__scrim {
+  background: radial-gradient(
+    120% 90% at 50% 50%,
+    rgba(240, 238, 250, 0.5),
+    rgba(232, 230, 246, 0.86)
+  );
+}
+
+@keyframes tour-scrim {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ------------------------------------------------------------------- card */
+
+.tour__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--accent-h) 90% 88% / 0.14),
+    0 40px 110px -46px hsl(var(--accent-h) 90% 45% / 0.9),
+    0 2px 40px -20px rgba(0, 0, 0, 0.9);
+  animation: tour-card 380ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+/* Keyed on the step, so moving between cards replays this. It is the only
+   motion in the tour: the cards themselves hold still while being read. */
+@keyframes tour-card {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tour__card--hello {
+  width: min(460px, 100%);
+  padding: clamp(1.6rem, 3vw, 2.2rem);
+  text-align: left;
+}
+
+.tour__art {
+  padding: clamp(1.1rem, 2.6vw, 1.8rem) clamp(1rem, 2vw, 1.4rem) 0;
+  background:
+    radial-gradient(90% 120% at 50% 0%, hsl(var(--accent-h) 80% 60% / 0.14), transparent 70%);
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.tour__text {
+  padding: clamp(1.1rem, 2.4vw, 1.5rem) clamp(1.2rem, 2.6vw, 1.7rem) 0;
+}
+
+.tour__eyebrow {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--accent-h) 85% 74%);
+}
+
+:root[data-mode="light"] .tour__eyebrow {
+  color: hsl(var(--accent-h) 78% 42%);
+}
+
+.tour__title,
+.tour__tip-title {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  font-weight: 600;
+  font-variation-settings: "wdth" 94, "wght" 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.tour__hello {
+  margin: 0 0 0.8rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 700;
+  font-variation-settings: "wdth" 88, "wght" 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.tour__body {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-variation-settings: "wdth" 100, "wght" 380;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------------------- foot */
+
+.tour__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem) clamp(1.2rem, 2.6vw, 1.7rem);
+}
+
+.tour__card--hello .tour__foot {
+  padding: 1.6rem 0 0;
+}
+
+.tour__dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tour__dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  opacity: 0.5;
+  transition:
+    background 240ms ease,
+    opacity 240ms ease,
+    transform 240ms ease;
+}
+
+.tour__dots span[data-on="true"] {
+  background: hsl(var(--accent-h) 92% 66%);
+  opacity: 1;
+  transform: scale(1.5);
+}
+
+.tour__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tour__go,
+.tour__back,
+.tour__skip {
+  padding: 0.5rem 1rem;
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+  cursor: none;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition:
+    background 240ms ease,
+    color 240ms ease,
+    border-color 240ms ease;
+}
+
+.tour__go {
+  background: hsl(var(--accent-h) 90% 62%);
+  color: #12061f;
+}
+
+.tour__go:hover {
+  background: hsl(var(--accent-h) 95% 70%);
+}
+
+.tour__back {
+  background: none;
+  border-color: var(--hair);
+  color: var(--ink-2);
+}
+
+.tour__skip {
+  background: none;
+  color: var(--ink-3);
+}
+
+.tour__skip:hover {
+  color: var(--ink-2);
+}
+
+/* -------------------------------------------------------------------- art */
+
+.ta {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ta-sun {
+  fill: hsl(var(--accent-h) 92% 64%);
+}
+
+.ta-body {
+  fill: hsl(var(--accent-h) 95% 74%);
+}
+
+.ta-body--dying {
+  fill: #ff7326;
+}
+
+.ta-ring,
+.ta-field {
+  fill: none;
+  stroke: hsl(var(--accent-h) 80% 70% / 0.4);
+  stroke-width: 1;
+}
+
+.ta-field {
+  stroke-dasharray: 4 5;
+  stroke: hsl(var(--accent-h) 80% 70% / 0.34);
+}
+
+.ta-link {
+  fill: none;
+  stroke: hsl(var(--accent-h) 85% 68% / 0.5);
+  stroke-width: 1.1;
+}
+
+.ta-axis {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.ta-arrow {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ta-flow {
+  fill: none;
+  stroke: hsl(var(--accent-h) 92% 70%);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ta-reset {
+  fill: none;
+  stroke: hsl(var(--accent-h) 90% 72%);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+.ta-feed rect {
+  fill: var(--ink-3);
+  opacity: 0.4;
+}
+
+.ta-strike {
+  stroke: #ff7326;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.ta-step {
+  fill: hsl(var(--accent-h) 90% 62% / 0.16);
+  stroke: hsl(var(--accent-h) 85% 70% / 0.5);
+  stroke-width: 1;
+}
+
+.ta-num {
+  fill: var(--ink);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ta-cap {
+  fill: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+}
+
+/* --------------------------------------------------------------- railtour */
+
+/* The highlight is a ring plus an enormous soft shadow, which darkens the
+   whole frame except the hole - one element doing the job of a scrim with a
+   cutout, without any masking. */
+.tour__spot {
+  position: absolute;
+  border-radius: var(--r-md);
+  border: 1px solid hsl(var(--accent-h) 92% 72%);
+  box-shadow:
+    0 0 0 4px hsl(var(--accent-h) 92% 62% / 0.22),
+    0 0 30px hsl(var(--accent-h) 95% 60% / 0.5);
+  pointer-events: none;
+  animation: tour-spot 320ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+@keyframes tour-spot {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tour__tip {
+  position: absolute;
+  z-index: 1;
+  width: min(330px, calc(100vw - 7rem));
+  padding: 1.1rem 1.2rem 0;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.95);
+  animation: tour-card 300ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+.tour__tip .tour__foot {
+  padding: 1rem 0 1.1rem;
+}
+
+/* Points back at the control it is describing. */
+.tour__tip-arrow {
+  position: absolute;
+  left: -6px;
+  top: 62px;
+  width: 10px;
+  height: 10px;
+  rotate: 45deg;
+  border-left: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  background: var(--glass-solid);
+}
+
+:root[data-mode="light"] .tour__tip-arrow {
+  background: rgba(252, 250, 255, 0.94);
+}
+
+@media (max-width: 640px) {
+  .tour__tip {
+    left: 50% !important;
+    top: auto !important;
+    bottom: 1.2rem;
+    translate: -50% 0;
+  }
+
+  .tour__tip-arrow {
+    display: none;
+  }
+}

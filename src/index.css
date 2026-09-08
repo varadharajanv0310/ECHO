@@ -43,6 +43,8 @@
        above the standing interface. The dock used to outrank it and painted
        the compose bar across the middle of every open panel. */
     --z-window: 80;
+    /* The tour explains the interface, so it has to sit over all of it. */
+    --z-tour: 120;
     /* Above everything, including windows. Nothing may paint over the pointer. */
     --z-cursor: 500;
   }

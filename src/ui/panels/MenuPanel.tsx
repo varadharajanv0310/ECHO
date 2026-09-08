@@ -1,6 +1,7 @@
 import { getLenis } from "@/lib/useLenis";
 import { useSequence, DEFAULT_SETTINGS } from "@/store/sequence";
 import { useUI } from "@/store/ui";
+import { useTour } from "@/store/tour";
 import { Window } from "../Window";
 
 // No Appearance tab. Ground and accent belong to the profile, where a person
@@ -64,6 +65,8 @@ export function MenuPanel() {
   };
 
   /** Replay the entry sequence without discarding who you are. */
+  const restart = useTour((s) => s.restart);
+
   const replay = () => {
     setPanel(null);
     getLenis()?.scrollTo(0, { immediate: true, force: true });
@@ -129,6 +132,23 @@ export function MenuPanel() {
               </p>
               <button className="u-btn" onClick={replay}>
                 Watch the opening again
+              </button>
+            </section>
+
+            <section className="u-card">
+              <h3 className="u-h">Tutorial</h3>
+              <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
+                What this place is, and what each control does. Runs once on
+                your first visit.
+              </p>
+              <button
+                className="u-btn"
+                onClick={() => {
+                  setPanel(null);
+                  restart();
+                }}
+              >
+                Go through it again
               </button>
             </section>
           </>

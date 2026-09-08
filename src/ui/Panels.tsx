@@ -9,6 +9,7 @@ import { DashboardPanel } from "./panels/DashboardPanel";
 import { SkyHud } from "./SkyHud";
 import { SkyDock } from "./SkyDock";
 import { Rail } from "./Rail";
+import { Tour } from "./Tour";
 
 /** Long enough to read as leaving, short enough not to argue with you. */
 const CLOSE_MS = 190;
@@ -46,6 +47,7 @@ export function Panels() {
       <Rail />
       <SkyHud />
       <SkyDock />
+      <Tour />
 
       {visiting.shown !== null && !(visiting.closing && panel) && (
         <div
