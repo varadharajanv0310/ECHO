@@ -17,10 +17,14 @@ type Props = {
 /**
  * The window every panel lives in.
  *
- * It opens over the constellation rather than navigating away from it: the sky
- * stays visible and lit behind the glass, so nothing in ECHO is ever a
- * separate page you have left your signals to go and visit. That is why it is
- * a window and not a route.
+ * It opens over the sky rather than navigating away from it: the sky stays
+ * visible and lit behind the glass, so nothing in ECHO is ever a separate page
+ * you have left your signals to go and visit. That is why it is a window and
+ * not a route.
+ *
+ * Arrival and departure of the window as a whole belong to Panels, which holds
+ * it mounted for a moment after dismissal so it can animate away. This
+ * component is only the furniture.
  */
 export function Window({
   title,
@@ -43,7 +47,7 @@ export function Window({
   }, [onClose]);
 
   return (
-    <div className="win-layer" style={{ zIndex: "var(--z-window)" }}>
+    <>
       <div
         className="win-scrim"
         onClick={onClose}
@@ -73,6 +77,12 @@ export function Window({
                 onClick={() => onTab(t)}
               >
                 {t}
+                {/* Deliberately a plain element. As a shared layoutId this
+                    slid nicely between tabs, but a pending shared-layout
+                    animation keeps AnimatePresence waiting, so closing the
+                    window left an invisible full-screen layer in the DOM
+                    swallowing every click on the sky behind it. */}
+                {t === active && <i className="win__tab-mark" aria-hidden />}
               </button>
             ))}
           </nav>
@@ -90,8 +100,18 @@ export function Window({
           </button>
         </header>
 
-        <div className="win__body">{children}</div>
+        {/* Tab content fades up on change, with no exit to wait for.
+            A nested AnimatePresence here is what kept the window in the DOM
+            forever: while the parent was leaving, the inner presence was never
+            told to exit, so its unresolved children blocked the outer one from
+            ever completing. Keying a motion element gives the same arrival and
+            nothing to hold. */}
+        <div className="win__body">
+          <div key={active} className="win__tabin">
+            {children}
+          </div>
+        </div>
       </section>
-    </div>
+    </>
   );
 }

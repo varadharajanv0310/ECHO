@@ -3,6 +3,7 @@ import { Mark, MARKS, type MarkId } from "@/components/Mark";
 import { getSky } from "@/scene/sky-data";
 import { cue } from "@/lib/audio";
 import { useUI } from "@/store/ui";
+import { useExit } from "@/lib/useExit";
 import "./sky-dock.css";
 
 type Said = { id: number; to: string; text: string };
@@ -33,29 +34,37 @@ export function SkyDock() {
   const person = star !== null ? sky.stars[star] : null;
   const thing = planet !== null ? sky.planets[planet] : null;
   const open = level === "star" && !!person;
+  const dock = useExit(open ? person : null, 180);
+  const thingShown = useExit(thing, 180);
 
   // Opening something to read should put the caret where you would type back.
   useEffect(() => {
     if (planet !== null) input.current?.focus();
   }, [planet]);
 
-  if (!open || !person) return null;
+  if (!dock.shown) return null;
 
   const send = () => {
     const t = text.trim();
     if (!t) return;
-    setSaid((s) => [{ id: Date.now(), to: person.name, text: t }, ...s]);
+    setSaid((s) => [{ id: Date.now(), to: who.name, text: t }, ...s]);
     setText("");
     cue("tick");
   };
 
-  const replies = said.filter((s) => s.to === person.name);
+  const who = dock.shown;
+  const held = thingShown.shown;
+  const replies = said.filter((s) => s.to === who.name);
 
   return (
-    <div className="dock" style={{ zIndex: "var(--z-dock)" }}>
+    <div
+      className="dock"
+      data-closing={dock.closing}
+      style={{ zIndex: "var(--z-dock)" }}
+    >
       {/* What you are holding, if anything. */}
-      {thing && (
-        <div className="dock__open">
+      {held && (
+        <div className="dock__open" data-closing={thingShown.closing}>
           <button
             className="dock__close"
             onClick={() => openPlanet(null)}
@@ -63,36 +72,30 @@ export function SkyDock() {
           >
             ×
           </button>
-          <span className="dock__kind">{thing.kind}</span>
-          <p className="dock__text">{thing.text}</p>
+          <span className="dock__kind">{held.kind}</span>
+          <p className="dock__text">{held.text}</p>
           <span className="dock__meta">
-            {thing.carried} carried it ·{" "}
-            {thing.age > 0.72
+            {held.carried} carried it ·{" "}
+            {held.age > 0.72
               ? "fading"
-              : `${Math.max(1, Math.round((1 - thing.age) * 24))}h left`}
+              : `${Math.max(1, Math.round((1 - held.age) * 24))}h left`}
           </span>
         </div>
       )}
 
-      {replies.length > 0 && (
-        <div className="dock__said">
-          {replies.slice(0, 3).map((r) => (
-            <p key={r.id} className="dock__said-line">
-              {r.text}
-            </p>
-          ))}
-        </div>
-      )}
+      <div className="dock__said">
+        {replies.slice(0, 3).map((r) => (
+          <p key={r.id} className="dock__said-line">
+            {r.text}
+          </p>
+        ))}
+      </div>
 
       <div className="dock__bar">
         <span className="dock__who">
-          <Mark
-            mark={MARKS[person.id % MARKS.length] as MarkId}
-            hue={person.hue}
-            size={20}
-          />
-          <b>{person.name}</b>
-          <i>{person.traits.join(" · ")}</i>
+          <Mark mark={MARKS[who.id % MARKS.length] as MarkId} hue={who.hue} size={20} />
+          <b>{who.name}</b>
+          <i>{who.traits.join(" · ")}</i>
         </span>
 
         <textarea
@@ -101,7 +104,7 @@ export function SkyDock() {
           rows={1}
           value={text}
           placeholder={
-            thing ? `Say something back to ${person.name}` : `Say something to ${person.name}`
+            held ? `Say something back to ${who.name}` : `Say something to ${who.name}`
           }
           onChange={(e) => setText(e.target.value.slice(0, 240))}
           onKeyDown={(e) => {

@@ -113,12 +113,93 @@
   padding: clamp(1rem, 3vh, 2.5rem) clamp(1rem, 4vw, 3rem);
 }
 
+/* Scrim and window share the grid cell so the window sits over it. */
+.win-layer > *,
+.win-layer .win-scrim,
+.win-layer .win {
+  grid-area: 1 / 1;
+}
+
+/* Arrival and departure. The layer is held mounted through the close by
+   useExit, so [data-closing] is a real state with a real duration rather than
+   a hope that something unmounts late. */
+.win-scrim {
+  animation: win-scrim-in 220ms ease both;
+}
+
+.win {
+  animation: win-in 420ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+.win-layer[data-closing="true"] .win-scrim {
+  animation: win-scrim-out 190ms ease both;
+}
+
+.win-layer[data-closing="true"] .win {
+  /* Leaves faster than it arrives, and drops rather than rising, so dismissing
+     reads as letting go of something. */
+  animation: win-out 190ms cubic-bezier(0.4, 0, 1, 1) both;
+  pointer-events: none;
+}
+
+.win-layer[data-closing="true"] {
+  pointer-events: none;
+}
+
+@keyframes win-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes win-scrim-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes win-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes win-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+}
+
+/* Tab content arrives; it has nothing to wait for on the way out. */
+.win__tabin {
+  animation: tabin 200ms ease-out both;
+}
+
+@keyframes tabin {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .win-scrim {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: rgba(4, 3, 10, 0.55);
   backdrop-filter: blur(3px);
-  animation: fade-in 320ms ease both;
 }
 
 @keyframes fade-in {
@@ -132,6 +213,7 @@
 
 .win {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   width: min(1180px, 100%);
@@ -141,23 +223,11 @@
   background: var(--glass);
   backdrop-filter: blur(22px) saturate(1.2);
   overflow: hidden;
-  animation: win-in 420ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
 }
 
 .win[data-size="narrow"] {
   width: min(700px, 100%);
   height: min(620px, 100%);
-}
-
-@keyframes win-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 .win__bar {
@@ -231,8 +301,9 @@
   color: #fff;
 }
 
-.win__tab[data-on="true"]::after {
-  content: "";
+/* The underline is one element that moves between tabs rather than a mark
+   that fades out under one and in under the next. */
+.win__tab-mark {
   position: absolute;
   left: 0.85rem;
   right: 0.85rem;

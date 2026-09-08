@@ -11,6 +11,10 @@ import "./sky-hud.css";
  * through React state - they move every frame with the camera, and putting a
  * hundred position updates a second through a render is how you turn a smooth
  * sky into a slideshow.
+ *
+ * The crumbs are keyed by what they name, so going somewhere new replaces the
+ * node and its arrival animation plays again. That is the whole effect, and it
+ * costs one attribute.
  */
 export function SkyHud() {
   const level = useUI((s) => s.level);
@@ -63,7 +67,11 @@ export function SkyHud() {
     <>
       <div ref={layer} className="skl-layer" style={{ zIndex: "var(--z-hud)" }} />
 
-      <nav className="skb" style={{ zIndex: "var(--z-hud)" }} aria-label="Where you are">
+      <nav
+        className="skb"
+        style={{ zIndex: "var(--z-hud)" }}
+        aria-label="Where you are"
+      >
         <button
           className="skb__crumb"
           data-on={level === "cluster"}
@@ -78,7 +86,7 @@ export function SkyHud() {
         </button>
 
         {world && (
-          <>
+          <span className="skb__group" key={`w${world.id}`}>
             <span className="skb__sep" aria-hidden>
               /
             </span>
@@ -89,18 +97,18 @@ export function SkyHud() {
             >
               {world.world}
             </button>
-          </>
+          </span>
         )}
 
         {person && (
-          <>
+          <span className="skb__group" key={`p${person.id}`}>
             <span className="skb__sep" aria-hidden>
               /
             </span>
             <span className="skb__crumb" data-on="true">
               {person.name}
             </span>
-          </>
+          </span>
         )}
       </nav>
 
@@ -125,7 +133,11 @@ export function SkyHud() {
       )}
 
       {world && level === "constellation" && (
-        <p className="skb__blurb" style={{ zIndex: "var(--z-hud)" }}>
+        <p
+          className="skb__blurb"
+          key={`b${world.id}`}
+          style={{ zIndex: "var(--z-hud)" }}
+        >
           {world.blurb}
         </p>
       )}

@@ -90,6 +90,26 @@
   color: #fff;
 }
 
+.skb__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  animation: crumb-in 420ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+@keyframes crumb-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
 .skb__sep {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -97,6 +117,7 @@
 }
 
 .skb__back {
+  animation: crumb-in 420ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
   position: fixed;
   left: clamp(4.6rem, 6vw, 6.4rem);
   top: clamp(1.4rem, 3.4vh, 2.4rem);
@@ -136,7 +157,20 @@
   font-size: 0.92rem;
   font-variation-settings: "wdth" 98, "wght" 400;
   color: rgba(255, 255, 255, 0.5);
-  animation: fade-in 900ms ease both;
+  animation: blurb-in 700ms ease both;
+}
+
+@keyframes blurb-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
 }
 
 :root[data-mode="light"] .skb__crumb {
