@@ -398,7 +398,44 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  /* Never sideways. A window that scrolls horizontally is a window whose
+     layout has failed, and the bar across the foot says so out loud. */
+  overflow-x: hidden;
   padding: clamp(1.1rem, 2.4vw, 1.8rem);
+}
+
+/* Scrollbars, made of the same glass as everything else. The default is a
+   grey system chrome bar sitting inside a tinted panel, which reads as the
+   browser showing through the design. */
+.win__body,
+.u-textarea {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--accent-h) 70% 60% / 0.34) transparent;
+}
+
+.win__body::-webkit-scrollbar,
+.u-textarea::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.win__body::-webkit-scrollbar-track,
+.u-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.win__body::-webkit-scrollbar-thumb,
+.u-textarea::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: var(--r-pill);
+  background: hsl(var(--accent-h) 70% 62% / 0.3);
+  background-clip: content-box;
+}
+
+.win__body::-webkit-scrollbar-thumb:hover,
+.u-textarea::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent-h) 80% 68% / 0.5);
+  background-clip: content-box;
 }
 
 /* ------------------------------------------------------- shared controls */
@@ -478,6 +515,8 @@
   min-height: 96px;
   resize: vertical;
   line-height: 1.45;
+  /* Text wraps, so the only honest axis here is the vertical one. */
+  overflow-x: hidden;
 }
 
 .u-input:focus,

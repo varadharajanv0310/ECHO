@@ -517,7 +517,47 @@ export function Sky() {
       const l = labels.find((x) => x.kind === h.kind && x.id === h.id);
       if (l) l.hovered = true;
     }
-    skyLabels.list = labels;
+
+    // Drop labels that would sit on top of one another. A person carrying six
+    // things has six sentences orbiting one point, and for most of every orbit
+    // several of them are in the same part of the screen - overlapping type
+    // that renders as neither sentence.
+    //
+    // Whatever is under the pointer is placed first and always survives, so
+    // pointing at a crowded planet is how you read the one you want. The rest
+    // are laid out in the order they were found, which is stable frame to
+    // frame, so nothing flickers while things drift past each other.
+    // The interface is also something a label can land on. These are the
+    // regions the chrome occupies - the breadcrumb across the top, the rail
+    // down the left, the identity plate in the corner, and the compose bar
+    // along the bottom - and a name printed over any of them is unreadable
+    // twice over.
+    const W = size.width;
+    const H = size.height;
+    const chrome = [
+      [W * 0.5 - 260, 0, W * 0.5 + 260, 54],
+      [0, 150, 62, 310],
+      [0, H - 120, 150, H],
+      [W * 0.5 - 250, H - 62, W * 0.5 + 250, H],
+    ];
+    const clear = (x: number, y: number) =>
+      !chrome.some((r) => x > r[0] && x < r[2] && y > r[1] && y < r[3]);
+
+    const placed: { x: number; y: number; w: number }[] = [];
+    const LINE = 19;
+    const fits = (l: SkyLabel) => {
+      if (!clear(l.x, l.y)) return false;
+      const w = l.text.length * 5.6 + 16;
+      const ok = placed.every(
+        (q) => Math.abs(q.y - l.y) >= LINE || Math.abs(q.x - l.x) * 2 >= q.w + w,
+      );
+      if (ok) placed.push({ x: l.x, y: l.y, w });
+      return ok;
+    };
+    skyLabels.list = labels
+      .filter((l) => l.hovered)
+      .concat(labels.filter((l) => !l.hovered))
+      .filter(fits);
   });
 
   return (

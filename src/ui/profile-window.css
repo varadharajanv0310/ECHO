@@ -128,7 +128,7 @@
   font-size: 8.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: hsl(var(--accent-h) 78% 42%);
+  color: hsl(var(--accent-h) 90% 86%);
 }
 
 .pw__actions {
@@ -410,4 +410,5 @@
 :root[data-mode="light"] .pw__badge {
   background: hsl(var(--accent-h) 85% 60% / 0.16);
   border-color: hsl(var(--accent-h) 70% 45% / 0.32);
+  color: hsl(var(--accent-h) 78% 38%);
 }

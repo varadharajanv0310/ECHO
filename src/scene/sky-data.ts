@@ -117,12 +117,17 @@ export function buildSky(seed = 20260908): Sky {
 
       const planetIds: number[] = [];
       const pcount = 2 + Math.floor(rand() * 5);
+      // Walk the sample signals from a random start rather than drawing each
+      // one independently. Six draws from eighteen repeat often enough that
+      // most people ended up carrying the same sentence twice, which reads as
+      // a bug the moment both labels are on screen together.
+      const sig = Math.floor(rand() * copy.signals.length);
       for (let p = 0; p < pcount; p++) {
         const pid = planets.length;
         planets.push({
           id: pid,
           star: id,
-          text: copy.signals[Math.floor(rand() * copy.signals.length)],
+          text: copy.signals[(sig + p) % copy.signals.length],
           kind: KINDS[Math.floor(rand() * KINDS.length)],
           radius: 0.55 + p * 0.32 + rand() * 0.12,
           phase: rand() * Math.PI * 2,
