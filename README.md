@@ -336,9 +336,16 @@ nothing and decelerating so the streaks shorten back into stars.
 
 ## Known scope
 
-Desktop is the target, per the brief and the hackathon's "webapp" framing. A
-deliberately art-directed mobile treatment — tighter camera bounds and larger
-nodes rather than a shrunken desktop layout — is the next piece of work.
+Desktop is what this is designed for and what it is best on. A handheld pass
+exists and is deliberate rather than a reflow: it is gated on `(pointer: coarse)`
+and a narrow screen, so a desktop browser dragged narrow keeps the full
+treatment. On a phone the camera stands further back in proportion to the
+aspect — the field of view is vertical, so a tall thin screen loses the
+horizontal field and half the sky with it — taps are resolved against a
+position the app tracks itself rather than r3f's move-only pointer, labels are
+shorter and clamped inside the frame, the rail becomes a bottom bar with the
+dock above it, panels become full-screen sheets, and the passage is shorter to
+scroll. Render resolution is capped tighter there too.
 
 There is no network between browsers, so there is nobody else really online.
 Everyone in the sky is generated and so is what they do with your signals; the
