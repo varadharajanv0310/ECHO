@@ -1,5 +1,9 @@
 # ECHO
 
+### [Open the sky →](https://varadharajanv0310.github.io/ECHO/) · [Field guide →](https://varadharajanv0310.github.io/ECHO/guide.html)
+
+![The cluster: six places, and nothing else on screen](docs/shots/cluster.jpg)
+
 A social platform where content does not belong to you. It belongs to a place,
 it travels through people, and it dies if nobody carries it.
 
@@ -13,9 +17,6 @@ There is no ranking function anywhere in the system, no followers, no likes, no
 view counts, no paid reach, no infinite scroll, and no data collection. None of
 these are enforced rules. They are consequences of the architecture, which is
 the strongest form of the claim.
-
-- **Live** — https://varadharajanv0310.github.io/ECHO/
-- **Field guide** — https://varadharajanv0310.github.io/ECHO/guide.html
 
 Built for **The Frontend Odyssey 2026**. Frontend only — no backend, no
 database, no server-side code. Everything runs in the browser on a static build,
@@ -87,6 +88,14 @@ re-render the tree.
 | 9 | `dive` | The warp. |
 | 10 | `constellation` | Arrival. The sky settles. |
 
+![The wordmark resolving out of the nebula](docs/shots/reveal.jpg)
+*Beat 2. The bleed is an SVG `feGaussianBlur` with a two-value `stdDeviation`,
+blurring six times harder vertically than horizontally, so every letter stem
+becomes its own falling strand.*
+
+![The galaxy, the only interactive object on the page](docs/shots/galaxy.jpg)
+*Beat 6. Click it.*
+
 Two structural decisions carry the whole thing:
 
 **Beats 1 and 2 are one component.** The void does not unmount and the reveal
@@ -113,11 +122,23 @@ Four levels, and the trail across the top always says which one you are in.
 | Person | Their star, with their signals on rings around it | Click a signal to read it. Click them again to open who they are. |
 | Signal | One thing somebody said | Read it, reply, or **carry** it. |
 
+![A place, with its people joined into a figure](docs/shots/world.jpg)
+*A place. Only the people standing in it are drawn, and the figure between them
+is a nearest-neighbour chain — you are joined to it when you arrive.*
+
+![Standing at your own star, three signals on rings around it](docs/shots/system.jpg)
+*Standing at somebody. Their signals orbit them, newest closest in, each
+labelled with what it actually says.*
+
 **Carrying is the only verb that matters.** Opening somebody else's signal lets
 you carry it: it starts orbiting your star as well, keeps their name and their
 colour, is labelled *via them*, and its clock restarts. It is the only way
 anything travels and the only way anything survives. Put it down and nothing
 else is holding it up.
+
+![Reading one of somebody's signals, with the carry control](docs/shots/someone.jpg)
+*Opening a signal. How many people are carrying it, how long it has left, and
+the one button that changes anything for anybody else.*
 
 **Colour is identity.** Everyone picks a hue. It tints their star, their
 profile window, and your cursor while you are with them, through a single
@@ -140,6 +161,14 @@ yourself.
 | **Search** | Signals and people. Results are scrambled by a hash of the id — stable between renders, and unrelated to who wrote a thing or when. There is no best result in a place with no scores. |
 | **Dashboard** | Split three ways: what you **sent** and how long it has left, what came **back**, and the people you are actually **talking to**. |
 
+![A profile: banner, mark, traits, shelves for games and music](docs/shots/profile.jpg)
+*A profile. The window is tinted by that person's hue — visiting somebody
+should feel like walking into their room, not reading their row in a database.*
+
+![The dashboard, split into sent, responses and messages](docs/shots/dashboard.jpg)
+*The dashboard. Every clock runs down; the only thing that resets one is
+somebody choosing to carry what you said.*
+
 ### Onboarding
 
 ECHO does almost nothing a social network is expected to do, so somebody landing
@@ -148,6 +177,8 @@ browser: a welcome, six cards on what the place is, then a pass along the rail
 with each control lit in turn and a note beside it. The card art is drawn rather
 than screenshotted — half of what needs explaining is not a state the interface
 is ever in at one moment. It can be replayed from the menu.
+
+![A tutorial card explaining carrying](docs/shots/tour.jpg)
 
 The longer version is the **[field guide](https://varadharajanv0310.github.io/ECHO/guide.html)**,
 which ships from the same build.
@@ -159,6 +190,8 @@ survive and glow becomes pigment — the sun at a person's star turns from a
 bright core into dense ink on paper. In the interface, type comes from `--ink`
 in three weights defined once per mode, so a new surface is legible in both
 without being remembered twice.
+
+![The same star in light mode, drawn as ink on paper](docs/shots/light.jpg)
 
 ---
 
