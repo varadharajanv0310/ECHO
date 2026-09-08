@@ -88,15 +88,6 @@ export type DirectMessage = {
   mine: boolean;
 };
 
-/** A reply somebody left on something of yours. */
-export type Response = {
-  id: number;
-  from: string;
-  onText: string;
-  text: string;
-  at: number;
-};
-
 export type ThemeMode = "dark" | "light";
 export type Accent = "violet" | "magenta" | "indigo" | "ice";
 
@@ -180,7 +171,6 @@ type SequenceState = {
   emissions: Emission[];
   friends: number[];
   dms: DirectMessage[];
-  responses: Response[];
 
   setProfile: (p: Profile) => void;
   patchProfile: (p: Partial<Profile>) => void;
@@ -190,6 +180,20 @@ type SequenceState = {
   toggleFriend: (star: number) => void;
   sendDM: (star: number, name: string, text: string) => void;
 };
+
+/**
+ * Ids that are unique even within one millisecond.
+ *
+ * Date.now() alone is not: two things made in the same tick get the same id,
+ * which collides React keys and - since a signal's id is also the seed for
+ * what the sky does with it - gives them identical replies from identical
+ * people. Still time-ordered, so newest-first sorting still works.
+ */
+let lastId = 0;
+function newId() {
+  lastId = Math.max(Date.now(), lastId + 1);
+  return lastId;
+}
 
 /** `?phase=galaxy` jumps straight to a beat. `?reset` clears persistence. */
 function initialPhase(): Phase {
@@ -237,7 +241,6 @@ export const useSequence = create<SequenceState>((set, get) => ({
   emissions: readList("echo.emissions"),
   friends: readList("echo.friends"),
   dms: readList("echo.dms"),
-  responses: readList("echo.responses"),
 
   setPhase: (phase) => set({ phase }),
 
@@ -276,7 +279,7 @@ export const useSequence = create<SequenceState>((set, get) => ({
    */
   emit: (world, text, life) => {
     const next = [
-      { id: Date.now(), world, text, at: Date.now(), life },
+      { id: newId(), world, text, at: Date.now(), life },
       ...get().emissions,
     ];
     writeList("echo.emissions", next);
@@ -294,7 +297,7 @@ export const useSequence = create<SequenceState>((set, get) => ({
 
   sendDM: (star, name, text) => {
     const next = [
-      { id: Date.now(), withStar: star, name, text, at: Date.now(), mine: true },
+      { id: newId(), withStar: star, name, text, at: Date.now(), mine: true },
       ...get().dms,
     ];
     writeList("echo.dms", next);

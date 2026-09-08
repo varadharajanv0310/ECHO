@@ -1,4 +1,6 @@
 import { copy } from "@/copy";
+import { echoesFor } from "@/lib/echoes";
+import type { Emission } from "@/store/sequence";
 
 /**
  * The sky, as a real hierarchy.
@@ -276,9 +278,15 @@ export function placeMe(sky: Sky, name: string, hue: number, worlds: string[]) {
  * Rebuilt from the store rather than stored here, so the sky is always a view
  * of the truth rather than a second copy of it.
  */
+/** Names of everyone in a World, for anything that needs to say who acted. */
+export function peopleIn(sky: Sky, world: string) {
+  const c = sky.constellations.find((x) => x.world === world);
+  return c ? c.stars.map((id) => sky.stars[id].name).filter(Boolean) : [];
+}
+
 export function syncMine(
   sky: Sky,
-  emissions: { id: number; text: string; life: number; at: number }[],
+  emissions: Emission[],
 ) {
   if (world.me < 0) return sky;
   const mine = sky.stars[world.me];
@@ -289,7 +297,12 @@ export function syncMine(
 
   emissions.forEach((e, i) => {
     const pid = sky.planets.length ? Math.max(...sky.planets.map((p) => p.id)) + 1 : 0;
-    const age = Math.min(0.98, (Date.now() - e.at) / (e.life * 3600 * 1000));
+    // Age runs from the last time somebody carried this, not from when it was
+    // sent. A carried signal visibly stops dying, which is the one promise the
+    // whole idea rests on.
+    const { carries } = echoesFor(e, peopleIn(sky, e.world));
+    const from = carries.length ? carries[carries.length - 1].at : e.at;
+    const age = Math.min(0.98, (Date.now() - from) / (e.life * 3600 * 1000));
     sky.planets.push({
       id: pid,
       star: world.me,
@@ -300,7 +313,7 @@ export function syncMine(
       speed: 0.05 + (i % 3) * 0.02,
       tilt: ((i % 5) - 2) * 0.12,
       age,
-      carried: 0,
+      carried: carries.length,
     });
     mine.planets.push(pid);
   });

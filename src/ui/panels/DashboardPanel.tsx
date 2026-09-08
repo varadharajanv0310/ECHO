@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Mark, MARKS, type MarkId } from "@/components/Mark";
-import { getSky, myStar } from "@/scene/sky-data";
+import { getSky, myStar, peopleIn } from "@/scene/sky-data";
+import { echoesFor, lastCarry } from "@/lib/echoes";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { Window } from "../Window";
@@ -30,7 +31,6 @@ export function DashboardPanel() {
   const profile = useSequence((s) => s.profile);
   const emissions = useSequence((s) => s.emissions);
   const dms = useSequence((s) => s.dms);
-  const responses = useSequence((s) => s.responses);
   const friends = useSequence((s) => s.friends);
 
   const setPanel = useUI((s) => s.setPanel);
@@ -40,6 +40,26 @@ export function DashboardPanel() {
   const setTab = useUI((s) => s.setTab);
 
   const sky = useMemo(() => getSky(), []);
+
+  // Carries and replies are a function of how long a signal has been out, so
+  // this has to re-read the clock now and then or the sky appears to answer
+  // only when you close the window and open it again.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 5000);
+    return () => clearInterval(t);
+  }, []);
+
+  /** What came back, newest first. Derived, never stored. */
+  const replies = useMemo(
+    () =>
+      emissions
+        .flatMap((e) =>
+          echoesFor(e, peopleIn(sky, e.world), now).replies.map((r) => ({ ...r, onText: e.text })),
+        )
+        .sort((a, b) => b.at - a.at),
+    [emissions, now],
+  );
 
   /** One row per person you have said something to, newest first. */
   const threads = useMemo(() => {
@@ -83,12 +103,12 @@ export function DashboardPanel() {
         {tab === "Responses" ? (
           <section className="u-card">
             <h3 className="u-h">What came back</h3>
-            {responses.length === 0 && (
+            {replies.length === 0 && (
               <p className="u-empty">
                 Nothing yet. A reply only exists if somebody chose to leave one.
               </p>
             )}
-            {responses.map((r) => (
+            {replies.map((r) => (
               <div className="u-row" key={r.id}>
                 <div className="u-row__main">
                   <span className="u-row__title">{r.text}</span>
@@ -141,10 +161,10 @@ export function DashboardPanel() {
               </p>
             )}
             {emissions.map((e) => {
-              const hoursLeft = Math.max(
-                0,
-                e.life - (Date.now() - e.at) / 3600000,
-              );
+              const who = peopleIn(sky, e.world);
+              const { carries } = echoesFor(e, who, now);
+              const from = lastCarry(e, who, now);
+              const hoursLeft = Math.max(0, e.life - (now - from) / 3600000);
               const dying = hoursLeft < e.life * 0.28;
               return (
                 <button
@@ -157,9 +177,11 @@ export function DashboardPanel() {
                     <span className="u-row__title">{e.text}</span>
                     <span className="u-row__meta">
                       {e.world} · {ago(e.at)} ·{" "}
-                      {hoursLeft < 1
-                        ? "gone"
-                        : `${Math.round(hoursLeft)}h left`}
+                      {carries.length === 0
+                        ? "carried by nobody"
+                        : `carried ${carries.length}×`}{" "}
+                      ·{" "}
+                      {hoursLeft < 1 ? "gone" : `${Math.round(hoursLeft)}h left`}
                     </span>
                   </div>
                 </button>
