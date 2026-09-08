@@ -136,6 +136,22 @@ export function MenuPanel() {
             </section>
 
             <section className="u-card">
+              <h3 className="u-h">Field guide</h3>
+              <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
+                The longer version: what this place is, what it deliberately
+                does not have, and what the sky is actually showing you.
+              </p>
+              <a
+                className="u-btn"
+                href={`${import.meta.env.BASE_URL}guide.html`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Read the field guide
+              </a>
+            </section>
+
+            <section className="u-card">
               <h3 className="u-h">Tutorial</h3>
               <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
                 What this place is, and what each control does. Runs once on

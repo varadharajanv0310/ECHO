@@ -6,14 +6,16 @@ it travels through people, and it dies if nobody carries it.
 You emit a **signal** into a **World** — a place, a topic, a moment. It never
 sits on your profile. From there it travels outward only when a human chooses
 to carry it. Reach is earned one hop at a time. A signal that lands travels far.
-A signal that lands with nobody fades within a day and is gone.
+A signal that lands with nobody fades and is gone — in twelve hours, a day or
+three, depending on what you gave it.
 
 There is no ranking function anywhere in the system, no followers, no likes, no
 view counts, no paid reach, no infinite scroll, and no data collection. None of
 these are enforced rules. They are consequences of the architecture, which is
 the strongest form of the claim.
 
-**Live: https://varadharajanv0310.github.io/ECHO/**
+- **Live** — https://varadharajanv0310.github.io/ECHO/
+- **Field guide** — https://varadharajanv0310.github.io/ECHO/guide.html
 
 Built for **The Frontend Odyssey 2026**. Frontend only — no backend, no
 database, no server-side code. Everything runs in the browser on a static build,
@@ -79,7 +81,7 @@ re-render the tree.
 | 2 | `reveal` | The void stains. ECHO resolves out of the nebula. |
 | 3–5 | `passage` | The bleed becomes a road. Six stops. The galaxy appears. |
 | 6 | `galaxy` | The only interactive object on the page. |
-| 7a | `ignition` | Hands reach in, a spark ignites, the frame blows out. |
+| 7a | `ignition` | A sub drops, a spark ignites, the frame blows out. |
 | 7b | — | A returning visitor skips 7a and 8 and dives straight in. |
 | 8 | `profile` | Name, mark, colour, Worlds. No email, no password. |
 | 9 | `dive` | The warp. |
@@ -100,24 +102,92 @@ the handoffs are genuinely seamless rather than well-timed.
 
 ---
 
+## The sky, once you are in it
+
+Four levels, and the trail across the top always says which one you are in.
+
+| Level | What it is | What you can do |
+| --- | --- | --- |
+| Cluster | Six places | Drag to look. Click a place to fly into it. |
+| Place | The people standing in it, joined into a figure | Click a person to stand at them. |
+| Person | Their star, with their signals on rings around it | Click a signal to read it. Click them again to open who they are. |
+| Signal | One thing somebody said | Read it, reply, or **carry** it. |
+
+**Carrying is the only verb that matters.** Opening somebody else's signal lets
+you carry it: it starts orbiting your star as well, keeps their name and their
+colour, is labelled *via them*, and its clock restarts. It is the only way
+anything travels and the only way anything survives. Put it down and nothing
+else is holding it up.
+
+**Colour is identity.** Everyone picks a hue. It tints their star, their
+profile window, and your cursor while you are with them, through a single
+`--accent-h` custom property that every glass surface derives from. Nothing in
+the interface hardcodes a violet. A carried signal keeps *its author's* hue, so
+your own system shows at a glance what you wrote and what you are holding for
+other people.
+
+**Amber is reserved.** It is the only warm colour in the palette and it means
+one thing: dying. It is deliberately absent from the colours you can pick for
+yourself.
+
+### The five controls
+
+| | |
+| --- | --- |
+| **Profile** | Name, one line, mark, banner, colour; shelves for games and music from a catalogue with generated cover art; handles for anywhere else you are. |
+| **Menu** | Ground and accent, grain, reduced flashing, what reaches you, the opening sequence again, the tutorial again, the field guide. |
+| **Create** | Choose a place, write it, give it 12 hours / a day / three days. It appears immediately, orbiting your star. |
+| **Search** | Signals and people. Results are scrambled by a hash of the id — stable between renders, and unrelated to who wrote a thing or when. There is no best result in a place with no scores. |
+| **Dashboard** | Split three ways: what you **sent** and how long it has left, what came **back**, and the people you are actually **talking to**. |
+
+### Onboarding
+
+ECHO does almost nothing a social network is expected to do, so somebody landing
+in the sky has no feed to scroll and no obvious next click. A tour runs once per
+browser: a welcome, six cards on what the place is, then a pass along the rail
+with each control lit in turn and a note beside it. The card art is drawn rather
+than screenshotted — half of what needs explaining is not a state the interface
+is ever in at one moment. It can be replayed from the menu.
+
+The longer version is the **[field guide](https://varadharajanv0310.github.io/ECHO/guide.html)**,
+which ships from the same build.
+
+### Light mode
+
+Not an inversion. The mode is a `uLight` uniform inside each shader, so hues
+survive and glow becomes pigment — the sun at a person's star turns from a
+bright core into dense ink on paper. In the interface, type comes from `--ink`
+in three weights defined once per mode, so a new surface is legible in both
+without being remembered twice.
+
+---
+
 ## Structure
 
 ```
 src/
-  beats/        one folder per beat of the sequence
+  beats/        one folder per beat of the entry sequence
   components/
     layers/     persistent fixed layers (grain, vignette)
     ui/         the three provided components, modified
   scene/        the persistent r3f canvas and everything in it
+    sky-data.ts the generated hierarchy, and where you are placed in it
   shaders/      GLSL, imported through vite-plugin-glsl
-  store/        the sequence phase machine
-  lib/          scroll, audio, tuning, maths
+  store/        sequence phase machine, sky navigation, tour
+  ui/           everything that lives over the sky
+    panels/     menu, create, search, dashboard
+  lib/          scroll, audio, echoes, library, tuning, maths
   copy.ts       every word in the interface
+public/
+  guide.html    the field guide, shipped alongside the app
 refs/           reference imagery, not shipped
 ```
 
-**Stack.** Vite, React 19, TypeScript, Tailwind v4, three.js / react-three-fiber,
-Lenis, GSAP, zustand. Fonts self-hosted via Fontsource.
+**Stack.** Vite, React 19, TypeScript, Tailwind v4, three.js / react-three-fiber
+/ postprocessing, Lenis, zustand. Fonts self-hosted via Fontsource. `leva` is a
+dev dependency only. No animation library: presence is CSS keyframes gated on a
+`data-closing` attribute by a small `useExit` hook, which owns its own unmount
+rather than hoping something unmounts late.
 
 ---
 
@@ -178,10 +248,21 @@ reprojected onto a ground plane by the perspective divide, and the noise is
 sampled compressed across the road and stretched along it. The reference is
 flowing liquid light with no surface and no edges — that is a fragment problem.
 
-**The constellation is a propagation tree.** Every signal attaches to the signal
-that carried it, by preferential attachment. The shape of the sky *is* the
-mechanic: branches thin with distance from the source, and what nobody carried
-sits alone on the edge going amber.
+**The sky is a hierarchy, not a graph.** An earlier build drew every signal as
+one propagation tree, and two hundred nodes at one zoom level is a tangle
+nobody can read. It is now four levels you travel through - cluster, place,
+person, and the things orbiting them - generated from a seeded PRNG so it is
+identical on every visit and on every machine. All of it, every place, person
+and signal, is one `THREE.Points` draw call; what changes between levels is a
+`uLevel` uniform deciding what is worth looking at. Planets are not positioned
+on the CPU at all: the vertex shader derives each orbit from a radius, a phase
+and a tilt every frame.
+
+**Decay is derived, never stored.** What the sky does with your signal - who
+picks it up, when, and whether anyone ever does - is a hash of the signal's id
+against the clock. Identical on every render and across a reload, with no timer
+and nothing written down, and about a quarter of signals are never carried at
+all. Time is the only input that moves.
 
 **The audio is synthesised, not loaded.** A drone of detuned oscillators through
 a moving lowpass, brown noise for air, and short transients for moments a person
@@ -224,8 +305,12 @@ nothing and decelerating so the streaks shorten back into stars.
 
 Desktop is the target, per the brief and the hackathon's "webapp" framing. A
 deliberately art-directed mobile treatment — tighter camera bounds and larger
-nodes rather than a shrunken desktop layout — is the next piece of work, along
-with the full signal-and-carry interaction inside the constellation.
+nodes rather than a shrunken desktop layout — is the next piece of work.
+
+There is no network between browsers, so there is nobody else really online.
+Everyone in the sky is generated and so is what they do with your signals; the
+mechanic is modelled honestly rather than mocked up, but it is a working
+argument, not a product with users.
 
 ## Deploying
 

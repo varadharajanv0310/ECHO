@@ -1,0 +1,896 @@
+<title>The ECHO Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@300..600&display=swap">
+
+<style>
+/* =========================================================================
+   The guide takes ECHO's own tokens rather than a palette of its own: same
+   hue, same two faces, same near-black violet ground. It is documentation for
+   a product with a strong identity, so it should read as having come from
+   inside that product.
+
+   Dark first, because the product is. The bare :root is the dark set; light
+   is the override.
+   ========================================================================= */
+
+:root {
+  --ground: #07040f;
+  --ground-2: #0d0719;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --hair: rgba(196, 160, 255, 0.16);
+  --hair-2: rgba(196, 160, 255, 0.3);
+
+  --ink: rgba(255, 255, 255, 0.94);
+  --ink-2: rgba(232, 224, 255, 0.62);
+  --ink-3: rgba(232, 224, 255, 0.36);
+
+  --accent: hsl(276 92% 70%);
+  --accent-deep: hsl(276 90% 60%);
+  --magenta: hsl(322 92% 66%);
+  --amber: #ff7326;
+
+  --glow: 0 0 40px hsl(276 92% 60% / 0.28);
+
+  --measure: 66ch;
+  --pad: clamp(1.25rem, 5vw, 2.5rem);
+
+  --f-display: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground: #f4f2fb;
+    --ground-2: #ffffff;
+    --surface: rgba(28, 12, 56, 0.035);
+    --surface-2: rgba(28, 12, 56, 0.06);
+    --hair: rgba(28, 12, 56, 0.14);
+    --hair-2: rgba(28, 12, 56, 0.26);
+
+    --ink: #150e24;
+    --ink-2: rgba(21, 14, 36, 0.7);
+    --ink-3: rgba(21, 14, 36, 0.45);
+
+    --accent: hsl(276 76% 46%);
+    --accent-deep: hsl(276 80% 38%);
+    --magenta: hsl(322 74% 46%);
+    --amber: #c2490b;
+
+    --glow: 0 18px 50px -30px rgba(28, 12, 56, 0.45);
+  }
+}
+
+:root[data-theme="light"] {
+  --ground: #f4f2fb;
+  --ground-2: #ffffff;
+  --surface: rgba(28, 12, 56, 0.035);
+  --surface-2: rgba(28, 12, 56, 0.06);
+  --hair: rgba(28, 12, 56, 0.14);
+  --hair-2: rgba(28, 12, 56, 0.26);
+
+  --ink: #150e24;
+  --ink-2: rgba(21, 14, 36, 0.7);
+  --ink-3: rgba(21, 14, 36, 0.45);
+
+  --accent: hsl(276 76% 46%);
+  --accent-deep: hsl(276 80% 38%);
+  --magenta: hsl(322 74% 46%);
+  --amber: #c2490b;
+
+  --glow: 0 18px 50px -30px rgba(28, 12, 56, 0.45);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 17px;
+  font-variation-settings: "wdth" 100, "wght" 380;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ shell */
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--pad) 6rem;
+}
+
+.col {
+  max-width: var(--measure);
+}
+
+section {
+  padding: clamp(2.75rem, 6vw, 4.5rem) 0;
+  border-top: 1px solid var(--hair);
+}
+
+section:first-of-type { border-top: 0; }
+
+/* --------------------------------------------------------------- masthead */
+
+header {
+  padding: clamp(3rem, 8vw, 5.5rem) 0 clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.eyebrow {
+  margin: 0 0 1.4rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(3.4rem, 13vw, 7.5rem);
+  font-variation-settings: "wdth" 78, "wght" 700;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 58ch;
+  margin: 1.6rem 0 0;
+  font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+  font-variation-settings: "wdth" 96, "wght" 380;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2.2rem;
+}
+
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+
+a.btn:hover { background: var(--surface-2); border-color: var(--accent); }
+a.btn--go { background: var(--accent-deep); border-color: transparent; color: #0d0517; }
+a.btn--go:hover { background: var(--accent); border-color: transparent; }
+
+:root[data-theme="light"] a.btn--go,
+:root:not([data-theme="dark"]) a.btn--go { color: #fff; }
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------- headings */
+
+h2 {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  font-variation-settings: "wdth" 88, "wght" 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+h3 {
+  margin: 2.4rem 0 0.6rem;
+  font-size: 1.08rem;
+  font-variation-settings: "wdth" 96, "wght" 600;
+  letter-spacing: -0.01em;
+}
+
+p { margin: 0 0 1.1rem; max-width: var(--measure); text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+
+.sec-no {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ink-3);
+}
+
+strong { font-variation-settings: "wdth" 100, "wght" 620; color: var(--ink); font-weight: 400; }
+em { font-style: normal; color: var(--accent); }
+
+/* ------------------------------------------------------------------ pieces */
+
+.rule-list {
+  display: grid;
+  gap: 1px;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--hair);
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.rule-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr);
+  gap: 0.4rem 1.6rem;
+  padding: 1.15rem 1.35rem;
+  background: var(--ground);
+}
+
+.rule-list b {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+  padding-top: 0.35rem;
+}
+
+.rule-list--keep b { color: var(--accent); }
+.rule-list span { color: var(--ink-2); }
+.rule-list span b { display: inline; padding: 0; font-family: inherit; font-size: inherit; letter-spacing: 0; text-transform: none; color: var(--ink); font-variation-settings: "wdth" 100, "wght" 620; }
+
+@media (max-width: 620px) {
+  .rule-list li { grid-template-columns: minmax(0, 1fr); }
+  .rule-list b { padding-top: 0; }
+}
+
+/* Figures: the drawings and the interface mock-ups. */
+figure {
+  margin: 2.4rem 0 0;
+  padding: clamp(1.1rem, 3vw, 1.9rem);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 140% at 50% 0%, var(--surface-2), transparent 72%),
+    var(--ground-2);
+}
+
+figure svg { display: block; width: 100%; height: auto; }
+
+figcaption {
+  margin-top: 1.1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--hair);
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+/* Figure drawing tokens, shared by every diagram. */
+.d-sun { fill: var(--accent); }
+.d-body { fill: var(--magenta); }
+.d-body--dying { fill: var(--amber); }
+.d-ring { fill: none; stroke: var(--hair-2); stroke-width: 1; }
+.d-link { fill: none; stroke: var(--accent-deep); stroke-width: 1.1; opacity: 0.75; }
+.d-flow { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.d-axis { fill: none; stroke: var(--hair-2); stroke-width: 1; }
+.d-dash { fill: none; stroke: var(--hair-2); stroke-width: 1; stroke-dasharray: 4 5; }
+.d-cap { fill: var(--ink-3); font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.16em; }
+.d-key { fill: var(--ink); font-family: var(--f-display); font-size: 13px; font-variation-settings: "wdth" 94, "wght" 600; }
+
+/* Interface mock-ups, drawn in CSS so they carry the real type and radii. */
+.mock {
+  display: flex;
+  gap: 1rem;
+  padding: 1.1rem;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  background: var(--ground);
+}
+
+.mock-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.5rem 0.45rem;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  background: var(--surface);
+  height: fit-content;
+}
+
+.mock-rail i {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: var(--ink-3);
+}
+
+.mock-rail i[data-on] { background: var(--surface-2); color: var(--accent); }
+.mock-rail svg { width: 17px; height: 17px; }
+
+.mock-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+
+.mock-tabs {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--hair);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  overflow-x: auto;
+}
+
+.mock-tabs span[data-on] { color: var(--ink); }
+
+.mock-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--hair);
+  font-size: 0.9rem;
+}
+
+.mock-row:last-child { border-bottom: 0; }
+.mock-row em { margin-left: auto; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+.mock-row em[data-dying] { color: var(--amber); }
+
+/* Numbered walkthrough. The numbers are real order - each step needs the one
+   before it - so they earn their place. */
+.steps { counter-reset: s; display: grid; gap: 1px; margin-top: 2.2rem; background: var(--hair); border: 1px solid var(--hair); border-radius: 16px; overflow: hidden; }
+
+.step { counter-increment: s; display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 0 1.2rem; padding: 1.5rem 1.4rem; background: var(--ground); }
+
+.step::before {
+  content: counter(s, decimal-leading-zero);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  padding-top: 0.3rem;
+}
+
+.step h3 { grid-column: 2; margin: 0 0 0.4rem; }
+.step p { grid-column: 2; margin: 0; color: var(--ink-2); }
+.step .mock, .step figure { grid-column: 2; margin-top: 1.1rem; }
+
+@media (max-width: 560px) {
+  .step { grid-template-columns: minmax(0, 1fr); }
+  .step::before { padding-bottom: 0.5rem; }
+  .step h3, .step p, .step .mock, .step figure { grid-column: 1; }
+}
+
+/* Glossary: the sky's nouns against the ordinary ones. */
+.gloss { width: 100%; border-collapse: collapse; margin-top: 2rem; font-size: 0.94rem; }
+.gloss th, .gloss td { text-align: left; padding: 0.85rem 1rem 0.85rem 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+.gloss th { font-family: var(--f-mono); font-size: 10px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); }
+.gloss td:first-child { color: var(--accent); font-variation-settings: "wdth" 96, "wght" 600; white-space: nowrap; padding-right: 1.6rem; }
+.gloss td:nth-child(2) { color: var(--ink-2); white-space: nowrap; padding-right: 1.6rem; }
+.gloss td:last-child { color: var(--ink-2); }
+.gloss-wrap { overflow-x: auto; }
+
+.stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 1px;
+  margin-top: 2rem;
+  background: var(--hair);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.stack div { padding: 1.2rem 1.3rem; background: var(--ground); }
+.stack h4 { margin: 0 0 0.4rem; font-family: var(--f-mono); font-size: 10px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+.stack p { margin: 0; font-size: 0.88rem; color: var(--ink-2); }
+
+.note {
+  margin-top: 2.2rem;
+  padding: 1.2rem 1.4rem;
+  border-left: 2px solid var(--amber);
+  background: var(--surface);
+  border-radius: 0 12px 12px 0;
+}
+
+.note p { font-size: 0.94rem; color: var(--ink-2); }
+
+footer {
+  padding: 3rem 0 0;
+  border-top: 1px solid var(--hair);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+footer a { color: var(--ink-2); }
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Field guide · The Frontend Odyssey 2026</p>
+  <h1>ECHO</h1>
+  <p class="lede">
+    A social network where what you say belongs to a <em>place</em> instead of
+    to you, travels only when somebody chooses to carry it, and dies when
+    nobody does.
+  </p>
+  <div class="links">
+    <a class="btn btn--go" href="https://varadharajanv0310.github.io/ECHO/">Open the sky</a>
+    <a class="btn" href="https://github.com/varadharajanv0310/ECHO">Source</a>
+  </div>
+</header>
+
+<!-- ------------------------------------------------------------------ 1 -->
+<section>
+  <span class="sec-no">01 — The idea</span>
+  <h2>A feed is a shape, and every rule follows from it</h2>
+  <div class="col">
+    <p>
+      Almost every complaint about social media is a complaint about one
+      structural decision: content is attached to <strong>an author</strong> and
+      delivered down <strong>a ranked, endless column</strong>. Once that shape
+      exists, everything else is forced. If posts are attached to people, people
+      need follower counts. If there is a column, something has to order it. If
+      something orders it, engagement becomes the currency. If engagement is the
+      currency, the loudest thing wins, and nothing is ever allowed to end.
+    </p>
+    <p>
+      ECHO does not add rules on top of that shape to make it kinder. It removes
+      the shape. Content is attached to <em>a place</em>, and the places are laid
+      out in space you have to physically travel through. There is no column to
+      rank because there is no column. There are no follower counts because
+      nothing is addressed to followers. Nothing here is a policy — it is what is
+      left when the feed is gone.
+    </p>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ 2 -->
+<section>
+  <span class="sec-no">02 — What is gone</span>
+  <h2>Removed, and why it could not come back</h2>
+  <div class="col">
+    <p>
+      Each of these is missing because the architecture gives it nowhere to
+      live, not because a setting is switched off.
+    </p>
+  </div>
+
+  <ul class="rule-list">
+    <li>
+      <b>The feed</b>
+      <span>There is no column of posts. Signals sit in the place they were sent to, and you see them by going there. <b>Nothing arrives at you.</b></span>
+    </li>
+    <li>
+      <b>Ranking</b>
+      <span>Nothing is sorted by predicted engagement. Search results are deliberately scrambled — there is no best result in a place with no scores, so there is nothing to put at the top.</span>
+    </li>
+    <li>
+      <b>Followers</b>
+      <span>You cannot subscribe to a person's output, because output is not attached to people. You can add somebody, which opens a conversation. It does not create a channel.</span>
+    </li>
+    <li>
+      <b>Likes and counts</b>
+      <span>No number goes up. The only visible metric is how many people are carrying something, and that is not a score — it is <b>the reason it is still alive.</b></span>
+    </li>
+    <li>
+      <b>Permanence</b>
+      <span>Every signal is given hours, not forever. There is no archive, no recovery, and no notification when something of yours has gone.</span>
+    </li>
+    <li>
+      <b>Infinite scroll</b>
+      <span>You navigate by flying into a place and back out of it. Every view has edges, and every session has an obvious end.</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ------------------------------------------------------------------ 3 -->
+<section>
+  <span class="sec-no">03 — What replaces it</span>
+  <h2>Three rules, and everything else falls out of them</h2>
+
+  <ul class="rule-list rule-list--keep">
+    <li>
+      <b>Belonging</b>
+      <span>A signal is addressed to a <b>place</b>, never to an audience. You choose where it lands, and anyone who walks into that place can find it. Your own star is where your signals happen to orbit — not who they are for.</span>
+    </li>
+    <li>
+      <b>Carrying</b>
+      <span>Opening somebody's signal lets you <b>carry</b> it. It starts orbiting you as well, keeping their name and their colour, and its clock starts again. This is the only way anything travels, and the only way anything survives.</span>
+    </li>
+    <li>
+      <b>Decay</b>
+      <span>Silence is fatal, by default. A signal nobody carries fades from violet to amber and disappears. <b>Attention is not a score here; it is life support.</b></span>
+    </li>
+  </ul>
+
+  <figure>
+    <svg viewBox="0 0 720 200" role="img" aria-label="A signal moves from one person to another and its clock restarts; an uncarried one fades to amber and disappears.">
+      <ellipse cx="120" cy="70" rx="52" ry="21" class="d-ring" transform="rotate(-12 120 70)"/>
+      <circle cx="120" cy="70" r="11" class="d-sun"/>
+      <circle cx="168" cy="82" r="5" class="d-body"/>
+      <text x="120" y="126" class="d-cap" text-anchor="middle">SENT HERE</text>
+
+      <path d="M180 52 C260 6 330 12 392 46" class="d-flow"/>
+      <path d="M392 46 l-10 -1 l3 9" class="d-flow"/>
+      <circle cx="286" cy="22" r="5.5" class="d-body"/>
+      <text x="286" y="12" class="d-cap" text-anchor="middle">CARRIED</text>
+
+      <ellipse cx="440" cy="70" rx="52" ry="21" class="d-ring" transform="rotate(-12 440 70)"/>
+      <circle cx="440" cy="70" r="11" class="d-sun"/>
+      <circle cx="392" cy="58" r="5" class="d-body"/>
+      <text x="440" y="126" class="d-cap" text-anchor="middle">ALIVE AGAIN</text>
+
+      <path d="M512 70 h44" class="d-axis"/>
+      <path d="M550 66 l6 4 l-6 4" class="d-axis"/>
+
+      <ellipse cx="632" cy="70" rx="46" ry="19" class="d-dash"/>
+      <circle cx="632" cy="70" r="9" class="d-sun" opacity="0.28"/>
+      <circle cx="674" cy="80" r="4.5" class="d-body--dying"/>
+      <text x="632" y="126" class="d-cap" text-anchor="middle">NOBODY CARRIED IT</text>
+      <text x="632" y="146" class="d-cap" text-anchor="middle" style="fill:var(--amber)">GONE BY MORNING</text>
+    </svg>
+    <figcaption>
+      The whole system in one line. A signal is only ever one decision away from
+      surviving, and one silence away from ending.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ------------------------------------------------------------------ 4 -->
+<section>
+  <span class="sec-no">04 — The sky</span>
+  <h2>Why it is a galaxy, and not a metaphor</h2>
+  <div class="col">
+    <p>
+      The space theme is not a skin over a list. The sky <em>is</em> the data
+      model, drawn at the scale it actually has — and every visual property in it
+      is carrying information that a feed would have had to state in words.
+    </p>
+  </div>
+
+  <div class="gloss-wrap">
+    <table class="gloss">
+      <thead>
+        <tr><th>In the sky</th><th>Is</th><th>And that shape means</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Constellation</td><td>A place</td>
+          <td>Six of them — 3AM, The Commons, Dead Air, First Light, The Long Now, Open Sky. You fly into one and can only see the people inside it, so choosing a place is choosing a room, not a hashtag.</td>
+        </tr>
+        <tr>
+          <td>Star</td><td>A person</td>
+          <td>Stars in a place are joined into a figure. You are joined to your nearest neighbour when you arrive — you are part of the shape of somewhere.</td>
+        </tr>
+        <tr>
+          <td>Planet</td><td>A signal</td>
+          <td>Things orbit people; people do not orbit things. What somebody is carrying goes around them and can be taken away without taking anything from them.</td>
+        </tr>
+        <tr>
+          <td>Orbit distance</td><td>Age</td>
+          <td>Your newest signal is closest in. Older things drift outward, so a glance at somebody's system tells you how long they have been here.</td>
+        </tr>
+        <tr>
+          <td>Colour</td><td>Identity, and life</td>
+          <td>Everyone picks a hue that tints their star, their profile, and your cursor while you are with them. A carried signal keeps <em>its author's</em> colour, so you can see at a glance what somebody wrote and what they are holding for others.</td>
+        </tr>
+        <tr>
+          <td>Amber</td><td>Dying</td>
+          <td>The only warm colour in the palette, reserved entirely for decay. Nothing else in ECHO is ever amber.</td>
+        </tr>
+        <tr>
+          <td>Distance</td><td>Attention</td>
+          <td>You cannot see the whole network at once, at any zoom level. That is the design. Seeing everything simultaneously is what a feed does, and it is what makes a feed unsurvivable.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 720 210" role="img" aria-label="Four levels: the cluster of places, one place, one person, and the things orbiting them.">
+      <g>
+        <circle cx="46" cy="60" r="4" class="d-body"/><circle cx="92" cy="42" r="4" class="d-body"/>
+        <circle cx="124" cy="78" r="4" class="d-body"/><circle cx="62" cy="102" r="4" class="d-body"/>
+        <circle cx="112" cy="118" r="4" class="d-body"/><circle cx="30" cy="128" r="4" class="d-body"/>
+        <text x="80" y="168" class="d-key" text-anchor="middle">Cluster</text>
+        <text x="80" y="188" class="d-cap" text-anchor="middle">SIX PLACES</text>
+      </g>
+
+      <path d="M158 88 h34" class="d-axis"/><path d="M186 84 l6 4 l-6 4" class="d-axis"/>
+
+      <g>
+        <path d="M228 52 L268 82 L312 54 M268 82 L296 122 L236 128" class="d-link"/>
+        <circle cx="228" cy="52" r="4.5" class="d-body"/><circle cx="268" cy="82" r="4.5" class="d-body"/>
+        <circle cx="312" cy="54" r="4.5" class="d-body"/><circle cx="296" cy="122" r="4.5" class="d-body"/>
+        <circle cx="236" cy="128" r="4.5" class="d-body"/>
+        <text x="272" y="168" class="d-key" text-anchor="middle">A place</text>
+        <text x="272" y="188" class="d-cap" text-anchor="middle">THE PEOPLE IN IT</text>
+      </g>
+
+      <path d="M348 88 h34" class="d-axis"/><path d="M376 84 l6 4 l-6 4" class="d-axis"/>
+
+      <g>
+        <circle cx="452" cy="88" r="13" class="d-sun"/>
+        <circle cx="452" cy="88" r="26" class="d-ring" opacity="0.4"/>
+        <text x="452" y="168" class="d-key" text-anchor="middle">A person</text>
+        <text x="452" y="188" class="d-cap" text-anchor="middle">STAND AT THEM</text>
+      </g>
+
+      <path d="M508 88 h34" class="d-axis"/><path d="M536 84 l6 4 l-6 4" class="d-axis"/>
+
+      <g>
+        <ellipse cx="632" cy="88" rx="40" ry="17" class="d-ring" transform="rotate(-12 632 88)"/>
+        <ellipse cx="632" cy="88" rx="62" ry="26" class="d-ring" transform="rotate(-18 632 88)"/>
+        <circle cx="632" cy="88" r="13" class="d-sun"/>
+        <circle cx="670" cy="98" r="5" class="d-body"/>
+        <circle cx="574" cy="72" r="5" class="d-body--dying"/>
+        <text x="632" y="168" class="d-key" text-anchor="middle">Their system</text>
+        <text x="632" y="188" class="d-cap" text-anchor="middle">WHAT THEY CARRY</text>
+      </g>
+    </svg>
+    <figcaption>
+      The four levels. You are always inside one of them, and the trail across
+      the top of the screen always says which.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ------------------------------------------------------------------ 5 -->
+<section>
+  <span class="sec-no">05 — Walkthrough</span>
+  <h2>Using it, from the first frame</h2>
+  <div class="col">
+    <p>
+      The whole thing runs in your browser. There is no account, no email, no
+      password and no server — your profile and your signals are in this
+      browser's local storage and nowhere else. Clearing site data is a complete,
+      irreversible delete.
+    </p>
+  </div>
+
+  <div class="steps">
+
+    <div class="step">
+      <h3>Arrive</h3>
+      <p>
+        A loading frame, then the wordmark, then a long road that you scroll
+        down. Keep scrolling: the road resolves into a galaxy hanging in front of
+        you. Sound is on the small player in the top right — it is worth it.
+      </p>
+    </div>
+
+    <div class="step">
+      <h3>Click the galaxy</h3>
+      <p>
+        It ignites, and you are asked who you are: a name that is not a username
+        and is not unique, one line about why you are listening, a mark, a colour,
+        up to three traits, and the places you want to be in. Then you dive
+        through it and come out inside the sky.
+      </p>
+    </div>
+
+    <div class="step">
+      <h3>Take the tour</h3>
+      <p>
+        Six cards on what this place is, then a pass along the left rail with
+        each control lit in turn. It runs once. You can start it again any time
+        from <strong>Menu → Settings → Tutorial</strong>.
+      </p>
+    </div>
+
+    <div class="step">
+      <h3>Fly into a place</h3>
+      <p>
+        Drag to look around. Click one of the six names to fly into it, and its
+        figure draws itself between the people standing there. The trail at the
+        top of the screen — <span style="font-family:var(--f-mono);font-size:12px;letter-spacing:.12em">CLUSTER / 3AM / HAVEL</span> — is
+        also how you get back out.
+      </p>
+    </div>
+
+    <div class="step">
+      <h3>Stand at somebody</h3>
+      <p>
+        Click a person and the camera drops into their system: their star at the
+        centre, their signals on rings around it, each one labelled with what it
+        actually says. Click the same person again to open who they are.
+      </p>
+      <div class="mock">
+        <div class="mock-body">
+          <div class="mock-tabs"><span data-on>Board</span><span>Games</span><span>Sound</span></div>
+          <div class="mock-row">Favourite game <em>Project Zombold · survival</em></div>
+          <div class="mock-row">Traits <em>Calm · Funny</em></div>
+          <div class="mock-row">Elsewhere <em>Steam · Last.fm</em></div>
+          <div class="mock-row">Add friend, or say something <em>opens a thread</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <h3>Open something, and carry it</h3>
+      <p>
+        Click a planet and it opens in the bar at the bottom, with how many
+        people are carrying it and how long it has left. <strong>Carry this</strong>
+        puts it into your own sky as well and restarts its clock. That is the one
+        action in ECHO that changes anything for somebody else.
+      </p>
+    </div>
+
+    <div class="step">
+      <h3>Send something of your own</h3>
+      <p>
+        The <strong>+</strong> on the rail. Choose the place it lands in, write it,
+        and give it 12 hours, a day, or three days. It appears immediately,
+        orbiting your own star, with the clock already running.
+      </p>
+      <div class="mock">
+        <div class="mock-body">
+          <div class="mock-tabs"><span data-on>Sent</span><span>Responses</span><span>Messages</span></div>
+          <div class="mock-row">Third night of rain. The gutters are singing. <em>3AM · carried 2× · 24h left</em></div>
+          <div class="mock-row">Nothing happened today. Recording it anyway. <em>Open Sky · carried by nobody</em></div>
+          <div class="mock-row">I have rewritten this six times. <em data-dying>Dead Air · 2h left</em></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ 6 -->
+<section>
+  <span class="sec-no">06 — The rail</span>
+  <h2>Five controls, on the left, always</h2>
+
+  <div class="mock">
+    <div class="mock-rail" aria-hidden="true">
+      <i data-on><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4"/><path d="M4 20.5c0-3.6 3.6-5.6 8-5.6s8 2 8 5.6"/></svg></i>
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></i>
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></i>
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14"/><path d="M20 20l-4-4"/></svg></i>
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 14h5v6H4zM4 4h5v7H4zM14 4h6v5h-6zM14 12h6v8h-6z"/></svg></i>
+    </div>
+    <div class="mock-body">
+      <div class="mock-row">Profile <em>who you are, and your colour</em></div>
+      <div class="mock-row">Menu <em>theme, grain, replay, tutorial</em></div>
+      <div class="mock-row">Create <em>send a signal into a place</em></div>
+      <div class="mock-row">Search <em>signals and people, unordered</em></div>
+      <div class="mock-row">Dashboard <em>sent · responses · messages</em></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <h3>Profile</h3>
+    <p>
+      Your name, one line, mark, banner and colour, plus shelves for games and
+      music picked from a catalogue, and handles for anywhere else you are. The
+      colour is the important one: it tints your star in the sky, your cursor,
+      and every glass surface in your interface. Visiting somebody re-tints the
+      whole window to <em>their</em> colour, so a profile feels like walking into
+      a room rather than reading a record.
+    </p>
+
+    <h3>Menu</h3>
+    <p>
+      Light or dark ground, four accents, film grain, reduced flashing, and what
+      reaches you. Light mode is not an inversion — it is handled inside the
+      shaders, so glow becomes pigment and the sky turns to ink on paper. The
+      opening sequence and the tutorial can both be replayed from here.
+    </p>
+
+    <h3>Dashboard</h3>
+    <p>
+      Split three ways on purpose, because most platforms collapse these into one
+      stream of notifications and flatten the difference between a person
+      replying to you and a number moving. <strong>Sent</strong> is your signals
+      and how long each has left. <strong>Responses</strong> is what came back.
+      <strong>Messages</strong> is the people you are actually talking to.
+    </p>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ 7 -->
+<section>
+  <span class="sec-no">07 — Construction</span>
+  <h2>How it is built</h2>
+  <div class="col">
+    <p>
+      Entirely front-end. No backend, no database, no analytics, no third-party
+      calls at runtime. Everything below ships in the bundle.
+    </p>
+  </div>
+
+  <div class="stack">
+    <div>
+      <h4>Rendering</h4>
+      <p>React 19 and TypeScript on Vite, with three.js through React Three Fiber for every spatial scene.</p>
+    </div>
+    <div>
+      <h4>Shaders</h4>
+      <p>Hand-written GLSL: a domain-warped nebula, the perspective-divided road, the galaxy, and the sky — one draw call for every place, person and signal at once.</p>
+    </div>
+    <div>
+      <h4>The sky</h4>
+      <p>Generated from a seeded PRNG, so it is identical on every visit and on every machine. Nothing about it is stored.</p>
+    </div>
+    <div>
+      <h4>Sound</h4>
+      <p>Synthesised live in the Web Audio API — detuned oscillators, a moving filter, a brown-noise bed. No audio files.</p>
+    </div>
+    <div>
+      <h4>Type</h4>
+      <p>Archivo Variable, animated along its width axis, with Geist Mono for anything the machine says. Both self-hosted.</p>
+    </div>
+    <div>
+      <h4>Storage</h4>
+      <p>localStorage, and nothing else. Your profile, signals, carries and messages never leave the browser.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p>
+      <strong>What is simulated.</strong> ECHO has no server, so there is nobody
+      else really online. The other people in the sky are generated, and what
+      they do with your signals is derived from a hash of the signal's id and the
+      time — the same on every render and across a reload, with nothing written
+      down. Roughly a quarter of signals are never carried by anyone, because a
+      reply has to be able to not arrive. It is an honest model of the mechanic,
+      not a mock-up of one.
+    </p>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ 8 -->
+<section>
+  <span class="sec-no">08 — Scope</span>
+  <h2>What this is not</h2>
+  <div class="col">
+    <p>
+      It is a working argument, not a product with users. There is no real
+      network between browsers, no moderation model, and no answer yet for what
+      any of this looks like on a phone — the layout is built for a desktop
+      screen, and a small-screen version would need to be art-directed rather
+      than reflowed.
+    </p>
+    <p>
+      The point it is making is narrower than a social network and, I think,
+      more useful: that most of what we dislike about these places is downstream
+      of one shape, and that changing the shape changes the behaviour without
+      anyone having to be told to behave.
+    </p>
+  </div>
+</section>
+
+<footer>
+  ECHO · built for The Frontend Odyssey 2026 ·
+  <a href="https://github.com/varadharajanv0310/ECHO">github.com/varadharajanv0310/ECHO</a>
+</footer>
+
+</div>

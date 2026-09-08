@@ -601,7 +601,11 @@
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #fff;
+  /* Also worn by an anchor - the field guide opens in a new tab - so the
+     underline has to go, and the colour comes from the ink like everything
+     else rather than a hardcoded white. */
+  text-decoration: none;
+  color: var(--ink);
   transition:
     border-color 300ms ease,
     background 300ms ease,
