@@ -93,8 +93,15 @@ export function Tour() {
 
   // Arriving in the sky for the first time is what starts it. Not the profile
   // screen - the tour talks about a place that is not on screen yet there.
+  //
+  // And not the instant of arrival either. Coming out of the dive is the one
+  // moment the whole entry sequence has been building to, and covering it with
+  // a dialogue box in the same frame throws it away. The sky gets a few
+  // seconds to settle and be looked at first.
   useEffect(() => {
-    if (phase === "constellation") begin();
+    if (phase !== "constellation") return;
+    const t = setTimeout(begin, 3200);
+    return () => clearTimeout(t);
   }, [phase, begin]);
 
   // The rail pass points at the rail, so nothing may be covering it.
