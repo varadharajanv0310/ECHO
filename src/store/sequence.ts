@@ -89,14 +89,6 @@ export const DEFAULT_SETTINGS: Settings = {
   whoCanAdd: "carried",
 };
 
-export type HoveredSignal = {
-  text: string;
-  world: string;
-  hops: number;
-  age: number;
-  hue: string;
-} | null;
-
 function readProfile(): Profile | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -125,8 +117,6 @@ type SequenceState = {
   passageProgress: number;
   /** 0-1 through the dive, so the galaxy and the warp can move together. */
   diveProgress: number;
-  /** The signal under the cursor in the constellation, or null. */
-  hoveredSignal: HoveredSignal;
   profile: Profile | null;
   settings: Settings;
 
@@ -135,7 +125,6 @@ type SequenceState = {
   setBootProgress: (n: number) => void;
   setPassageProgress: (n: number) => void;
   setDiveProgress: (n: number) => void;
-  setHoveredSignal: (s: HoveredSignal) => void;
   setProfile: (p: Profile) => void;
   patchProfile: (p: Partial<Profile>) => void;
   setSettings: (s: Partial<Settings>) => void;
@@ -182,7 +171,6 @@ export const useSequence = create<SequenceState>((set, get) => ({
   bootProgress: 0,
   passageProgress: initialPassageProgress(START),
   diveProgress: START === "constellation" ? 1 : 0,
-  hoveredSignal: null,
   profile: readProfile(),
   settings: readSettings(),
 
@@ -196,7 +184,6 @@ export const useSequence = create<SequenceState>((set, get) => ({
   setBootProgress: (bootProgress) => set({ bootProgress }),
   setPassageProgress: (passageProgress) => set({ passageProgress }),
   setDiveProgress: (diveProgress) => set({ diveProgress }),
-  setHoveredSignal: (hoveredSignal) => set({ hoveredSignal }),
 
   setProfile: (profile) => {
     try {

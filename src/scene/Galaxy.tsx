@@ -33,6 +33,7 @@ const OUTER = new THREE.Color("#4f06f8");
  * proximity before it is ever clicked.
  */
 export function Galaxy() {
+  const mode = useSequence((s) => s.settings.mode);
   const points = useRef<THREE.Points>(null);
   const mat = useRef<THREE.ShaderMaterial>(null);
   const hover = useRef(0);
@@ -97,6 +98,7 @@ export function Galaxy() {
       uReveal: { value: 0 },
       uDive: { value: 0 },
       uOpacity: { value: 0 },
+      uLight: { value: 0 },
     }),
     [],
   );
@@ -162,6 +164,7 @@ export function Galaxy() {
     u.uSpin.value = damp(u.uSpin.value, 0.16 + hover.current * 0.22, 3, dt);
     // The dive stretches the galaxy past the camera as the warp takes over.
     u.uDive.value = phase === "dive" ? clamp(diveProgress / 0.5) : 0;
+    u.uLight.value = mode === "light" ? 1 : 0;
 
     // A destination at the end of the road, not the whole sky. It only fills
     // the frame once the camera is actually going there.
@@ -187,7 +190,7 @@ export function Galaxy() {
         transparent
         depthWrite={false}
         depthTest={false}
-        blending={THREE.AdditiveBlending}
+        blending={mode === "light" ? THREE.NormalBlending : THREE.AdditiveBlending}
       />
     </points>
   );

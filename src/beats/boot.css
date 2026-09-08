@@ -59,7 +59,7 @@
    anywhere. Without both it reads as a photograph pasted onto the page. */
 .boot__plate {
   display: block;
-  width: min(60vw, 64vh, 660px);
+  width: min(38vw, 42vh, 420px);
   aspect-ratio: 1000 / 850;
   object-fit: cover;
   mix-blend-mode: screen;
@@ -93,7 +93,7 @@
 
 .boot__bar {
   position: relative;
-  width: min(34vw, 38vh, 380px);
+  width: min(24vw, 27vh, 270px);
   height: 1px;
   background: rgba(255, 255, 255, 0.14);
   overflow: hidden;

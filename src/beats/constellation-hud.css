@@ -80,9 +80,7 @@
   transition: opacity 800ms ease;
 }
 
-.ch__hint[data-gone="true"] {
-  opacity: 0;
-}
+
 
 /* ------------------------------------------------------------ signal card */
 

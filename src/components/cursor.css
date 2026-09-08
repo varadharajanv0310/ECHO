@@ -12,17 +12,19 @@
   height: 5px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 0 6px #fff,
+    0 0 14px hsl(var(--cur, 276) 100% 62%);
 }
 
 .cursor--ring {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid rgba(176, 38, 255, 0.85);
+  border: 1px solid hsl(var(--cur, 276) 100% 66% / 0.9);
   box-shadow:
-    0 0 14px rgba(176, 38, 255, 0.5),
-    inset 0 0 14px rgba(176, 38, 255, 0.25);
+    0 0 14px hsl(var(--cur, 276) 100% 62% / 0.5),
+    inset 0 0 14px hsl(var(--cur, 276) 100% 62% / 0.25);
 }
 
 /* Pointer devices only. A touch screen has no cursor to replace, and the
@@ -46,13 +48,13 @@
 /* On a light ground a white dot and a thin violet ring both disappear, so the
    pointer inverts with the theme. */
 :root[data-mode="light"] .cursor--dot {
-  background: #16111f;
-  box-shadow: 0 0 8px rgba(22, 17, 31, 0.55);
+  background: hsl(var(--cur, 276) 70% 28%);
+  box-shadow: 0 0 8px hsl(var(--cur, 276) 70% 35% / 0.6);
 }
 
 :root[data-mode="light"] .cursor--ring {
-  border-color: rgba(90, 20, 160, 0.9);
+  border-color: hsl(var(--cur, 276) 80% 38% / 0.9);
   box-shadow:
-    0 0 12px rgba(120, 40, 200, 0.35),
-    inset 0 0 12px rgba(120, 40, 200, 0.16);
+    0 0 12px hsl(var(--cur, 276) 70% 45% / 0.35),
+    inset 0 0 12px hsl(var(--cur, 276) 70% 45% / 0.16);
 }

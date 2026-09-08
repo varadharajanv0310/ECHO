@@ -1,27 +1,21 @@
 import { useEffect } from "react";
-import handUrl from "@/assets/hand.png";
 import { useSequence } from "@/store/sequence";
 import "./ignition.css";
 
-/** Total length of the ignition before profile creation resolves out of it. */
-const DURATION = 2700;
+/** How long the galaxy takes to open before profile creation resolves. */
+const DURATION = 1900;
 
 /**
- * Beat 7a. Two hands reach in and pry the galaxy open.
+ * Beat 7a. The galaxy opens.
  *
- * It happens on the galaxy's own screen. The galaxy is not covered or replaced
- * - it is still there in the persistent canvas, and the hands arrive over it,
- * take hold of it, and pull it apart. The previous version composited a
- * full-frame photograph of hands over the top, which read as a cutaway to
- * different footage rather than as something happening to the thing you just
- * clicked.
+ * There were hands here that reached in and pried it apart. They never read as
+ * hands touching the galaxy - they read as a cutaway to different footage
+ * pasted over it - so they are gone. What is left is the thing they were
+ * supposed to cause: light forcing its way out of the core until it takes the
+ * frame.
  *
- * One plate, mirrored. The light between the hands is a slit that widens as
- * they separate, so the white does not arrive as a flash on a timer - it
- * arrives because they pulled.
- *
- * The blow-out is a single ramp with one peak. A repeated hard flash at speed
- * is a photosensitivity problem, and it is also uglier.
+ * One ramp with a single peak. A repeated hard flash at speed is a
+ * photosensitivity problem and it is also uglier.
  */
 export function Ignition() {
   const setPhase = useSequence((s) => s.setPhase);
@@ -38,9 +32,7 @@ export function Ignition() {
       data-soft={reducedFlash}
       style={{ zIndex: "var(--z-content)" }}
     >
-      <img className="ig__hand ig__hand--l" src={handUrl} alt="" aria-hidden />
-      <img className="ig__hand ig__hand--r" src={handUrl} alt="" aria-hidden />
-      <div className="ig__slit" aria-hidden />
+      <div className="ig__bloom" aria-hidden />
       <div className="ig__flash" aria-hidden />
     </div>
   );

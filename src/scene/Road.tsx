@@ -28,6 +28,7 @@ export function Road() {
       uFade: { value: 0 },
       uDest: { value: 0 },
       uBoost: { value: 1 },
+      uLight: { value: 0 },
     }),
     [],
   );
@@ -54,6 +55,7 @@ export function Road() {
     u.uNarrow.value = snap ? narrow : damp(u.uNarrow.value, narrow, 3, dt);
     u.uDest.value = snap ? dest : damp(u.uDest.value, dest, 2.5, dt);
     u.uBoost.value = tuning.road;
+    u.uLight.value = useSequence.getState().settings.mode === "light" ? 1 : 0;
     first.current = false;
   });
 

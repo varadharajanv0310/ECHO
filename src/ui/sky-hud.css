@@ -1,0 +1,152 @@
+.skl-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* One label. Positioned by transform every frame from the projection. */
+.skl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0.28rem 0.5rem;
+  border: 0;
+  background: none;
+  cursor: none;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform;
+
+  font-family: var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  transition: color 200ms ease;
+  translate: -50% -1.9rem;
+}
+
+/* A World is a place: named larger, and always legible. */
+.skl[data-kind="0"] {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* A person is a name: quieter until you point at them. */
+.skl[data-kind="1"] {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.skl[data-hovered="true"] {
+  color: #fff;
+  text-shadow: 0 0 12px var(--color-violet-bright);
+}
+
+:root[data-mode="light"] .skl[data-kind="0"] {
+  color: rgba(22, 17, 31, 0.75);
+}
+:root[data-mode="light"] .skl[data-kind="1"] {
+  color: rgba(22, 17, 31, 0.42);
+}
+:root[data-mode="light"] .skl[data-hovered="true"] {
+  color: #16111f;
+  text-shadow: 0 0 12px hsl(280 90% 70%);
+}
+
+/* ------------------------------------------------------------ breadcrumb */
+
+.skb {
+  position: fixed;
+  left: 50%;
+  top: clamp(1.4rem, 3.4vh, 2.4rem);
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  pointer-events: auto;
+}
+
+.skb__crumb {
+  padding: 0.3rem 0.2rem;
+  border: 0;
+  background: none;
+  cursor: none;
+
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 240ms ease;
+}
+
+.skb__crumb:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.skb__crumb[data-on="true"] {
+  color: #fff;
+}
+
+.skb__sep {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.skb__back {
+  position: fixed;
+  left: clamp(4.6rem, 6vw, 6.4rem);
+  top: clamp(1.4rem, 3.4vh, 2.4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--hair-soft);
+  border-radius: 2px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  cursor: none;
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 240ms ease, border-color 240ms ease;
+}
+
+.skb__back:hover {
+  color: #fff;
+  border-color: var(--hair);
+}
+
+.skb__blurb {
+  position: fixed;
+  left: 50%;
+  top: calc(clamp(1.4rem, 3.4vh, 2.4rem) + 2.1rem);
+  translate: -50% 0;
+  margin: 0;
+  max-width: 34ch;
+  text-align: center;
+
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-variation-settings: "wdth" 98, "wght" 400;
+  color: rgba(255, 255, 255, 0.5);
+  animation: fade-in 900ms ease both;
+}
+
+:root[data-mode="light"] .skb__crumb {
+  color: rgba(22, 17, 31, 0.45);
+}
+:root[data-mode="light"] .skb__crumb[data-on="true"],
+:root[data-mode="light"] .skb__back:hover {
+  color: #16111f;
+}
+:root[data-mode="light"] .skb__back,
+:root[data-mode="light"] .skb__blurb {
+  color: rgba(22, 17, 31, 0.6);
+}

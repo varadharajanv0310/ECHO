@@ -59,17 +59,27 @@ export function WarpField() {
     return out;
   }, []);
 
+  const mode = useSequence((s) => s.settings.mode);
+
+  /**
+   * On black the streaks are light, multiplied past white so bloom catches
+   * them. On paper that is invisible, so they become dark ink laid down with
+   * normal alpha - the same streaks, drawn rather than emitted. Without this
+   * the whole dive simply does not happen in light mode.
+   */
   const material = useMemo(() => {
-    const c = new THREE.Color("#b026ff").multiplyScalar(4);
+    const light = mode === "light";
     return new THREE.MeshBasicMaterial({
-      color: c,
+      color: light
+        ? new THREE.Color("#4a1080")
+        : new THREE.Color("#b026ff").multiplyScalar(4),
       toneMapped: false,
       transparent: true,
       opacity: 0,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: light ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
-  }, []);
+  }, [mode]);
 
   useFrame((_, dt) => {
     const m = mesh.current;
@@ -100,7 +110,7 @@ export function WarpField() {
     shown.current = damp(shown.current, env, 9, dt);
 
     const speed = BASE_SPEED * (0.08 + shown.current * 0.92);
-    material.opacity = Math.min(1, shown.current * 1.5);
+    material.opacity = Math.min(1, shown.current * (mode === "light" ? 0.85 : 1.5));
     m.visible = shown.current > 0.002;
     if (!m.visible) return;
 

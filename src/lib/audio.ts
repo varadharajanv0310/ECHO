@@ -178,10 +178,12 @@ export function setAudioPhase(phase: Phase, progress: number) {
       break;
 
     case "dive":
-      pitch(0.9, 1.4);
-      to(nodes.droneGain.gain, 0.2, 0.9);
-      to(nodes.airGain.gain, 0.13, 0.9);
-      to(nodes.filter.frequency, 3400, 1.6);
+      // Air stays almost shut. Opening the noise bed wide is what made this
+      // sound like wind through a gap rather than like travelling.
+      pitch(0.9, 1.2);
+      to(nodes.droneGain.gain, 0.17, 0.8);
+      to(nodes.airGain.gain, 0.018, 0.8);
+      to(nodes.filter.frequency, 1900, 1.4);
       break;
 
     case "constellation":
@@ -195,7 +197,7 @@ export function setAudioPhase(phase: Phase, progress: number) {
 }
 
 /** One-shot transients for moments a person caused. */
-export function cue(kind: "spark" | "arrive" | "tick" | "click") {
+export function cue(kind: "spark" | "arrive" | "tick" | "click" | "dive") {
   if (!n || muted) return;
   const { ctx, master, noiseBuf } = n;
   const t = ctx.currentTime;
@@ -243,6 +245,49 @@ export function cue(kind: "spark" | "arrive" | "tick" | "click") {
 
   if (kind === "tick") {
     burst(700, 5, 0.045, 0.13);
+    return;
+  }
+
+  if (kind === "dive") {
+    // Travelling, built from pitch rather than from noise: a stack of fifths
+    // sweeping upward through a resonant band, over a sub that swells and
+    // holds. Doppler, not wind.
+    [55, 82.5, 110, 165].forEach((f, i) => {
+      const o = ctx.createOscillator();
+      const bp = ctx.createBiquadFilter();
+      const g = ctx.createGain();
+
+      o.type = i < 2 ? "sawtooth" : "triangle";
+      o.frequency.setValueAtTime(f, t);
+      o.frequency.exponentialRampToValueAtTime(f * 5.5, t + 3.1);
+      o.detune.value = (i - 1.5) * 9;
+
+      bp.type = "bandpass";
+      bp.Q.value = 5.5;
+      bp.frequency.setValueAtTime(f * 2.2, t);
+      bp.frequency.exponentialRampToValueAtTime(f * 11, t + 3.1);
+
+      const peak = 0.05 - i * 0.008;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(peak, t + 1.1);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 4.2);
+
+      o.connect(bp).connect(g).connect(master);
+      o.start(t);
+      o.stop(t + 4.3);
+    });
+
+    const sub = ctx.createOscillator();
+    const sg = ctx.createGain();
+    sub.type = "sine";
+    sub.frequency.setValueAtTime(34, t);
+    sub.frequency.linearRampToValueAtTime(46, t + 2.6);
+    sg.gain.setValueAtTime(0.0001, t);
+    sg.gain.exponentialRampToValueAtTime(0.14, t + 0.5);
+    sg.gain.exponentialRampToValueAtTime(0.0001, t + 4.0);
+    sub.connect(sg).connect(master);
+    sub.start(t);
+    sub.stop(t + 4.1);
     return;
   }
 

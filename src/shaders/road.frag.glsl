@@ -7,6 +7,7 @@ uniform float uNarrow; // 0-1, the passage constricting toward the end
 uniform float uFade;   // master opacity, so the road can arrive and leave
 uniform float uDest;   // brightness of the thing at the end of the road
 uniform float uBoost;  // live exposure, tuned by eye
+uniform float uLight;  // 1 in light mode
 
 const vec3 VIOLET = vec3(0.690, 0.149, 1.000);
 const vec3 VIOLET_DEEP = vec3(0.310, 0.024, 0.973);
@@ -125,5 +126,14 @@ void main() {
   col += MAGENTA * exp(-d * 2.6) * uDest * 0.35;
 
   float lum = clamp(dot(col, vec3(0.2126, 0.7152, 0.0722)), 0.0, 1.0);
-  gl_FragColor = vec4(col * uFade * uBoost, lum * uFade * uBoost);
+
+  // Light mode is not the same picture with the colours swapped. On paper the
+  // road is pigment: the same shapes, but the brightest parts are the darkest
+  // ink and the whole thing is laid down with normal alpha instead of added.
+  // Inverting the finished frame gives a washed grey; this keeps the hues.
+  vec3 ink = mix(col / max(lum, 0.001), vec3(1.0), 0.15) * 0.42;
+  vec3 outCol = mix(col, ink, uLight);
+  float outA = mix(lum, clamp(lum * 1.25, 0.0, 0.92), uLight);
+
+  gl_FragColor = vec4(outCol * uFade * uBoost, outA * uFade * uBoost);
 }

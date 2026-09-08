@@ -38,6 +38,7 @@
     --z-vignette: 45;
     --z-hud: 60;
     /* Above everything, including windows. Nothing may paint over the pointer. */
+    --z-dock: 90;
     --z-cursor: 500;
   }
 
@@ -152,23 +153,22 @@
   color: #16111f;
 }
 
-/* Invert the rendered layers rather than trying to restyle them.
-   Inverted glow is very heavy - what was a faint haze on black becomes a solid
-   wash on white - so the layers are also pulled well back and their contrast
-   raised, which keeps the ground reading as paper rather than as fog. */
-:root[data-mode="light"] .scene-layer,
-:root[data-mode="light"] .entry__nebula,
-:root[data-mode="light"] .particles-layer {
-  filter: invert(1) hue-rotate(180deg) saturate(1.35) contrast(1.25)
-    brightness(1.06);
-}
+/* The scene is no longer inverted wholesale. Road, galaxy, warp and sky each
+   have a light-mode path inside their own shader, where the hues survive and
+   glow becomes pigment. Inverting the finished frame was a colour swap, not a
+   design, and it looked like one.
 
-:root[data-mode="light"] .scene-layer {
-  opacity: 0.62;
+   The nebula behind the entry is the one layer still filtered: it is a raw
+   WebGL2 pass with no theme uniform, and the entry sequence deliberately keeps
+   its dark grade in both themes anyway. */
+:root[data-mode="light"] .entry__nebula {
+  filter: invert(1) hue-rotate(180deg) saturate(1.3) contrast(1.2);
+  opacity: 0.72;
 }
 
 :root[data-mode="light"] .particles-layer {
-  opacity: 0.35;
+  filter: invert(1) hue-rotate(180deg) saturate(0.7) contrast(0.8);
+  opacity: 0.1;
 }
 
 /* Grain has to bite into a light ground instead of lifting a dark one. */

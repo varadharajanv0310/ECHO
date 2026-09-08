@@ -45,6 +45,7 @@ export function Sound() {
 
   useEffect(() => {
     if (phase === "ignition") cue("spark");
+    if (phase === "dive") cue("dive");
     if (phase === "constellation") cue("arrive");
   }, [phase]);
 

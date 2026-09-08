@@ -1,0 +1,200 @@
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(1rem, 2.6vh, 1.8rem);
+  translate: -50% 0;
+  width: min(760px, calc(100vw - 8rem));
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: dock-in 420ms cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------- the thing held */
+
+.dock__open {
+  position: relative;
+  padding: 1rem 2.4rem 1rem 1.1rem;
+  border: 1px solid var(--hair-soft);
+  border-left: 1px solid var(--color-violet-bright);
+  border-radius: 3px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+}
+
+.dock__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  background: none;
+  cursor: none;
+  font-size: 15px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dock__close:hover {
+  color: #fff;
+}
+
+.dock__kind {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-violet-bright);
+}
+
+.dock__text {
+  margin: 0.5rem 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-variation-settings: "wdth" 98, "wght" 400;
+  line-height: 1.4;
+  color: #fff;
+}
+
+.dock__meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+/* ------------------------------------------------------------ what you said */
+
+.dock__said {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: flex-end;
+}
+
+.dock__said-line {
+  margin: 0;
+  max-width: 80%;
+  padding: 0.45rem 0.75rem;
+  border-radius: 3px;
+  background: rgba(176, 38, 255, 0.16);
+  border: 1px solid rgba(176, 38, 255, 0.3);
+  backdrop-filter: blur(10px);
+
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-variation-settings: "wdth" 98, "wght" 400;
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------- bar */
+
+.dock__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.6rem 0.55rem 0.9rem;
+  border: 1px solid var(--hair);
+  border-radius: 3px;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+}
+
+.dock__who {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  max-width: 34%;
+}
+
+.dock__who b {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-variation-settings: "wdth" 96, "wght" 600;
+  color: #fff;
+}
+
+.dock__who i {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dock__input {
+  flex: 1;
+  min-width: 0;
+  max-height: 84px;
+  padding: 0.45rem 0;
+  border: 0;
+  background: none;
+  outline: none;
+  resize: none;
+
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-variation-settings: "wdth" 98, "wght" 400;
+  line-height: 1.4;
+  color: #fff;
+}
+
+.dock__input::placeholder {
+  color: rgba(255, 255, 255, 0.24);
+}
+
+.dock__send {
+  flex-shrink: 0;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--hair-soft);
+  border-radius: 2px;
+  background: none;
+  cursor: none;
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #fff;
+  transition: border-color 260ms ease, background 260ms ease, opacity 260ms ease;
+}
+
+.dock__send:disabled {
+  opacity: 0.3;
+}
+
+.dock__send:not(:disabled):hover {
+  border-color: var(--color-violet-bright);
+  background: rgba(176, 38, 255, 0.12);
+}
+
+:root[data-mode="light"] .dock__text,
+:root[data-mode="light"] .dock__who b,
+:root[data-mode="light"] .dock__input,
+:root[data-mode="light"] .dock__said-line,
+:root[data-mode="light"] .dock__send {
+  color: #16111f;
+}
+
+:root[data-mode="light"] .dock__meta,
+:root[data-mode="light"] .dock__who i {
+  color: rgba(22, 17, 31, 0.5);
+}

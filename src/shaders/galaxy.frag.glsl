@@ -2,6 +2,7 @@ varying vec3 vColor;
 varying float vFade;
 
 uniform float uOpacity;
+uniform float uLight;
 
 /**
  * Soft point sprite. Two falloffs stacked - a tight core and a wide halo - so
@@ -22,5 +23,9 @@ void main() {
   // 140k additive sprites overlap hard toward the core; without pulling the
   // per-point contribution down the centre clips to flat white.
   float a = (core + halo) * vFade * uOpacity * 0.10;
-  gl_FragColor = vec4(vColor, a);
+
+  // On paper each star is a speck of pigment, so it has to darken the ground
+  // rather than add to it, and it needs far more alpha per point to register.
+  vec3 col = mix(vColor, vColor * 0.34, uLight);
+  gl_FragColor = vec4(col, mix(a, min(a * 6.0, 0.85), uLight));
 }

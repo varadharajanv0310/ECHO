@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { damp } from "@/lib/utils";
+import { useSequence } from "@/store/sequence";
 import "./cursor.css";
 
 /**
@@ -16,6 +17,9 @@ import "./cursor.css";
 export function Cursor() {
   const ring = useRef<HTMLDivElement>(null);
   const dot = useRef<HTMLDivElement>(null);
+  // The pointer is the one piece of the interface that is always yours, so it
+  // carries your mark colour rather than the app accent.
+  const hue = useSequence((s) => s.profile?.hue ?? 276);
 
   useEffect(() => {
     let x = window.innerWidth / 2;
@@ -74,8 +78,18 @@ export function Cursor() {
 
   return (
     <>
-      <div ref={ring} className="cursor cursor--ring" aria-hidden />
-      <div ref={dot} className="cursor cursor--dot" aria-hidden />
+      <div
+        ref={ring}
+        className="cursor cursor--ring"
+        style={{ "--cur": hue } as React.CSSProperties}
+        aria-hidden
+      />
+      <div
+        ref={dot}
+        className="cursor cursor--dot"
+        style={{ "--cur": hue } as React.CSSProperties}
+        aria-hidden
+      />
     </>
   );
 }
