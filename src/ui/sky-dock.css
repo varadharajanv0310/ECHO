@@ -105,7 +105,7 @@
   cursor: none;
   font-size: 15px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ink-3);
 }
 
 .dock__close:hover {
@@ -126,7 +126,7 @@
   font-size: 1.05rem;
   font-variation-settings: "wdth" 98, "wght" 400;
   line-height: 1.4;
-  color: #fff;
+  color: var(--ink);
 }
 
 .dock__meta {
@@ -134,7 +134,7 @@
   font-size: 9px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.32);
+  color: var(--ink-3);
 }
 
 /* ------------------------------------------------------------ what you said */
@@ -195,7 +195,7 @@
   font-size: 8.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--ink-3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -215,11 +215,12 @@
   font-size: 0.95rem;
   font-variation-settings: "wdth" 98, "wght" 400;
   line-height: 1.4;
-  color: #fff;
+  color: var(--ink);
 }
 
 .dock__input::placeholder {
-  color: rgba(255, 255, 255, 0.24);
+  color: var(--ink-3);
+  opacity: 0.7;
 }
 
 .dock__send {
@@ -255,10 +256,7 @@
   color: #16111f;
 }
 
-:root[data-mode="light"] .dock__meta,
-:root[data-mode="light"] .dock__who i {
-  color: rgba(22, 17, 31, 0.5);
-}
+
 
 /* The one action in the sky. Filled while it is a choice you have not made,
    outlined once you have - the same grammar as Add Friend, because they are
