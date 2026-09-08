@@ -259,3 +259,36 @@
 :root[data-mode="light"] .dock__who i {
   color: rgba(22, 17, 31, 0.5);
 }
+
+/* The one action in the sky. Filled while it is a choice you have not made,
+   outlined once you have - the same grammar as Add Friend, because they are
+   the same kind of decision. */
+.dock__carry {
+  display: block;
+  margin-top: 0.7rem;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: hsl(var(--accent-h) 90% 62%);
+  cursor: none;
+
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #12061f;
+  transition:
+    background 240ms ease,
+    color 240ms ease,
+    border-color 240ms ease;
+}
+
+.dock__carry[data-on="true"] {
+  background: none;
+  border-color: hsl(var(--accent-h) 80% 70% / 0.4);
+  color: hsl(var(--accent-h) 90% 82%);
+}
+
+:root[data-mode="light"] .dock__carry[data-on="true"] {
+  color: hsl(var(--accent-h) 78% 40%);
+}

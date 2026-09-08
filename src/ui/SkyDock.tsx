@@ -27,13 +27,21 @@ export function SkyDock() {
   const planet = useUI((s) => s.planet);
   const openPlanet = useUI((s) => s.openPlanet);
 
+  const carried = useSequence((s) => s.carried);
+  const carry = useSequence((s) => s.carry);
+  const drop = useSequence((s) => s.drop);
+
   const [sky] = useState(getSky);
   const [text, setText] = useState("");
   const [said, setSaid] = useState<Said[]>([]);
   const input = useRef<HTMLTextAreaElement>(null);
 
   const person = star !== null ? sky.stars[star] : null;
-  const thing = planet !== null ? sky.planets[planet] : null;
+  // By id, not by index. syncMine rebuilds your own planets with ids carried
+  // on from the highest already in use, so position and id stop agreeing the
+  // moment you have said anything.
+  const thing =
+    planet !== null ? (sky.planets.find((p) => p.id === planet) ?? null) : null;
   const open = level === "star" && !!person;
   const dock = useExit(open ? person : null, 180);
   const thingShown = useExit(thing, 180);
@@ -63,6 +71,10 @@ export function SkyDock() {
   const who = dock.shown;
   const mine = who.id === myStar();
   const held = thingShown.shown;
+  const holding = held ? carried.some((c) => c.source === held.id) : false;
+  // At your own star the same button has to be able to let go, or something
+  // you picked up can only be put down by flying back to where you found it.
+  const borrowed = held?.borrowed;
   const replies = said.filter((s) => s.to === who.name);
 
   return (
@@ -89,6 +101,35 @@ export function SkyDock() {
               ? "fading"
               : `${Math.max(1, Math.round((1 - held.age) * 24))}h left`}
           </span>
+
+          {/* The only verb that matters. Everything else in ECHO is a way of
+              arriving at this button: a signal lives exactly as long as
+              somebody keeps choosing to hold it. */}
+          {mine && borrowed ? (
+            <button
+              className="dock__carry"
+              data-on
+              onClick={() => {
+                drop(borrowed.source);
+                openPlanet(null);
+                cue("click");
+              }}
+            >
+              Carrying for {borrowed.from} · put it down
+            </button>
+          ) : !mine ? (
+            <button
+              className="dock__carry"
+              data-on={holding}
+              onClick={() => {
+                if (holding) drop(held.id);
+                else carry(held.id, who.name, who.hue, held.text);
+                cue(holding ? "click" : "spark");
+              }}
+            >
+              {holding ? "Carrying" : "Carry this"}
+            </button>
+          ) : null}
         </div>
       )}
 

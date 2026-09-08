@@ -868,7 +868,7 @@
 .db__stat { display: flex; flex-direction: column; gap: 0.3rem; }
 .db__stat b {
   font-family: var(--font-display); font-size: 2rem;
-  font-variation-settings: "wdth" 92, "wght" 600; color: #fff;
+  font-variation-settings: "wdth" 92, "wght" 600; color: var(--ink);
 }
 .db__stat span {
   font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;

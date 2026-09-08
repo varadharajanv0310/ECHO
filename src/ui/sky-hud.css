@@ -213,3 +213,16 @@
 :root[data-mode="light"] .skb__blurb {
   color: rgba(22, 17, 31, 0.6);
 }
+
+/* Something you are holding for somebody else says whose it is. Without this
+   a carried signal is indistinguishable from one you wrote, and the whole
+   point of carrying is that it stays theirs. */
+.skl[data-kind="2"][data-from]:not([data-from=""])::after {
+  content: " via " attr(data-from);
+  color: hsl(var(--accent-h) 90% 78%);
+  opacity: 0.75;
+}
+
+:root[data-mode="light"] .skl[data-kind="2"][data-from]:not([data-from=""])::after {
+  color: hsl(var(--accent-h) 78% 40%);
+}

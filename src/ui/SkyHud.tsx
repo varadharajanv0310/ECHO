@@ -53,6 +53,7 @@ export function SkyHud() {
         el.style.transform = `translate3d(${l.x}px, ${l.y}px, 0)`;
         el.dataset.kind = String(l.kind);
         el.dataset.hovered = String(l.hovered);
+        el.dataset.from = l.from ?? "";
         if (el.textContent !== l.text) el.textContent = l.text;
       });
     };

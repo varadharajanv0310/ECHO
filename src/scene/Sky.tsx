@@ -44,6 +44,7 @@ export function Sky() {
 
   const profile = useSequence((s) => s.profile);
   const emissions = useSequence((s) => s.emissions);
+  const carried = useSequence((s) => s.carried);
   const mode = useSequence((s) => s.settings.mode);
 
   // The reader is placed into the sky before geometry is built, and everything
@@ -60,12 +61,12 @@ export function Sky() {
   const sky = useMemo(() => {
     const s = getSky();
     if (profile) placeMe(s, profile.name, profile.hue, profile.worlds);
-    syncMine(s, emissions);
+    syncMine(s, emissions, carried);
     return { ...s };
-  }, [profile, emissions]);
+  }, [profile, emissions, carried]);
 
   /* ------------------------------------------------------------ geometry */
-  const { geometry, links, rings, kinds, planetText } = useMemo(() => {
+  const { geometry, links, rings, kinds, planetText, borrowed } = useMemo(() => {
     const { constellations, stars, planets } = sky;
     const n = constellations.length + stars.length + planets.length;
 
@@ -140,8 +141,12 @@ export function Sky() {
 
     planets.forEach((p) => {
       const s = stars[p.star];
-      // Life runs violet through magenta; decay pulls it amber.
-      c.setHSL(s.hue / 360, 1, 0.66).lerp(new THREE.Color("#ff7326"), p.age ** 2.4 * 0.85);
+      // Life runs violet through magenta; decay pulls it amber. A thing you
+      // are carrying keeps the colour of whoever you took it from.
+      c.setHSL((p.borrowed?.hue ?? s.hue) / 360, 1, 0.66).lerp(
+        new THREE.Color("#ff7326"),
+        p.age ** 2.4 * 0.85,
+      );
       push(
         2,
         p.id,
@@ -178,13 +183,15 @@ export function Sky() {
     // planet always sits exactly on its own line.
     const SEG = 96;
     const planetText = new Map<number, string>();
+    const borrowed = new Map<number, string>();
     const rp: number[] = [];
     const rc: number[] = [];
     const rs: number[] = [];
     planets.forEach((p) => {
       const s = stars[p.star];
       planetText.set(p.id, p.text);
-      c.setHSL(s.hue / 360, 1, 0.66);
+      if (p.borrowed) borrowed.set(p.id, p.borrowed.from);
+      c.setHSL((p.borrowed?.hue ?? s.hue) / 360, 1, 0.66);
       const at = (a: number): [number, number, number] => [
         s.x + Math.cos(a) * p.radius,
         s.y + Math.sin(a) * p.radius * p.tilt,
@@ -221,7 +228,14 @@ export function Sky() {
     lgm.setAttribute("aColor", new THREE.Float32BufferAttribute(lc, 3));
     lgm.setAttribute("aGroup", new THREE.Float32BufferAttribute(lg, 1));
 
-    return { geometry: g, links: lgm, rings: rgm, kinds: kindMap, planetText };
+    return {
+      geometry: g,
+      links: lgm,
+      rings: rgm,
+      kinds: kindMap,
+      planetText,
+      borrowed,
+    };
   }, [sky]);
 
   const uniforms = useMemo(
@@ -506,6 +520,7 @@ export function Sky() {
         id: hit.id,
         hovered: false,
         text: text.length > 34 ? `${text.slice(0, 33)}…` : text,
+        from: hit.kind === 2 ? borrowed.get(hit.id) : undefined,
       });
     }
 

@@ -5,6 +5,8 @@ export type SkyLabel = {
   kind: 0 | 1 | 2;
   id: number;
   hovered: boolean;
+  /** Set only on something you are holding for somebody else. */
+  from?: string;
 };
 
 /**

@@ -1,6 +1,6 @@
 import { copy } from "@/copy";
 import { echoesFor } from "@/lib/echoes";
-import type { Emission } from "@/store/sequence";
+import type { Carried, Emission } from "@/store/sequence";
 
 /**
  * The sky, as a real hierarchy.
@@ -21,6 +21,12 @@ export type Planet = {
   id: number;
   star: number;
   text: string;
+  /**
+   * Set when this is something you picked up rather than something you said.
+   * Carries the name and colour of where it came from, so your own system
+   * shows what you have been holding for other people.
+   */
+  borrowed?: { from: string; hue: number; source: number };
   kind: "note" | "song" | "image" | "link";
   /** Orbit geometry. */
   radius: number;
@@ -287,6 +293,7 @@ export function peopleIn(sky: Sky, world: string) {
 export function syncMine(
   sky: Sky,
   emissions: Emission[],
+  carried: Carried[] = [],
 ) {
   if (world.me < 0) return sky;
   const mine = sky.stars[world.me];
@@ -295,8 +302,12 @@ export function syncMine(
   sky.planets = sky.planets.filter((p) => p.star !== world.me);
   mine.planets = [];
 
+  let next = sky.planets.length
+    ? Math.max(...sky.planets.map((p) => p.id)) + 1
+    : 0;
+
   emissions.forEach((e, i) => {
-    const pid = sky.planets.length ? Math.max(...sky.planets.map((p) => p.id)) + 1 : 0;
+    const pid = next++;
     // Age runs from the last time somebody carried this, not from when it was
     // sent. A carried signal visibly stops dying, which is the one promise the
     // whole idea rests on.
@@ -314,6 +325,30 @@ export function syncMine(
       tilt: ((i % 5) - 2) * 0.12,
       age,
       carried: carries.length,
+    });
+    mine.planets.push(pid);
+  });
+
+  // Things you are holding for other people, on wider orbits than your own so
+  // the two are legible apart at a glance.
+  carried.forEach((c, i) => {
+    const pid = next++;
+    const j = emissions.length + i;
+    sky.planets.push({
+      id: pid,
+      star: world.me,
+      text: c.text,
+      // source is the planet this was taken from, which is what the carried
+      // list is keyed by - this planet has an id of its own and matching on
+      // that would never find anything.
+      borrowed: { from: c.from, hue: c.hue, source: c.source },
+      kind: "note",
+      radius: 0.6 + j * 0.3,
+      phase: (j * 2.1) % (Math.PI * 2),
+      speed: 0.05 + (j % 3) * 0.02,
+      tilt: ((j % 5) - 2) * 0.12,
+      age: Math.min(0.98, (Date.now() - c.at) / (c.life * 3600 * 1000)),
+      carried: 1,
     });
     mine.planets.push(pid);
   });

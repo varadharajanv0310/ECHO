@@ -78,6 +78,25 @@ export type Emission = {
   life: number;
 };
 
+/**
+ * Something of somebody else's that you picked up.
+ *
+ * Carrying is the only verb ECHO actually rests on - a signal travels because
+ * people choose to hold it, and dies when they stop. It keeps the name and the
+ * colour of where it came from, so a system full of carried things reads as a
+ * person who has been listening rather than a person who has been posting.
+ */
+export type Carried = {
+  id: number;
+  /** The planet in the generated sky this came from, so it cannot be taken twice. */
+  source: number;
+  from: string;
+  hue: number;
+  text: string;
+  at: number;
+  life: number;
+};
+
 export type DirectMessage = {
   id: number;
   /** Star id of the other person. */
@@ -169,6 +188,7 @@ type SequenceState = {
   setDiveProgress: (n: number) => void;
   /** Everything the person has actually done, rather than seeded. */
   emissions: Emission[];
+  carried: Carried[];
   friends: number[];
   dms: DirectMessage[];
 
@@ -177,6 +197,8 @@ type SequenceState = {
   setSettings: (s: Partial<Settings>) => void;
 
   emit: (world: string, text: string, life: number) => void;
+  carry: (source: number, from: string, hue: number, text: string) => void;
+  drop: (source: number) => void;
   toggleFriend: (star: number) => void;
   sendDM: (star: number, name: string, text: string) => void;
 };
@@ -239,6 +261,7 @@ export const useSequence = create<SequenceState>((set, get) => ({
   profile: readProfile(),
   settings: readSettings(),
   emissions: readList("echo.emissions"),
+  carried: readList("echo.carried"),
   friends: readList("echo.friends"),
   dms: readList("echo.dms"),
 
@@ -284,6 +307,28 @@ export const useSequence = create<SequenceState>((set, get) => ({
     ];
     writeList("echo.emissions", next);
     set({ emissions: next });
+  },
+
+  /**
+   * Pick something up. It starts orbiting you as well, and its clock restarts -
+   * which is the whole mechanism: a thing survives exactly as long as people
+   * keep choosing to hold it.
+   */
+  carry: (source, from, hue, text) => {
+    if (get().carried.some((c) => c.source === source)) return;
+    const next = [
+      { id: newId(), source, from, hue, text, at: Date.now(), life: 24 },
+      ...get().carried,
+    ];
+    writeList("echo.carried", next);
+    set({ carried: next });
+  },
+
+  /** Put it down again. Nothing else is holding it up. */
+  drop: (source) => {
+    const next = get().carried.filter((c) => c.source !== source);
+    writeList("echo.carried", next);
+    set({ carried: next });
   },
 
   toggleFriend: (star) => {

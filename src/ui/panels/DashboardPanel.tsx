@@ -30,6 +30,7 @@ const ago = (t: number) => {
 export function DashboardPanel() {
   const profile = useSequence((s) => s.profile);
   const emissions = useSequence((s) => s.emissions);
+  const carried = useSequence((s) => s.carried);
   const dms = useSequence((s) => s.dms);
   const friends = useSequence((s) => s.friends);
 
@@ -89,6 +90,10 @@ export function DashboardPanel() {
           <div className="u-card db__stat">
             <b>{emissions.length}</b>
             <span>you have sent</span>
+          </div>
+          <div className="u-card db__stat">
+            <b>{carried.length}</b>
+            <span>you are carrying</span>
           </div>
           <div className="u-card db__stat">
             <b>{friends.length}</b>
