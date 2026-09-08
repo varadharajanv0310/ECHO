@@ -10,6 +10,7 @@ import ringFrag from "@/shaders/ring.frag.glsl";
 import { getSky, placeMe, syncMine, myStar } from "@/scene/sky-data";
 import { skyLabels, type SkyLabel } from "@/scene/sky-labels";
 import { clamp, damp } from "@/lib/utils";
+import { isHandheld } from "@/lib/dpr";
 import { cue } from "@/lib/audio";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
@@ -21,6 +22,30 @@ const DIST = { cluster: 74, constellation: 17, star: 2.6 };
 /** Where the camera stands before the sky exists. Constant, so it is not
  *  rebuilt sixty times a second. */
 const ENTRY_EYE = new THREE.Vector3(0, 0, 5);
+
+/**
+ * The aspect these distances were framed against.
+ *
+ * The camera's field of view is vertical, so on a tall thin screen the
+ * horizontal field collapses and a sky framed on a laptop spills off both
+ * edges - on a phone the six World names were half off-screen with no way to
+ * know they were there. Standing further back restores the horizontal field.
+ *
+ * Widening the lens instead would be the other fix, and it is worse: holding
+ * the horizontal field at a phone's aspect needs about 135 degrees vertical,
+ * which bends the whole sky. Clamped, because past a point the sky should
+ * simply be smaller rather than infinitely far away.
+ */
+const REF_ASPECT = 1.6;
+
+/** Rough width of a label character, for the collision test. Handheld type
+ *  is set smaller, and an estimate tuned for the desktop size would
+ *  suppress labels that actually had room. */
+const handheld = isHandheld();
+const CHAR_W = handheld ? 4.5 : 5.6;
+/** A signal's text is a sentence; on a 375px screen most of one does not fit. */
+const LABEL_MAX = handheld ? 24 : 34;
+const fitDist = (aspect: number) => clamp(REF_ASPECT / aspect, 1, 2.3);
 
 
 
@@ -288,6 +313,23 @@ export function Sky() {
   const target = useMemo(() => new THREE.Vector3(), []);
   const look = useMemo(() => new THREE.Vector3(), []);
   const hoverIdx = useRef(-1);
+  /**
+   * Where the pointer is, in CSS pixels, and whether a tap is waiting.
+   *
+   * Not r3f's state.pointer, which only tracks pointermove. A touch tap can
+   * arrive as pointerdown then pointerup with no move between them, so on a
+   * phone the pick was resolved against wherever the last mouse-shaped event
+   * had left it - usually nowhere - and tapping a star did nothing.
+   *
+   * Both kinds of input now write here, and a tap is resolved on the next
+   * frame rather than inside the event: picking needs every point projected
+   * through the current camera, which is work the frame loop is already doing
+   * and an event handler would have to repeat.
+   */
+  const pos = useRef({ x: -1e4, y: -1e4 });
+  const tap = useRef(false);
+  /** Set by the pointer effect, called by the frame loop. */
+  const commitRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const el = gl.domElement;
@@ -305,8 +347,12 @@ export function Sky() {
       dragging = true;
       lx = dx0 = e.clientX;
       ly = dy0 = e.clientY;
+      pos.current.x = e.clientX;
+      pos.current.y = e.clientY;
     };
     const move = (e: PointerEvent) => {
+      pos.current.x = e.clientX;
+      pos.current.y = e.clientY;
       if (!dragging || !active()) return;
       cam.current.tTheta -= (e.clientX - lx) * 0.004;
       cam.current.tPhi = clamp(cam.current.tPhi - (e.clientY - ly) * 0.004, 0.35, 2.6);
@@ -317,8 +363,16 @@ export function Sky() {
       const was = dragging;
       dragging = false;
       if (!was || !active()) return;
-      if (Math.hypot(e.clientX - dx0, e.clientY - dy0) > 5) return;
+      // Ten pixels rather than five: a finger is not a mouse and never lifts
+      // from exactly where it landed.
+      if (Math.hypot(e.clientX - dx0, e.clientY - dy0) > 10) return;
+      pos.current.x = e.clientX;
+      pos.current.y = e.clientY;
+      tap.current = true;
+    };
 
+    /** Resolved by the frame loop, once the pick has been recomputed. */
+    const commit = () => {
       const i = hoverIdx.current;
       if (i < 0) return;
       const hit = kinds[i];
@@ -340,11 +394,13 @@ export function Sky() {
         ui.openPlanet(hit.id);
       }
     };
+    commitRef.current = commit;
+
     const wheel = (e: WheelEvent) => {
       if (!active()) return;
       e.preventDefault();
       const l = useUI.getState().level;
-      const base = DIST[l];
+      const base = DIST[l] * fitDist(size.width / size.height);
       cam.current.tDist = clamp(
         cam.current.tDist + e.deltaY * 0.02,
         base * 0.45,
@@ -370,15 +426,17 @@ export function Sky() {
   // always arrives at a sane framing.
   const level = useUI((s) => s.level);
   useEffect(() => {
-    cam.current.tDist = DIST[level];
-  }, [level]);
+    // Also on resize: rotating a phone changes the aspect, and with it how far
+    // back the camera has to stand to keep the sky in frame.
+    cam.current.tDist = DIST[level] * fitDist(size.width / size.height);
+  }, [level, size.width, size.height]);
 
   /* --------------------------------------------------------------- frame */
   const v = useMemo(() => new THREE.Vector3(), []);
   const placedRef = useRef<number[]>([]);
   const outRef = useRef<SkyLabel[]>([]);
 
-  useFrame((state, dt) => {
+  useFrame((_state, dt) => {
     const m = mat.current;
     const g = group.current;
     if (!m || !g) return;
@@ -457,8 +515,8 @@ export function Sky() {
     if (!g.visible || !here) return;
 
     /* ----------------------------------------------------------- picking */
-    const px = (state.pointer.x * 0.5 + 0.5) * size.width;
-    const py = (-state.pointer.y * 0.5 + 0.5) * size.height;
+    const px = pos.current.x;
+    const py = pos.current.y;
     const posAttr = geometry.getAttribute("position") as THREE.BufferAttribute;
     const kindAttr = geometry.getAttribute("aKind") as THREE.BufferAttribute;
     const grpAttr = geometry.getAttribute("aGroup") as THREE.BufferAttribute;
@@ -525,13 +583,24 @@ export function Sky() {
         kind: hit.kind,
         id: hit.id,
         hovered: false,
-        text: text.length > 34 ? `${text.slice(0, 33)}…` : text,
+        text:
+          text.length > LABEL_MAX
+            ? `${text.slice(0, LABEL_MAX - 1)}…`
+            : text,
         from: hit.kind === 2 ? borrowed.get(hit.id) : undefined,
       });
     }
 
     hoverIdx.current = best;
     m.uniforms.uHover.value = best;
+
+    // A tap queued by the pointer handler waits for exactly this: the nearest
+    // thing to where the finger landed, measured against the camera as it is
+    // now.
+    if (tap.current) {
+      tap.current = false;
+      commitRef.current();
+    }
 
     if (best >= 0) {
       const h = kinds[best];
@@ -555,14 +624,21 @@ export function Sky() {
     // twice over.
     const W = size.width;
     const H = size.height;
-    const clear = (x: number, y: number) =>
-      // Breadcrumb, rail, identity plate, compose bar. Written out rather than
-      // built as an array of rectangles each frame, for the same reason as
-      // below: none of it would survive the frame.
-      !(x > W * 0.5 - 260 && x < W * 0.5 + 260 && y < 54) &&
-      !(x < 62 && y > 150 && y < 310) &&
-      !(x < 150 && y > H - 120) &&
-      !(x > W * 0.5 - 250 && x < W * 0.5 + 250 && y > H - 62);
+    // Where the chrome is, so no label is printed underneath it. Written out
+    // rather than built as an array of rectangles each frame, for the same
+    // reason as below: none of it would survive the frame.
+    //
+    // The two layouts put the furniture in different places. On a handheld the
+    // rail is a bar along the bottom and the identity plate has moved to the
+    // top, so the desktop rectangles would protect the wrong half of the
+    // screen and let labels sit under the rail.
+    const clear = handheld
+      ? (_x: number, y: number) => y > 132 && y < H - 152
+      : (x: number, y: number) =>
+          !(x > W * 0.5 - 260 && x < W * 0.5 + 260 && y < 54) &&
+          !(x < 62 && y > 150 && y < 310) &&
+          !(x < 150 && y > H - 120) &&
+          !(x > W * 0.5 - 250 && x < W * 0.5 + 250 && y > H - 62);
 
     // Placement records are kept flat - x, y, half-width, repeating - in one
     // array that is reused between frames. The readable spelling of all this
@@ -578,7 +654,15 @@ export function Sky() {
     const LINE = 19;
     const take = (l: SkyLabel) => {
       if (!clear(l.x, l.y)) return;
-      const w = l.text.length * 5.6 + 16;
+      // The attribution counts. A carried signal has " via <name>" appended
+      // by CSS, which is not in l.text - leaving it out under-measured those
+      // labels by exactly enough to push them off the edge.
+      const chars = l.text.length + (l.from ? l.from.length + 5 : 0);
+      const w = chars * CHAR_W + 16;
+      // Nudge back inside the frame rather than letting it hang off the edge.
+      // The label is centred on its point, so near an edge half of it is
+      // simply gone - on a narrow screen that was most of them.
+      l.x = clamp(l.x, w * 0.5 + 6, W - w * 0.5 - 6);
       for (let k = 0; k < placed.length; k += 3) {
         if (
           Math.abs(placed[k + 1] - l.y) < LINE &&

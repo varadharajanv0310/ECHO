@@ -1,9 +1,17 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { useSequence } from "@/store/sequence";
+import { isHandheld } from "@/lib/dpr";
 
-/** Total scroll length of the passage. Six stops plus an arrival and a run-out. */
-export const PASSAGE_VH = 820;
+/**
+ * Total scroll length of the passage. Six stops plus an arrival and a run-out.
+ *
+ * Shorter on a handheld. The stops are keyed to fractions of this, so the
+ * passage is identical either way - what changes is how much thumb it costs.
+ * Eight screen-heights is a comfortable amount of wheel and a long way to
+ * swipe.
+ */
+export const PASSAGE_VH = isHandheld() ? 560 : 820;
 
 let lenis: Lenis | null = null;
 export const getLenis = () => lenis;

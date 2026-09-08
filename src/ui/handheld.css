@@ -1,0 +1,313 @@
+/* =========================================================================
+   The handheld pass.
+
+   Gated on `(pointer: coarse) and (max-width: 900px)` rather than width alone.
+   A desktop browser dragged narrow is still a desktop - it has a GPU, a mouse
+   and a hover state - and should keep the full treatment. What changes here is
+   only what a finger on a small screen actually requires.
+
+   The sky itself is untouched. It is the one thing that already works at any
+   size, because it is a camera pointed at a world rather than a layout. What
+   needed rethinking is the furniture around it, all of which was pinned to the
+   edges of a wide screen and none of which fits on a tall thin one.
+   ========================================================================= */
+
+@media (pointer: coarse) and (max-width: 900px) {
+  /* ------------------------------------------------------------- pointer */
+
+  /* There is no pointer to draw, and `cursor: none` on every control would
+     leave a device with no cursor and no fallback. Give the controls back
+     their default and take the drawn one away. */
+  .cursor {
+    display: none !important;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  label,
+  .u-btn,
+  .u-chip,
+  .skl {
+    cursor: auto;
+  }
+
+  /* A finger needs a target, not a hairline. */
+  .rail__btn,
+  .win__close,
+  .u-chip,
+  .u-btn {
+    min-height: 40px;
+  }
+
+  /* ---------------------------------------------------------------- rail */
+
+  /* Vertical down the left is a desktop shape: it uses the empty margin of a
+     wide frame. On a tall thin one that margin is the content, so the rail
+     becomes what every handheld expects - a bar along the bottom, inside the
+     safe area. */
+  .rail {
+    left: 0.7rem;
+    right: 0.7rem;
+    top: auto;
+    bottom: calc(0.7rem + env(safe-area-inset-bottom, 0px));
+    translate: none;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .rail__btn {
+    width: 100%;
+    max-width: 64px;
+    height: 42px;
+  }
+
+  /* The label sits beside the icon on hover, and there is no hover here. */
+  .rail__label {
+    display: none;
+  }
+
+  /* ---------------------------------------------------------------- dock */
+
+  /* Above the rail, and full width rather than centred in a 760px column. */
+  .dock {
+    left: 0.7rem;
+    right: 0.7rem;
+    width: auto;
+    bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
+    translate: none;
+  }
+
+  .dock__open {
+    max-height: 42vh;
+    overflow-y: auto;
+  }
+
+  .dock__said {
+    display: none;
+  }
+
+  /* --------------------------------------------------------------- chrome */
+
+  /* Three things wanted the top row - the mark, the trail and the sound
+     player - and at this width they overlap. The trail drops to its own line
+     underneath and scrolls sideways if the path is long. */
+  .skb {
+    top: 3.2rem;
+    left: 0.7rem;
+    right: 0.7rem;
+    translate: none;
+    justify-content: flex-start;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .skb::-webkit-scrollbar {
+    display: none;
+  }
+
+  .skb__back {
+    left: auto;
+    right: 0.7rem;
+    top: 3.1rem;
+  }
+
+  .skb__blurb {
+    top: 6rem;
+    padding: 0 1.2rem;
+    text-align: center;
+  }
+
+  /* The identity plate sat bottom-left, which is now the rail. It goes to the
+     top under the mark, on one line. */
+  .ch__self {
+    left: 0.9rem;
+    top: 5.4rem;
+    bottom: auto;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .ch__arrival {
+    top: 8.4rem;
+    width: min(92vw, 34ch);
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  /* Hints tell you to click and hover; on the bar at the bottom they would sit
+     under the rail anyway. */
+  .ch__hint {
+    display: none;
+  }
+
+  /* --------------------------------------------------------------- windows */
+
+  /* A centred card with a margin is a desktop window. Here a panel is the
+     whole screen, which is what a phone means by "open". */
+  .win-layer {
+    padding: 0;
+  }
+
+  .win,
+  .win[data-size="mid"],
+  .win[data-size="narrow"] {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-width: 0;
+  }
+
+  .win__bar {
+    padding-top: calc(0.8rem + env(safe-area-inset-top, 0px));
+  }
+
+  .win__body {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* The bar is one row of title, tabs and close, which at this width squeezes
+     five tabs down to nothing. It wraps instead: the title and close keep the
+     top line, the tabs get their own underneath and scroll sideways. */
+  .win__bar {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding-bottom: 0;
+  }
+
+  .win__id {
+    flex: 1 1 auto;
+  }
+
+  .win__tabs {
+    order: 3;
+    flex: 1 0 100%;
+    margin-right: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .win__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* The profile is two columns on a wide window; identity stacks over the
+     board here rather than shrinking to a strip. */
+  .pw {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pw__places {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* ---------------------------------------------------------------- tour */
+
+  .tour {
+    padding: 0.8rem;
+  }
+
+  .tour__card {
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  /* -------------------------------------------------------------- entry */
+
+  /* The entry sequence is set in viewport-width type, which on a phone drops
+     below readable. These are the floors. */
+  .pf__form {
+    padding-bottom: 6rem;
+  }
+}
+
+/* Landscape on a handheld is short, not narrow: the vertical rail fits again
+   and the bottom bar would eat most of the frame. */
+@media (pointer: coarse) and (max-width: 900px) and (orientation: landscape) {
+  .rail {
+    left: 0.6rem;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    translate: 0 -50%;
+    flex-direction: column;
+  }
+
+  .rail__btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .dock {
+    left: 4.6rem;
+    right: 0.8rem;
+    bottom: 0.6rem;
+  }
+
+  .ch__self {
+    top: 3.4rem;
+    left: 4.6rem;
+  }
+}
+
+/* Sky labels, at a size that leaves room for six of them on a 375px screen.
+   The collision test suppresses whatever will not fit, so oversized type here
+   does not overlap - it silently costs you a World. */
+@media (pointer: coarse) and (max-width: 900px) {
+  .skl[data-kind="0"] {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+  }
+
+  .skl[data-kind="1"] {
+    font-size: 8.5px;
+  }
+
+  .skl[data-kind="2"] {
+    font-size: 11px;
+  }
+}
+
+/* The dock's identity block competes with the input for a 375px row. The
+   name and mark stay; the traits and the "your own sky" note are the parts
+   that can go. */
+@media (pointer: coarse) and (max-width: 900px) {
+  .dock__who i {
+    display: none;
+  }
+
+  .dock__bar {
+    gap: 0.6rem;
+  }
+
+  .dock__input {
+    font-size: 0.9rem;
+  }
+}
+
+/* The rail tour points at the rail, and the rail is now the bottom bar. The
+   tip has to sit above it rather than on it - and the little arrow that points
+   sideways at a vertical rail means nothing here. */
+@media (pointer: coarse) and (max-width: 900px) {
+  .tour__tip {
+    left: 0.7rem !important;
+    right: 0.7rem;
+    top: auto !important;
+    bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    translate: none;
+  }
+
+  .tour__tip-arrow {
+    display: none;
+  }
+}
