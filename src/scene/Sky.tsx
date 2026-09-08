@@ -5,7 +5,10 @@ import vert from "@/shaders/sky.vert.glsl";
 import frag from "@/shaders/sky.frag.glsl";
 import linkVert from "@/shaders/link.vert.glsl";
 import linkFrag from "@/shaders/link.frag.glsl";
-import { getSky } from "./sky-data";
+import ringVert from "@/shaders/ring.vert.glsl";
+import ringFrag from "@/shaders/ring.frag.glsl";
+import { getSky, placeMe, syncMine, myStar } from "@/scene/sky-data";
+import { skyLabels, type SkyLabel } from "@/scene/sky-labels";
 import { clamp, damp } from "@/lib/utils";
 import { cue } from "@/lib/audio";
 import { useSequence } from "@/store/sequence";
@@ -13,26 +16,9 @@ import { useUI } from "@/store/ui";
 import { tuning } from "@/lib/tuning";
 
 /** Camera distance at each level. Flying in is a real approach, not a swap. */
-const DIST = { cluster: 74, constellation: 17, star: 4.6 };
+const DIST = { cluster: 74, constellation: 17, star: 2.6 };
 
-export type SkyLabel = {
-  x: number;
-  y: number;
-  text: string;
-  kind: 0 | 1 | 2;
-  id: number;
-  hovered: boolean;
-};
 
-/**
- * Screen positions for the DOM label layer, rewritten every frame.
- *
- * Labels are DOM rather than sprites because they are type - names of places
- * and names of people - and type rendered into a texture at this scale is
- * always slightly wrong. This is the one place the 3D and the interface have
- * to agree, so the projection is done once, here, and read from there.
- */
-export const skyLabels: { list: SkyLabel[] } = { list: [] };
 
 /**
  * The sky.
@@ -53,13 +39,25 @@ export function Sky() {
   const points = useRef<THREE.Points>(null);
   const mat = useRef<THREE.ShaderMaterial>(null);
   const linkMat = useRef<THREE.ShaderMaterial>(null);
+  const ringMat = useRef<THREE.ShaderMaterial>(null);
   const { camera, size, gl } = useThree();
 
-  const sky = useMemo(() => getSky(), []);
+  const profile = useSequence((s) => s.profile);
+  const emissions = useSequence((s) => s.emissions);
   const mode = useSequence((s) => s.settings.mode);
 
+  // The reader is placed into the sky before geometry is built, and everything
+  // they have said becomes planets around their own star. Rebuilding on change
+  // is what makes Create actually do something.
+  const sky = useMemo(() => {
+    const s = getSky();
+    if (profile) placeMe(s, profile.name, profile.hue, profile.worlds);
+    syncMine(s, emissions);
+    return s;
+  }, [profile, emissions]);
+
   /* ------------------------------------------------------------ geometry */
-  const { geometry, links, kinds } = useMemo(() => {
+  const { geometry, links, rings, kinds, planetText } = useMemo(() => {
     const { constellations, stars, planets } = sky;
     const n = constellations.length + stars.length + planets.length;
 
@@ -126,7 +124,10 @@ export function Sky() {
 
     stars.forEach((s) => {
       c.setHSL(s.hue / 360, 1, 0.68);
-      push(1, s.id, s.x, s.y, s.z, c, 2.6, s.constellation, -1);
+      // aStar is the star's own id, not -1. It is what marks this one as the
+      // person you are standing at, and getting it wrong dims the sun you
+      // came to look at down to the brightness of its neighbours.
+      push(1, s.id, s.x, s.y, s.z, c, 2.6, s.constellation, s.id);
     });
 
     planets.forEach((p) => {
@@ -140,7 +141,7 @@ export function Sky() {
         s.y,
         s.z,
         c,
-        0.5 + p.carried * 0.09,
+        0.34 + p.carried * 0.06,
         s.constellation,
         s.id,
         [p.radius, p.phase, p.speed, p.tilt],
@@ -160,6 +161,40 @@ export function Sky() {
     g.setAttribute("aGroup", new THREE.BufferAttribute(grp, 1));
     g.setAttribute("aStar", new THREE.BufferAttribute(st, 1));
 
+    // Orbit rings. The thing that turns a bright dot with specks near it into
+    // a system you are standing inside: without the paths drawn, the planets
+    // read as more stars that happen to be close.
+    //
+    // The ellipse is the same expression the vertex shader uses to place a
+    // planet, evaluated all the way round instead of at one angle - so a
+    // planet always sits exactly on its own line.
+    const SEG = 96;
+    const planetText = new Map<number, string>();
+    const rp: number[] = [];
+    const rc: number[] = [];
+    const rs: number[] = [];
+    planets.forEach((p) => {
+      const s = stars[p.star];
+      planetText.set(p.id, p.text);
+      c.setHSL(s.hue / 360, 1, 0.66);
+      const at = (a: number): [number, number, number] => [
+        s.x + Math.cos(a) * p.radius,
+        s.y + Math.sin(a) * p.radius * p.tilt,
+        s.z + Math.sin(a) * p.radius,
+      ];
+      for (let i = 0; i < SEG; i++) {
+        const a0 = (i / SEG) * Math.PI * 2;
+        const a1 = ((i + 1) / SEG) * Math.PI * 2;
+        rp.push(...at(a0), ...at(a1));
+        rc.push(c.r, c.g, c.b, c.r, c.g, c.b);
+        rs.push(s.id, s.id);
+      }
+    });
+    const rgm = new THREE.BufferGeometry();
+    rgm.setAttribute("position", new THREE.Float32BufferAttribute(rp, 3));
+    rgm.setAttribute("aColor", new THREE.Float32BufferAttribute(rc, 3));
+    rgm.setAttribute("aStar", new THREE.Float32BufferAttribute(rs, 1));
+
     // Figures: one traced line per World.
     const lp: number[] = [];
     const lc: number[] = [];
@@ -178,7 +213,7 @@ export function Sky() {
     lgm.setAttribute("aColor", new THREE.Float32BufferAttribute(lc, 3));
     lgm.setAttribute("aGroup", new THREE.Float32BufferAttribute(lg, 1));
 
-    return { geometry: g, links: lgm, kinds: kindMap };
+    return { geometry: g, links: lgm, rings: rgm, kinds: kindMap, planetText };
   }, [sky]);
 
   const uniforms = useMemo(
@@ -199,6 +234,16 @@ export function Sky() {
     () => ({
       uLevel: { value: 0 },
       uGroup: { value: -1 },
+      uReveal: { value: 0 },
+      uLight: { value: 0 },
+    }),
+    [],
+  );
+
+  const ringUniforms = useMemo(
+    () => ({
+      uLevel: { value: 0 },
+      uStar: { value: -1 },
       uReveal: { value: 0 },
       uLight: { value: 0 },
     }),
@@ -226,6 +271,7 @@ export function Sky() {
     const active = () =>
       useSequence.getState().phase === "constellation" &&
       useUI.getState().panel === null &&
+      useUI.getState().profileOf === null &&
       useUI.getState().planet === null;
 
     const down = (e: PointerEvent) => {
@@ -252,9 +298,21 @@ export function Sky() {
       const hit = kinds[i];
       cue("click");
       const ui = useUI.getState();
-      if (hit.kind === 0) ui.enterConstellation(hit.id);
-      else if (hit.kind === 1) ui.enterStar(hit.id);
-      else ui.openPlanet(hit.id);
+
+      if (hit.kind === 0) {
+        ui.enterConstellation(hit.id);
+      } else if (hit.kind === 1) {
+        // Standing at somebody already? Then clicking them again is asking who
+        // they are, not asking to go there.
+        if (ui.level === "star" && ui.star === hit.id) {
+          ui.openProfile(hit.id === myStar() ? "me" : hit.id);
+          if (hit.id === myStar()) ui.setPanel("profile");
+        } else {
+          ui.enterStar(hit.id);
+        }
+      } else {
+        ui.openPlanet(hit.id);
+      }
     };
     const wheel = (e: WheelEvent) => {
       if (!active()) return;
@@ -312,6 +370,12 @@ export function Sky() {
       linkMat.current.uniforms.uGroup.value = m.uniforms.uGroup.value;
       linkMat.current.uniforms.uLight.value = m.uniforms.uLight.value;
     }
+    if (ringMat.current) {
+      ringMat.current.uniforms.uReveal.value = m.uniforms.uReveal.value;
+      ringMat.current.uniforms.uLevel.value = m.uniforms.uLevel.value;
+      ringMat.current.uniforms.uStar.value = m.uniforms.uStar.value;
+      ringMat.current.uniforms.uLight.value = m.uniforms.uLight.value;
+    }
     g.visible = m.uniforms.uReveal.value > 0.003;
 
     const lvl = ui.level === "star" ? 2 : ui.level === "constellation" ? 1 : 0;
@@ -349,6 +413,18 @@ export function Sky() {
     );
     camera.position.lerpVectors(new THREE.Vector3(0, 0, 5), v, blend);
     camera.lookAt(look);
+
+    // Dev handle for the rig, alongside window.sky and window.ui. Framing the
+    // sky is a numbers game and reading them beats guessing at a screenshot.
+    if (import.meta.env.DEV) {
+      (window as unknown as { rig: unknown }).rig = {
+        dist: c.dist,
+        tDist: c.tDist,
+        dt,
+        pos: camera.position.toArray(),
+        look: look.toArray(),
+      };
+    }
 
     if (!g.visible || !here) return;
 
@@ -398,20 +474,30 @@ export function Sky() {
         best = i;
       }
 
+      // Names are dropped once you are standing in a system - but only after
+      // the pick above, so the neighbours stay clickable while they stop
+      // shouting. The sun does not need naming either: the breadcrumb and the
+      // plate in the corner both already say whose sky this is, and a third
+      // copy lands directly on top of the glow.
+      if (k === 1 && ui.level === "star") continue;
+
       const hit = kinds[i];
-      // Planets are only named when you point at one. A person can be carrying
-      // nine things and nine labels over one star is not a sky, it is a list.
-      if (k === 2) continue;
+      // Planets are named here, where there are at most a handful of them and
+      // they are the only reason to have come. Anywhere else this would be a
+      // list of everything in the sky printed over the sky.
+      const text =
+        hit.kind === 0
+          ? sky.constellations[hit.id].world
+          : hit.kind === 1
+            ? sky.stars[hit.id].name
+            : (planetText.get(hit.id) ?? "");
       labels.push({
         x: sx,
         y: sy,
         kind: hit.kind,
         id: hit.id,
         hovered: false,
-        text:
-          hit.kind === 0
-            ? sky.constellations[hit.id].world
-            : sky.stars[hit.id].name,
+        text: text.length > 34 ? `${text.slice(0, 33)}…` : text,
       });
     }
 
@@ -434,6 +520,18 @@ export function Sky() {
           vertexShader={linkVert}
           fragmentShader={linkFrag}
           uniforms={linkUniforms}
+          transparent
+          depthWrite={false}
+          blending={mode === "light" ? THREE.NormalBlending : THREE.AdditiveBlending}
+        />
+      </lineSegments>
+
+      <lineSegments geometry={rings} frustumCulled={false}>
+        <shaderMaterial
+          ref={ringMat}
+          vertexShader={ringVert}
+          fragmentShader={ringFrag}
+          uniforms={ringUniforms}
           transparent
           depthWrite={false}
           blending={mode === "light" ? THREE.NormalBlending : THREE.AdditiveBlending}

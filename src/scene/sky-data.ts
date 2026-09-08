@@ -191,9 +191,132 @@ export function buildSky(seed = 20260908): Sky {
   return { constellations, stars, planets };
 }
 
+/**
+ * The one mutable thing in this module, and the one shared instance of the sky.
+ *
+ * Both are hung off the global rather than kept in module scope on purpose. A
+ * dev server can hand back two copies of the same module - a stale one and a
+ * fresh one - whenever an import path differs anywhere in the graph, and when
+ * that happened here the writer of the star id and every reader of it ended up in
+ * different copies. The symptom was a star that was placed and simultaneously
+ * did not exist. Anchoring the state outside the module means a fork can
+ * duplicate the code but not the world.
+ */
+type World = { sky: Sky | null; me: number };
+const world: World = ((globalThis as unknown as { __echoSky?: World }).__echoSky ??= {
+  sky: null,
+  me: -1,
+});
+
+/** Star id of the person using this browser, or -1 before they are placed. */
+export const myStar = () => world.me;
+
+/**
+ * Put the reader into the sky.
+ *
+ * Without this there is nowhere for anything they emit to appear, and the sky
+ * is a place they can only ever visit. One star, in the first World they chose,
+ * carrying nothing until they say something.
+ */
+export function placeMe(sky: Sky, name: string, hue: number, worlds: string[]) {
+  // Already placed: keep the position, but follow the profile. Renaming
+  // yourself has to rename your star, or the sky is showing a person who no
+  // longer exists.
+  if (world.me >= 0) {
+    const me = sky.stars[world.me];
+    me.name = name;
+    me.hue = hue;
+    return sky;
+  }
+
+  const home =
+    sky.constellations.find((c) => worlds.includes(c.world)) ?? sky.constellations[0];
+
+  const id = sky.stars.length;
+  const a = Math.PI * 0.62;
+  sky.stars.push({
+    id,
+    constellation: home.id,
+    name,
+    hue,
+    traits: [],
+    x: home.x + Math.cos(a) * 4.4,
+    y: home.y + 1.1,
+    z: home.z + Math.sin(a) * 4.4,
+    planets: [],
+  });
+  home.stars.push(id);
+
+  // Join the figure to the nearest star already in the World, so the reader is
+  // part of the shape rather than floating beside it.
+  let near = home.stars[0];
+  let best = Infinity;
+  home.stars.forEach((sid) => {
+    if (sid === id) return;
+    const o = sky.stars[sid];
+    const d = (o.x - sky.stars[id].x) ** 2 + (o.z - sky.stars[id].z) ** 2;
+    if (d < best) {
+      best = d;
+      near = sid;
+    }
+  });
+  if (near !== id) home.figure.push([near, id]);
+
+  world.me = id;
+  return sky;
+}
+
+/**
+ * Everything the reader has emitted, as planets orbiting their own star.
+ * Rebuilt from the store rather than stored here, so the sky is always a view
+ * of the truth rather than a second copy of it.
+ */
+export function syncMine(
+  sky: Sky,
+  emissions: { id: number; text: string; life: number; at: number }[],
+) {
+  if (world.me < 0) return sky;
+  const mine = sky.stars[world.me];
+
+  // Drop the old set and rebuild.
+  sky.planets = sky.planets.filter((p) => p.star !== world.me);
+  mine.planets = [];
+
+  emissions.forEach((e, i) => {
+    const pid = sky.planets.length ? Math.max(...sky.planets.map((p) => p.id)) + 1 : 0;
+    const age = Math.min(0.98, (Date.now() - e.at) / (e.life * 3600 * 1000));
+    sky.planets.push({
+      id: pid,
+      star: world.me,
+      text: e.text,
+      kind: "note",
+      radius: 0.6 + i * 0.3,
+      phase: (i * 2.1) % (Math.PI * 2),
+      speed: 0.05 + (i % 3) * 0.02,
+      tilt: ((i % 5) - 2) * 0.12,
+      age,
+      carried: 0,
+    });
+    mine.planets.push(pid);
+  });
+
+  return sky;
+}
+
 /** One shared instance. The sky does not get rebuilt when a panel opens. */
-let cached: Sky | null = null;
 export function getSky(): Sky {
-  if (!cached) cached = buildSky();
-  return cached;
+  if (!world.sky) world.sky = buildSky();
+  return world.sky;
+}
+
+// Dev handle.
+if (import.meta.env.DEV) {
+  (window as unknown as { sky: unknown }).sky = {
+    get me() {
+      return world.me;
+    },
+    get data() {
+      return getSky();
+    },
+  };
 }

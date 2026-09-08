@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Mark, MARKS, type MarkId } from "@/components/Mark";
-import { getSky } from "@/scene/sky-data";
+import { getSky, myStar } from "@/scene/sky-data";
 import { cue } from "@/lib/audio";
 import { useUI } from "@/store/ui";
+import { useSequence } from "@/store/sequence";
 import { useExit } from "@/lib/useExit";
 import "./sky-dock.css";
 
@@ -47,12 +48,20 @@ export function SkyDock() {
   const send = () => {
     const t = text.trim();
     if (!t) return;
-    setSaid((s) => [{ id: Date.now(), to: who.name, text: t }, ...s]);
+    // At your own star this is not a message to somebody, it is an emission.
+    if (who.id === myStar()) {
+      const p = useSequence.getState().profile;
+      useSequence.getState().emit(p?.worlds[0] ?? "Open Sky", t, 24);
+    } else {
+      useSequence.getState().sendDM(who.id, who.name, t);
+      setSaid((s) => [{ id: Date.now(), to: who.name, text: t }, ...s]);
+    }
     setText("");
     cue("tick");
   };
 
   const who = dock.shown;
+  const mine = who.id === myStar();
   const held = thingShown.shown;
   const replies = said.filter((s) => s.to === who.name);
 
@@ -94,8 +103,8 @@ export function SkyDock() {
       <div className="dock__bar">
         <span className="dock__who">
           <Mark mark={MARKS[who.id % MARKS.length] as MarkId} hue={who.hue} size={20} />
-          <b>{who.name}</b>
-          <i>{who.traits.join(" · ")}</i>
+          <b>{mine ? "You" : who.name}</b>
+          <i>{mine ? "your own sky" : who.traits.join(" · ")}</i>
         </span>
 
         <textarea
@@ -104,7 +113,11 @@ export function SkyDock() {
           rows={1}
           value={text}
           placeholder={
-            held ? `Say something back to ${who.name}` : `Say something to ${who.name}`
+            mine
+              ? "Say something into your Worlds"
+              : held
+                ? `Say something back to ${who.name}`
+                : `Say something to ${who.name}`
           }
           onChange={(e) => setText(e.target.value.slice(0, 240))}
           onKeyDown={(e) => {

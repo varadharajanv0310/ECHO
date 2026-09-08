@@ -36,12 +36,18 @@ export default function App() {
 
   // Theme lives on the document element so it reaches the fixed layers and the
   // canvases, which sit outside any React-owned wrapper.
+  const myHue = useSequence((s) => s.profile?.hue ?? 276);
+
   useEffect(() => {
     const root = document.documentElement;
     root.dataset.mode = mode;
     root.dataset.accent = accent;
     root.style.colorScheme = mode;
-  }, [mode, accent]);
+    // Every glass surface, border and glow in the interface is derived from
+    // this, so the colour a person picked for themselves is the colour of
+    // their whole ECHO rather than just their mark.
+    root.style.setProperty("--accent-h", String(myHue));
+  }, [mode, accent, myHue]);
 
   useLenis();
 

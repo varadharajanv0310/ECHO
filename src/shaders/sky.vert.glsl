@@ -47,22 +47,35 @@ void main() {
   float inGroup = 1.0 - step(0.5, abs(aGroup - uGroup));
   float inStar = 1.0 - step(0.5, abs(aStar - uStar));
 
+  // How far into one person's system we are. Everything below is weighed
+  // against this rather than switched on a threshold, so flying in reads as a
+  // change of subject instead of a cut.
+  float atStar = smoothstep(1.35, 1.95, uLevel);
+
   float show = 0.0;
   float size = aSize;
 
   if (aKind < 0.5) {
-    // Constellation cores: the whole sky at cluster level, and only the one
-    // you are inside once you are inside it.
-    show = uLevel < 0.5 ? 1.0 : inGroup * 0.55;
+    // Constellation cores: the whole sky at cluster level, only the one you
+    // are inside once you are inside it, and nothing at all once you are
+    // standing at somebody. A World marker at that range is a bright speck
+    // with nothing to say.
+    show = uLevel < 0.5 ? 1.0 : inGroup * 0.55 * (1.0 - atStar);
     size *= uLevel < 0.5 ? 1.0 : 0.22;
   } else if (aKind < 1.5) {
-    // Stars: a faint dust from outside, individuals once you are in.
+    // Stars: dust from outside, individuals once you are in the World, and at
+    // this range one sun with its neighbours pushed back into the sky behind
+    // it. inStar is what separates the two, which is why a star has to carry
+    // its own id rather than -1.
     show = uLevel < 0.5 ? 0.16 : inGroup;
-    if (uLevel > 1.5) show *= inStar > 0.5 ? 1.0 : 0.28;
+    show *= mix(1.0, mix(0.1, 1.0, inStar), atStar);
     size *= uLevel < 0.5 ? 0.55 : 1.0;
+    size *= mix(1.0, mix(0.45, 3.2, inStar), atStar);
   } else {
-    // Planets exist only for the star you are standing at.
-    show = uLevel > 1.5 ? inStar : 0.0;
+    // Planets exist only for the star you are standing at, and have to be
+    // large enough there to read as bodies rather than as more starfield.
+    show = inStar * atStar;
+    size *= mix(1.0, 2.6, atStar);
   }
 
   float hovered = (1.0 - step(0.5, abs(uHover - aIndex)));

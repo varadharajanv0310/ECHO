@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Road } from "./Road";
 import { Galaxy } from "./Galaxy";
 import { WarpField } from "./WarpField";
-import { Sky } from "./Sky";
+import { Sky } from "@/scene/Sky";
 
 /**
  * The persistent canvas.

@@ -39,6 +39,22 @@
   color: rgba(255, 255, 255, 0.34);
 }
 
+/* A planet is a sentence somebody wrote, so it is set as one: the display
+   face, mixed case, no tracking. Everything else in the sky is a name and gets
+   the mono treatment; running these words through the same style would turn a
+   thing a person said into a label on a diagram. It sits below its planet so
+   the orbit above it stays clean. */
+.skl[data-kind="2"] {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-variation-settings: "wdth" 92, "wght" 380;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.62);
+  translate: -50% 0.9rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+
 .skl[data-hovered="true"] {
   color: #fff;
   text-shadow: 0 0 12px var(--color-violet-bright);
@@ -50,7 +66,23 @@
 :root[data-mode="light"] .skl[data-kind="1"] {
   color: rgba(22, 17, 31, 0.42);
 }
-:root[data-mode="light"] .skl[data-hovered="true"] {
+:root[data-mode="light"] /* A planet is a sentence somebody wrote, so it is set as one: the display
+   face, mixed case, no tracking. Everything else in the sky is a name and gets
+   the mono treatment; running these words through the same style would turn a
+   thing a person said into a label on a diagram. It sits below its planet so
+   the orbit above it stays clean. */
+.skl[data-kind="2"] {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-variation-settings: "wdth" 92, "wght" 380;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.62);
+  translate: -50% 0.9rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+
+.skl[data-hovered="true"] {
   color: #16111f;
   text-shadow: 0 0 12px hsl(280 90% 70%);
 }

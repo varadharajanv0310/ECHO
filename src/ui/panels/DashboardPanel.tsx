@@ -1,148 +1,176 @@
 import { useMemo } from "react";
-import { getSky } from "@/scene/sky-data";
+import { Mark, MARKS, type MarkId } from "@/components/Mark";
+import { getSky, myStar } from "@/scene/sky-data";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { Window } from "../Window";
 
-export const DASH_TABS = ["Overview", "Worlds", "Fading"] as const;
+export const DASH_TABS = ["Sent", "Responses", "Messages"] as const;
+
+const ago = (t: number) => {
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60);
+  return h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`;
+};
 
 /**
- * The dashboard.
+ * The dashboard, split by direction.
  *
- * Deliberately not a growth panel. Everything measured here is either
- * something a person did or something that is running out - what got carried,
- * where things are landing, what is about to be gone. There is no line going
- * up, because there is no quantity in ECHO that only increases.
+ * What you sent, what came back, and who you are actually talking to. That
+ * split is the whole point: on most platforms these three collapse into one
+ * feed of notifications, which flattens the difference between somebody
+ * replying to you and a number going up.
+ *
+ * Nothing here is seeded. If it is empty, it is empty because you have not
+ * done anything yet.
  */
 export function DashboardPanel() {
   const profile = useSequence((s) => s.profile);
+  const emissions = useSequence((s) => s.emissions);
+  const dms = useSequence((s) => s.dms);
+  const responses = useSequence((s) => s.responses);
+  const friends = useSequence((s) => s.friends);
+
   const setPanel = useUI((s) => s.setPanel);
-  const enterConstellation = useUI((s) => s.enterConstellation);
   const enterStar = useUI((s) => s.enterStar);
+  const openProfile = useUI((s) => s.openProfile);
   const tab = useUI((s) => s.tab.dashboard);
   const setTab = useUI((s) => s.setTab);
 
   const sky = useMemo(() => getSky(), []);
 
-  const stats = useMemo(() => {
-    const live = sky.planets.filter((p) => p.age <= 0.72);
-    const fading = sky.planets
-      .filter((p) => p.age > 0.72)
-      .sort((a, b) => b.age - a.age);
-    const carried = sky.planets
-      .filter((p) => p.carried > 0)
-      .sort((a, b) => b.carried - a.carried);
-
-    const perWorld = sky.constellations.map((c) => ({
-      c,
-      people: c.stars.length,
-      things: c.stars.reduce((n, s) => n + sky.stars[s].planets.length, 0),
-    }));
-    const peak = Math.max(...perWorld.map((w) => w.things), 1);
-
-    return { live, fading, carried, perWorld, peak };
-  }, [sky]);
-
-  const nameOf = (planetIdx: number) => sky.stars[sky.planets[planetIdx].star].name;
+  /** One row per person you have said something to, newest first. */
+  const threads = useMemo(() => {
+    const byStar = new Map<number, typeof dms>();
+    dms.forEach((d) => {
+      const list = byStar.get(d.withStar) ?? [];
+      list.push(d);
+      byStar.set(d.withStar, list);
+    });
+    return [...byStar.entries()]
+      .map(([star, list]) => ({ star, list, last: list[0] }))
+      .sort((a, b) => b.last.at - a.last.at);
+  }, [dms]);
 
   return (
     <Window
       title="Dashboard"
       subtitle={profile?.name ?? ""}
       tabs={DASH_TABS}
-      active={tab}
+      active={DASH_TABS.includes(tab as never) ? tab : "Sent"}
       onTab={(t) => setTab("dashboard", t)}
       onClose={() => setPanel(null)}
     >
-      {tab === "Overview" && (
-        <div className="u-grid">
-          <section className="db__stats">
-            <div className="u-card db__stat">
-              <b>{sky.constellations.length}</b>
-              <span>worlds you can reach</span>
-            </div>
-            <div className="u-card db__stat">
-              <b>{stats.live.length}</b>
-              <span>still travelling</span>
-            </div>
-            <div className="u-card db__stat db__stat--warn">
-              <b>{stats.fading.length}</b>
-              <span>gone by morning</span>
-            </div>
-          </section>
+      <div className="u-grid" style={{ maxWidth: 780 }}>
+        <section className="db__stats">
+          <div className="u-card db__stat">
+            <b>{emissions.length}</b>
+            <span>you have sent</span>
+          </div>
+          <div className="u-card db__stat">
+            <b>{friends.length}</b>
+            <span>people you added</span>
+          </div>
+          <div className="u-card db__stat">
+            <b>{threads.length}</b>
+            <span>conversations</span>
+          </div>
+        </section>
 
+        {tab === "Responses" ? (
           <section className="u-card">
-            <h3 className="u-h">Most carried</h3>
-            {stats.carried.slice(0, 6).map((p) => (
-              <button
-                key={p.id}
-                className="u-row sr__hit"
-                onClick={() => enterStar(p.star)}
-              >
+            <h3 className="u-h">What came back</h3>
+            {responses.length === 0 && (
+              <p className="u-empty">
+                Nothing yet. A reply only exists if somebody chose to leave one.
+              </p>
+            )}
+            {responses.map((r) => (
+              <div className="u-row" key={r.id}>
                 <div className="u-row__main">
-                  <span className="u-row__title">{p.text}</span>
+                  <span className="u-row__title">{r.text}</span>
                   <span className="u-row__meta">
-                    {nameOf(p.id)} · carried {p.carried}×
+                    {r.from} · on “{r.onText.slice(0, 40)}” · {ago(r.at)}
                   </span>
                 </div>
-              </button>
+              </div>
             ))}
           </section>
-        </div>
-      )}
-
-      {tab === "Worlds" && (
-        <section className="u-card">
-          <h3 className="u-h">Where things are landing</h3>
-          {stats.perWorld.map((w) => (
-            <div className="db__bar" key={w.c.id}>
-              <button
-                className="db__bar-label db__bar-go"
-                onClick={() => enterConstellation(w.c.id)}
-              >
-                {w.c.world}
-              </button>
-              <span className="db__bar-track">
-                <span
-                  className="db__bar-fill"
-                  style={{ transform: `scaleX(${w.things / stats.peak})` }}
-                />
-              </span>
-              <span className="db__bar-num">{w.things}</span>
-            </div>
-          ))}
-          <p className="u-hint" style={{ marginTop: "1rem", lineHeight: 1.7 }}>
-            A quiet World is not a failing one. Some places are meant to be
-            almost empty.
-          </p>
-        </section>
-      )}
-
-      {tab === "Fading" && (
-        <section className="u-card">
-          <h3 className="u-h">Running out</h3>
-          <p className="u-hint" style={{ marginBottom: "1rem" }}>
-            Carrying one of these is the only thing that resets its clock.
-          </p>
-          {stats.fading.length === 0 && <p className="u-empty">Nothing is dying</p>}
-          {stats.fading.slice(0, 24).map((p) => (
-            <button
-              key={p.id}
-              className="u-row sr__hit"
-              onClick={() => enterStar(p.star)}
-            >
-              <span className="db__dying" aria-hidden />
-              <div className="u-row__main">
-                <span className="u-row__title">{p.text}</span>
-                <span className="u-row__meta">
-                  {nameOf(p.id)} ·{" "}
-                  {Math.max(1, Math.round((1 - p.age) * 24))}h left
-                </span>
-              </div>
-            </button>
-          ))}
-        </section>
-      )}
+        ) : tab === "Messages" ? (
+          <section className="u-card">
+            <h3 className="u-h">People you are talking to</h3>
+            {threads.length === 0 && (
+              <p className="u-empty">
+                Nobody yet. Stand at someone and say something.
+              </p>
+            )}
+            {threads.map((t) => {
+              const person = sky.stars[t.star];
+              return (
+                <button
+                  className="u-row sr__hit"
+                  key={t.star}
+                  onClick={() => openProfile(t.star)}
+                >
+                  <Mark
+                    mark={MARKS[t.star % MARKS.length] as MarkId}
+                    hue={person?.hue ?? 276}
+                    size={22}
+                  />
+                  <div className="u-row__main">
+                    <span className="u-row__title">{t.last.text}</span>
+                    <span className="u-row__meta">
+                      {t.last.name} · {t.list.length}{" "}
+                      {t.list.length === 1 ? "message" : "messages"} ·{" "}
+                      {ago(t.last.at)}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </section>
+        ) : (
+          <section className="u-card">
+            <h3 className="u-h">What you sent</h3>
+            {emissions.length === 0 && (
+              <p className="u-empty">
+                Nothing yet. Create something and it appears at your own star.
+              </p>
+            )}
+            {emissions.map((e) => {
+              const hoursLeft = Math.max(
+                0,
+                e.life - (Date.now() - e.at) / 3600000,
+              );
+              const dying = hoursLeft < e.life * 0.28;
+              return (
+                <button
+                  className="u-row sr__hit"
+                  key={e.id}
+                  onClick={() => myStar() >= 0 && enterStar(myStar())}
+                >
+                  {dying && <span className="db__dying" aria-hidden />}
+                  <div className="u-row__main">
+                    <span className="u-row__title">{e.text}</span>
+                    <span className="u-row__meta">
+                      {e.world} · {ago(e.at)} ·{" "}
+                      {hoursLeft < 1
+                        ? "gone"
+                        : `${Math.round(hoursLeft)}h left`}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+            <p className="u-hint" style={{ marginTop: "1rem", lineHeight: 1.7 }}>
+              These clocks only ever run down. The one thing that resets them is
+              somebody choosing to carry what you said.
+            </p>
+          </section>
+        )}
+      </div>
     </Window>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { copy } from "@/copy";
 import { useSequence } from "@/store/sequence";
+import { cue } from "@/lib/audio";
+import { myStar } from "@/scene/sky-data";
 import { useUI } from "@/store/ui";
 import { Window } from "../Window";
 
@@ -25,6 +27,8 @@ const LIFETIMES = [
  */
 export function CreatePanel() {
   const profile = useSequence((s) => s.profile);
+  const emit = useSequence((s) => s.emit);
+  const enterStar = useUI((s) => s.enterStar);
   const setPanel = useUI((s) => s.setPanel);
   const tab = useUI((s) => s.tab.create);
   const setTab = useUI((s) => s.setTab);
@@ -59,16 +63,25 @@ export function CreatePanel() {
                 carries it, and if nobody does it will be gone in {life} hours.
                 You will not be told either way.
               </p>
-              <button
-                className="u-btn u-btn--ghost"
-                style={{ marginTop: "1.1rem" }}
-                onClick={() => {
-                  setSent(false);
-                  setText("");
-                }}
-              >
-                Emit another
-              </button>
+              <div className="cr__after">
+                <button
+                  className="u-btn u-btn--ghost"
+                  onClick={() => {
+                    setSent(false);
+                    setText("");
+                  }}
+                >
+                  Emit another
+                </button>
+                <button
+                  className="u-btn u-btn--ghost"
+                  onClick={() => {
+                    if (myStar() >= 0) enterStar(myStar());
+                  }}
+                >
+                  Go and look at it
+                </button>
+              </div>
             </section>
           ) : (
             <>
@@ -122,9 +135,16 @@ export function CreatePanel() {
               </section>
 
               <button
-                className="u-btn"
+                className="u-btn u-btn--go"
                 disabled={!ready}
-                onClick={() => setSent(true)}
+                onClick={() => {
+                  // This is the one control in ECHO that changes the sky. The
+                  // signal appears at your own star the moment you let it go -
+                  // there is no server to wait for and nothing to confirm.
+                  emit(world, text.trim(), life);
+                  setSent(true);
+                  cue("tick");
+                }}
               >
                 Emit into {world}
               </button>

@@ -59,9 +59,42 @@ export type Profile = {
 
   /* Everything below is added later, from the profile panel. */
   status?: string;
-  songs?: Song[];
+  /** Catalogue ids, not free text, so covers and metadata are consistent. */
+  songs?: string[];
   games?: string[];
+  favouriteGame?: string;
   links?: Link[];
+  /** Banner gradient angle, chosen from a small set. */
+  banner?: number;
+};
+
+/** Something you emitted. Lives in the sky at your own star. */
+export type Emission = {
+  id: number;
+  world: string;
+  text: string;
+  at: number;
+  /** Hours it was given. */
+  life: number;
+};
+
+export type DirectMessage = {
+  id: number;
+  /** Star id of the other person. */
+  withStar: number;
+  name: string;
+  text: string;
+  at: number;
+  mine: boolean;
+};
+
+/** A reply somebody left on something of yours. */
+export type Response = {
+  id: number;
+  from: string;
+  onText: string;
+  text: string;
+  at: number;
 };
 
 export type ThemeMode = "dark" | "light";
@@ -98,6 +131,24 @@ function readProfile(): Profile | null {
   }
 }
 
+/** Small persisted lists. Everything ECHO knows lives in this browser. */
+function readList<T>(key: string): T[] {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeList<T>(key: string, v: T[]) {
+  try {
+    localStorage.setItem(key, JSON.stringify(v));
+  } catch {
+    /* private mode */
+  }
+}
+
 function readSettings(): Settings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
@@ -125,9 +176,19 @@ type SequenceState = {
   setBootProgress: (n: number) => void;
   setPassageProgress: (n: number) => void;
   setDiveProgress: (n: number) => void;
+  /** Everything the person has actually done, rather than seeded. */
+  emissions: Emission[];
+  friends: number[];
+  dms: DirectMessage[];
+  responses: Response[];
+
   setProfile: (p: Profile) => void;
   patchProfile: (p: Partial<Profile>) => void;
   setSettings: (s: Partial<Settings>) => void;
+
+  emit: (world: string, text: string, life: number) => void;
+  toggleFriend: (star: number) => void;
+  sendDM: (star: number, name: string, text: string) => void;
 };
 
 /** `?phase=galaxy` jumps straight to a beat. `?reset` clears persistence. */
@@ -173,6 +234,10 @@ export const useSequence = create<SequenceState>((set, get) => ({
   diveProgress: START === "constellation" ? 1 : 0,
   profile: readProfile(),
   settings: readSettings(),
+  emissions: readList("echo.emissions"),
+  friends: readList("echo.friends"),
+  dms: readList("echo.dms"),
+  responses: readList("echo.responses"),
 
   setPhase: (phase) => set({ phase }),
 
@@ -202,6 +267,38 @@ export const useSequence = create<SequenceState>((set, get) => ({
       /* private mode */
     }
     set({ profile: next });
+  },
+
+  /**
+   * Emitting is the one thing here that changes the sky. A signal goes into a
+   * World and appears at your own star immediately, because there is no server
+   * to wait for and nothing to confirm.
+   */
+  emit: (world, text, life) => {
+    const next = [
+      { id: Date.now(), world, text, at: Date.now(), life },
+      ...get().emissions,
+    ];
+    writeList("echo.emissions", next);
+    set({ emissions: next });
+  },
+
+  toggleFriend: (star) => {
+    const cur = get().friends;
+    const next = cur.includes(star)
+      ? cur.filter((x) => x !== star)
+      : [...cur, star];
+    writeList("echo.friends", next);
+    set({ friends: next });
+  },
+
+  sendDM: (star, name, text) => {
+    const next = [
+      { id: Date.now(), withStar: star, name, text, at: Date.now(), mine: true },
+      ...get().dms,
+    ];
+    writeList("echo.dms", next);
+    set({ dms: next });
   },
 
   setSettings: (patch) => {

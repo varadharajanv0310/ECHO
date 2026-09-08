@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { skyLabels, type SkyLabel } from "@/scene/Sky";
+import { skyLabels, type SkyLabel } from "@/scene/sky-labels";
 import { getSky } from "@/scene/sky-data";
 import { useUI } from "@/store/ui";
 import "./sky-hud.css";

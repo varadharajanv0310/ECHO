@@ -12,6 +12,8 @@ type Props = {
   children: ReactNode;
   /** Wide windows for browsing, narrow for a single task. */
   size?: "wide" | "narrow";
+  /** Hue this window is tinted by. Defaults to the app accent. */
+  accent?: number;
 };
 
 /**
@@ -35,6 +37,7 @@ export function Window({
   onClose,
   children,
   size = "wide",
+  accent,
 }: Props) {
   // Escape closes. A window that can only be dismissed by hitting a small
   // target is a trap for anyone not using a mouse.
@@ -58,6 +61,11 @@ export function Window({
       <section
         className="win"
         data-size={size}
+        style={
+          accent !== undefined
+            ? ({ "--accent-h": accent } as React.CSSProperties)
+            : undefined
+        }
         role="dialog"
         aria-modal="true"
         aria-label={title}

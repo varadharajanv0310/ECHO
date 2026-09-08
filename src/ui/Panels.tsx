@@ -1,7 +1,7 @@
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { useExit } from "@/lib/useExit";
-import { ProfilePanel } from "./panels/ProfilePanel";
+import { ProfileWindow } from "./ProfileWindow";
 import { MenuPanel } from "./panels/MenuPanel";
 import { CreatePanel } from "./panels/CreatePanel";
 import { SearchPanel } from "./panels/SearchPanel";
@@ -27,7 +27,12 @@ const CLOSE_MS = 190;
 export function Panels() {
   const phase = useSequence((s) => s.phase);
   const panel = useUI((s) => s.panel);
+  const profileOf = useUI((s) => s.profileOf);
   const { shown, closing } = useExit(panel, CLOSE_MS);
+  const visiting = useExit(
+    typeof profileOf === "number" ? profileOf : null,
+    CLOSE_MS,
+  );
 
   if (phase !== "constellation") return null;
 
@@ -37,13 +42,23 @@ export function Panels() {
       <SkyHud />
       <SkyDock />
 
+      {visiting.shown !== null && (
+        <div
+          className="win-layer"
+          data-closing={visiting.closing}
+          style={{ zIndex: "var(--z-window)" }}
+        >
+          <ProfileWindow star={visiting.shown} />
+        </div>
+      )}
+
       {shown && (
         <div
           className="win-layer"
           data-closing={closing}
           style={{ zIndex: "var(--z-window)" }}
         >
-          {shown === "profile" && <ProfilePanel />}
+          {shown === "profile" && <ProfileWindow star={null} />}
           {shown === "menu" && <MenuPanel />}
           {shown === "create" && <CreatePanel />}
           {shown === "search" && <SearchPanel />}
