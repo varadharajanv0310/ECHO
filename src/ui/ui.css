@@ -8,9 +8,6 @@
    ========================================================================= */
 
 :root {
-  --z-rail: 70;
-  --z-window: 80;
-
   /* --accent-h is written from the profile hue, so every surface in the
      interface is tinted by the colour a person chose for themselves. Nothing
      below hardcodes a violet. */

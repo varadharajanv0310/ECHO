@@ -7,6 +7,13 @@ import { Window } from "../Window";
 
 export const SEARCH_TABS = ["Signals", "People"] as const;
 
+/** Cheap integer scramble - stable for an id, unrelated to anything else. */
+function scramble(n: number) {
+  let h = Math.imul(n ^ 0x9e3779b9, 0x85ebca6b);
+  h ^= h >>> 13;
+  return Math.imul(h, 0xc2b2ae35) >>> 0;
+}
+
 /**
  * Search.
  *
@@ -38,6 +45,13 @@ export function SearchPanel() {
       .filter((p) => (world ? p.world === world : true))
       .filter((p) => (onlyFading ? p.age > 0.72 : true))
       .filter((p) => (term ? p.text.toLowerCase().includes(term) : true))
+      // Scrambled, not sorted. In stored order every signal by one person
+      // arrives in a block, and a run of six things by the same author at the
+      // top of the results looks exactly like a ranking - which is the one
+      // thing this panel says it does not do. The scramble is a hash of the
+      // id, so it is stable between renders and has no relationship to who
+      // wrote a thing, when, or how far it travelled.
+      .sort((a, b) => scramble(a.id) - scramble(b.id))
       .slice(0, 40);
   }, [sky, q, world, onlyFading]);
 

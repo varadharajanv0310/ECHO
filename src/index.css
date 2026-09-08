@@ -37,8 +37,13 @@
     --z-grain: 40;
     --z-vignette: 45;
     --z-hud: 60;
+    --z-rail: 70;
+    --z-dock: 72;
+    /* A window is opened on purpose and is the thing being read, so it sits
+       above the standing interface. The dock used to outrank it and painted
+       the compose bar across the middle of every open panel. */
+    --z-window: 80;
     /* Above everything, including windows. Nothing may paint over the pointer. */
-    --z-dock: 90;
     --z-cursor: 500;
   }
 
