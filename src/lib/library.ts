@@ -125,3 +125,32 @@ export function pickFor(seed: number, list: Entry[], n: number): string[] {
 
 export const byId = (id: string): Entry | undefined =>
   GAMES.find((g) => g.id === id) ?? SONGS.find((s) => s.id === id);
+
+/**
+ * Places a person might be, elsewhere.
+ *
+ * Handles rather than links, and never rendered as anchors. Nothing here is
+ * verified and nothing is sent anywhere, so presenting a stranger's typed
+ * string as a clickable destination would be claiming something ECHO has no
+ * way to know.
+ */
+export const PLACES = [
+  { id: "steam", label: "Steam" },
+  { id: "spotify", label: "Spotify" },
+  { id: "lastfm", label: "Last.fm" },
+  { id: "bandcamp", label: "Bandcamp" },
+  { id: "letterboxd", label: "Letterboxd" },
+  { id: "github", label: "GitHub" },
+  { id: "itch", label: "itch.io" },
+  { id: "backloggd", label: "Backloggd" },
+] as const;
+
+export const placeLabel = (id: string) =>
+  PLACES.find((p) => p.id === id)?.label ?? id;
+
+/** A handle for somebody the sky invented, stable to their star. */
+export function handlesFor(seed: number, name: string) {
+  const ids = pickFor(seed, PLACES as unknown as Entry[], 3);
+  const tail = ["", "_", String(70 + (seed % 29)), ".", "-x"][seed % 5];
+  return ids.map((id) => ({ label: id, value: `${name}${tail}` }));
+}

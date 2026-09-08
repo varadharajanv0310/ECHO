@@ -412,3 +412,60 @@
   border-color: hsl(var(--accent-h) 70% 45% / 0.32);
   color: hsl(var(--accent-h) 78% 38%);
 }
+
+/* ------------------------------------------------------------- elsewhere */
+
+.pw__places {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.7rem 1rem;
+}
+
+.pw__place {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pw__place span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.pw__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Deliberately not an anchor. Nothing here is verified, so rendering a
+   stranger's typed string as somewhere you can go would be a claim ECHO
+   cannot make. */
+.pw__link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--hair-soft);
+  border-radius: var(--r-pill);
+  background: var(--glass-soft);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+.pw__link b {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: hsl(var(--accent-h) 90% 76%);
+}
+
+:root[data-mode="light"] .pw__link b {
+  color: hsl(var(--accent-h) 78% 40%);
+}

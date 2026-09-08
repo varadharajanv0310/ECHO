@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Mark, MARKS, type MarkId } from "@/components/Mark";
 import { Cover } from "./Cover";
 import { copy } from "@/copy";
-import { GAMES, SONGS, byId, pickFor } from "@/lib/library";
+import { GAMES, SONGS, PLACES, byId, pickFor, handlesFor, placeLabel } from "@/lib/library";
 import { getSky } from "@/scene/sky-data";
 import { cue } from "@/lib/audio";
 import { useSequence } from "@/store/sequence";
@@ -71,6 +71,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
         songs: profile?.songs ?? [],
         favourite: profile?.favouriteGame,
         banner: profile?.banner ?? 0,
+        links: profile?.links ?? [],
         since: "You arrived here",
       };
     }
@@ -87,6 +88,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
       songs: pickFor(t.id + 91, SONGS, 4),
       favourite: pickFor(t.id, GAMES, 6)[0],
       banner: t.id % BANNERS.length,
+      links: handlesFor(t.id, t.name),
       since: `Listening in ${sky.constellations[t.constellation].world}`,
     };
   }, [own, profile, them, sky]);
@@ -275,6 +277,20 @@ export function ProfileWindow({ star }: { star: number | null }) {
                   ))}
                 </div>
               </section>
+
+              {view.links.length > 0 && (
+                <section className="u-card">
+                  <h3 className="u-h">Elsewhere</h3>
+                  <div className="pw__links">
+                    {view.links.map((l) => (
+                      <span className="pw__link" key={l.label}>
+                        <b>{placeLabel(l.label)}</b>
+                        {l.value}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
             </>
           )}
 
@@ -334,8 +350,34 @@ export function ProfileWindow({ star }: { star: number | null }) {
               <h3 className="u-h">Elsewhere</h3>
               <p className="u-hint" style={{ lineHeight: 1.7 }}>
                 Stored in this browser. Nothing is verified and nothing is sent
-                anywhere.
+                anywhere, so these are handles rather than links - ECHO has no
+                way to know that any of them is really you.
               </p>
+              <div className="pw__places">
+                {PLACES.map((pl) => (
+                  <label className="pw__place" key={pl.id}>
+                    <span>{pl.label}</span>
+                    <input
+                      className="u-input"
+                      value={
+                        view.links.find((l) => l.label === pl.id)?.value ?? ""
+                      }
+                      placeholder="handle"
+                      onChange={(e) => {
+                        const value = e.target.value.slice(0, 32);
+                        const rest = view.links.filter(
+                          (l) => l.label !== pl.id,
+                        );
+                        patch({
+                          links: value
+                            ? [...rest, { label: pl.id, value }]
+                            : rest,
+                        });
+                      }}
+                    />
+                  </label>
+                ))}
+              </div>
             </section>
           )}
 
