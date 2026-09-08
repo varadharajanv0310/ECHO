@@ -3,12 +3,11 @@ import { useSequence, DEFAULT_SETTINGS } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { Window } from "../Window";
 
-export const MENU_TABS = [
-  "Settings",
-  "Appearance",
-  "Accessibility",
-  "Privacy",
-] as const;
+// No Appearance tab. Ground and accent belong to the profile, where a person
+// picks their colour, and the only other thing in that room was a second
+// control for the grain that Accessibility already owned - so it was a tab
+// holding a duplicate and a note saying the settings are somewhere else.
+export const MENU_TABS = ["Settings", "Accessibility", "Privacy"] as const;
 
 const RECEIVE = [
   "Carries",
@@ -84,9 +83,10 @@ export function MenuPanel() {
       tabs={MENU_TABS}
       active={tab}
       onTab={(t) => setTab("menu", t)}
+      size="mid"
       onClose={() => setPanel(null)}
     >
-      <div className="u-grid" style={{ maxWidth: 720 }}>
+      <div className="u-grid">
         {tab === "Settings" && (
           <>
             <section className="u-card">
@@ -134,36 +134,6 @@ export function MenuPanel() {
           </>
         )}
 
-        {tab === "Appearance" && (
-          <>
-            <section className="u-card">
-              <h3 className="u-h">Theme</h3>
-              <p className="u-hint">
-                Ground and accent live in your profile, under Theme.
-              </p>
-            </section>
-
-            <section className="u-card">
-              <h3 className="u-h">Film grain</h3>
-              <input
-                className="mn__range"
-                type="range"
-                min={0}
-                max={1.6}
-                step={0.05}
-                value={settings.grain}
-                onChange={(e) => setSettings({ grain: Number(e.target.value) })}
-                aria-label="Grain amount"
-              />
-              <p className="u-hint">
-                {settings.grain === 0
-                  ? "Off. Cleaner, and a little more clinical."
-                  : `${Math.round(settings.grain * 100)}%`}
-              </p>
-            </section>
-          </>
-        )}
-
         {tab === "Accessibility" && (
           <section className="u-card">
             <h3 className="u-h">Motion and light</h3>
@@ -180,17 +150,21 @@ export function MenuPanel() {
               you.
             </p>
 
-            <Toggle
-              on={settings.grain < 0.2}
-              onClick={() =>
-                setSettings({ grain: settings.grain < 0.2 ? 1 : 0 })
-              }
-            >
-              Remove film grain
-            </Toggle>
+            <span className="u-label">Film grain</span>
+            <input
+              className="mn__range"
+              type="range"
+              min={0}
+              max={1.6}
+              step={0.05}
+              value={settings.grain}
+              onChange={(e) => setSettings({ grain: Number(e.target.value) })}
+              aria-label="Grain amount"
+            />
             <p className="u-hint" style={{ marginTop: "0.6rem" }}>
-              Grain sits over every surface including text. Turning it off
-              raises contrast everywhere.
+              {settings.grain === 0
+                ? "Off. Cleaner, and a little more clinical."
+                : `${Math.round(settings.grain * 100)}%. Grain sits over every surface including text, so turning it down raises contrast everywhere.`}
             </p>
           </section>
         )}

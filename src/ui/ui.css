@@ -281,6 +281,15 @@
   pointer-events: none;
 }
 
+/* Three widths, and each one means something: a single task, a column you
+   read down, or two columns you browse. A panel that caps its own content
+   inside a window wider than the cap leaves a ragged half-empty slab, so the
+   window is sized to the content instead of the content to the window. */
+.win[data-size="mid"] {
+  width: min(880px, 100%);
+  height: min(700px, 100%);
+}
+
 .win[data-size="narrow"] {
   width: min(700px, 100%);
   height: min(620px, 100%);

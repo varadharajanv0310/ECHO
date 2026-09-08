@@ -61,9 +61,10 @@ export function DashboardPanel() {
       tabs={DASH_TABS}
       active={DASH_TABS.includes(tab as never) ? tab : "Sent"}
       onTab={(t) => setTab("dashboard", t)}
+      size="mid"
       onClose={() => setPanel(null)}
     >
-      <div className="u-grid" style={{ maxWidth: 780 }}>
+      <div className="u-grid">
         <section className="db__stats">
           <div className="u-card db__stat">
             <b>{emissions.length}</b>

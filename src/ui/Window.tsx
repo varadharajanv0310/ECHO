@@ -10,8 +10,11 @@ type Props = {
   onTab: (t: string) => void;
   onClose: () => void;
   children: ReactNode;
-  /** Wide windows for browsing, narrow for a single task. */
-  size?: "wide" | "narrow";
+  /**
+   * Wide for browsing two columns, mid for a column you read down, narrow
+   * for a single task.
+   */
+  size?: "wide" | "mid" | "narrow";
   /** Hue this window is tinted by. Defaults to the app accent. */
   accent?: number;
 };
