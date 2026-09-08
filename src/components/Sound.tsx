@@ -48,6 +48,21 @@ export function Sound() {
     if (phase === "constellation") cue("arrive");
   }, [phase]);
 
+  // Every button in the interface gets the same tap, from one listener rather
+  // than a call wired into each control. Buttons that already play something
+  // of their own opt out with data-silent.
+  useEffect(() => {
+    const tap = (e: MouseEvent) => {
+      const el = (e.target as Element | null)?.closest?.(
+        "button, .u-chip, .rail__btn",
+      );
+      if (!el || el.hasAttribute("data-silent")) return;
+      cue("click");
+    };
+    document.addEventListener("click", tap, true);
+    return () => document.removeEventListener("click", tap, true);
+  }, []);
+
   if (!audible) return null;
 
   return (

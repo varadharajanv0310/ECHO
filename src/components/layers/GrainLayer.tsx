@@ -140,8 +140,8 @@ export function GrainLayer({
     <canvas
       ref={canvasRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 h-full w-full"
-      style={{ zIndex: "var(--z-grain)", mixBlendMode: "screen" }}
+      className="grain-layer pointer-events-none fixed inset-0 h-full w-full"
+      style={{ zIndex: "var(--z-grain)" }}
     />
   );
 }

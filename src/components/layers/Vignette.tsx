@@ -9,7 +9,7 @@ export function Vignette({ opacity = 0.8 }: Props) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 transition-opacity duration-1000"
+      className="vignette-layer pointer-events-none fixed inset-0 transition-opacity duration-1000"
       style={{ zIndex: "var(--z-vignette)", opacity }}
     >
       <div

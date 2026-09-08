@@ -20,7 +20,11 @@ type Nodes = {
   filter: BiquadFilterNode;
   oscs: OscillatorNode[];
   noise: AudioBufferSourceNode;
+  noiseBuf: AudioBuffer;
 };
+
+/** Fundamentals of the drone stack, so pitch can be bent as a ratio. */
+const BASE = [55, 82.4, 110, 164.8];
 
 let n: Nodes | null = null;
 let muted = false;
@@ -77,7 +81,7 @@ export function startAudio() {
   droneGain.connect(filter);
 
   // A minor-ish stack, detuned so it beats slowly against itself.
-  const oscs = [55, 82.4, 110, 164.8].map((f, i) => {
+  const oscs = BASE.map((f, i) => {
     const o = ctx.createOscillator();
     o.type = i % 2 === 0 ? "sine" : "triangle";
     o.frequency.value = f;
@@ -91,13 +95,14 @@ export function startAudio() {
   airGain.gain.value = 0;
   airGain.connect(filter);
 
+  const buf = noiseBuffer(ctx);
   const noise = ctx.createBufferSource();
-  noise.buffer = noiseBuffer(ctx);
+  noise.buffer = buf;
   noise.loop = true;
   noise.connect(airGain);
   noise.start();
 
-  n = { ctx, master, droneGain, airGain, filter, oscs, noise };
+  n = { ctx, master, droneGain, airGain, filter, oscs, noise, noiseBuf: buf };
   started = true;
 }
 
@@ -116,85 +121,150 @@ export function setMuted(m: boolean) {
 /** Per-beat mix. Everything ramps; nothing is ever switched. */
 export function setAudioPhase(phase: Phase, progress: number) {
   if (!n) return;
-  const t = n.ctx.currentTime;
+  const nodes = n;
+  const t = nodes.ctx.currentTime;
+
   const to = (p: AudioParam, v: number, s = 1.4) => {
     p.cancelScheduledValues(t);
     p.setTargetAtTime(v, t, s / 3);
   };
 
+  /**
+   * Bend the whole stack by a ratio rather than retuning each voice.
+   * Everything sags together, which reads as the recording slowing down rather
+   * than as the music changing key.
+   */
+  const pitch = (ratio: number, s = 3.5) => {
+    nodes.oscs.forEach((o, i) => to(o.frequency, BASE[i] * ratio, s));
+  };
+
   switch (phase) {
     case "void":
     case "reveal":
-      to(n.droneGain.gain, 0.05);
-      to(n.airGain.gain, 0.02);
-      to(n.filter.frequency, 180);
+      pitch(1);
+      to(nodes.droneGain.gain, 0.05);
+      to(nodes.airGain.gain, 0.02);
+      to(nodes.filter.frequency, 180);
       break;
+
     case "passage":
       // Opens up as the road runs on, so the passage feels like descent.
-      to(n.droneGain.gain, 0.09 + progress * 0.07);
-      to(n.airGain.gain, 0.03 + progress * 0.06);
-      to(n.filter.frequency, 220 + progress * 900);
+      pitch(1);
+      to(nodes.droneGain.gain, 0.09 + progress * 0.07);
+      to(nodes.airGain.gain, 0.03 + progress * 0.06);
+      to(nodes.filter.frequency, 220 + progress * 900);
       break;
+
     case "galaxy":
-      to(n.droneGain.gain, 0.13);
-      to(n.airGain.gain, 0.05);
-      to(n.filter.frequency, 900);
+      // Everything sags once the road runs out. The piece has arrived
+      // somewhere and stops pushing forward.
+      pitch(0.72, 5);
+      to(nodes.droneGain.gain, 0.11, 3);
+      to(nodes.airGain.gain, 0.04, 3);
+      to(nodes.filter.frequency, 560, 3);
       break;
+
     case "ignition":
-      to(n.droneGain.gain, 0.2, 0.6);
-      to(n.filter.frequency, 2600, 0.5);
+      pitch(0.68, 1.2);
+      to(nodes.droneGain.gain, 0.16, 0.8);
+      to(nodes.filter.frequency, 1400, 0.8);
       break;
+
     case "profile":
-      to(n.droneGain.gain, 0.08);
-      to(n.airGain.gain, 0.03);
-      to(n.filter.frequency, 700);
+      pitch(0.7, 3);
+      to(nodes.droneGain.gain, 0.07);
+      to(nodes.airGain.gain, 0.028);
+      to(nodes.filter.frequency, 520);
       break;
+
     case "dive":
-      to(n.droneGain.gain, 0.22, 0.8);
-      to(n.airGain.gain, 0.14, 0.8);
-      to(n.filter.frequency, 4200, 1.6);
+      pitch(0.9, 1.4);
+      to(nodes.droneGain.gain, 0.2, 0.9);
+      to(nodes.airGain.gain, 0.13, 0.9);
+      to(nodes.filter.frequency, 3400, 1.6);
       break;
+
     case "constellation":
-      to(n.droneGain.gain, 0.07, 2.6);
-      to(n.airGain.gain, 0.035, 2.6);
-      to(n.filter.frequency, 620, 2.6);
+      // The sky is still. Almost nothing left but a low bed and some air.
+      pitch(0.62, 5);
+      to(nodes.droneGain.gain, 0.042, 4);
+      to(nodes.airGain.gain, 0.022, 4);
+      to(nodes.filter.frequency, 300, 4);
       break;
   }
 }
 
 /** One-shot transients for moments a person caused. */
-export function cue(kind: "spark" | "arrive" | "tick") {
+export function cue(kind: "spark" | "arrive" | "tick" | "click") {
   if (!n || muted) return;
-  const { ctx, master } = n;
+  const { ctx, master, noiseBuf } = n;
   const t = ctx.currentTime;
 
-  if (kind === "tick") {
+  /** Short burst of the noise bed through a band-pass. */
+  const burst = (
+    freq: number,
+    q: number,
+    peak: number,
+    dur: number,
+    sweepTo?: number,
+  ) => {
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuf;
+    src.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.setValueAtTime(freq, t);
+    if (sweepTo) bp.frequency.exponentialRampToValueAtTime(sweepTo, t + dur);
+    bp.Q.value = q;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + dur * 0.12);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(bp).connect(g).connect(master);
+    src.start(t);
+    src.stop(t + dur + 0.05);
+  };
+
+  if (kind === "click") {
+    // A soft wooden tap, well under the drone. Nothing bright, nothing digital.
+    burst(430, 7, 0.05, 0.09);
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "sine";
-    o.frequency.setValueAtTime(880, t);
+    o.frequency.setValueAtTime(196, t);
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.035, t + 0.01);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    g.gain.exponentialRampToValueAtTime(0.028, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
     o.connect(g).connect(master);
     o.start(t);
-    o.stop(t + 0.25);
+    o.stop(t + 0.16);
+    return;
+  }
+
+  if (kind === "tick") {
+    burst(700, 5, 0.045, 0.13);
     return;
   }
 
   if (kind === "spark") {
-    // Bright strike plus a body that drops an octave - ignition, then weight.
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.type = "triangle";
-    o.frequency.setValueAtTime(1760, t);
-    o.frequency.exponentialRampToValueAtTime(110, t + 1.1);
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
-    o.connect(g).connect(master);
-    o.start(t);
-    o.stop(t + 1.7);
+    // Something being pulled apart, not a laser. A sub that drops and holds,
+    // with a band of noise tearing upward across it. The previous version
+    // swept a triangle down from 1760Hz, which is the exact recipe for a toy
+    // "pew" and sat completely outside the register of everything else.
+    const sub = ctx.createOscillator();
+    const sg = ctx.createGain();
+    sub.type = "sine";
+    sub.frequency.setValueAtTime(72, t);
+    sub.frequency.exponentialRampToValueAtTime(38, t + 1.4);
+    sg.gain.setValueAtTime(0.0001, t);
+    sg.gain.exponentialRampToValueAtTime(0.19, t + 0.06);
+    sg.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
+    sub.connect(sg).connect(master);
+    sub.start(t);
+    sub.stop(t + 2.1);
+
+    // The tear.
+    burst(220, 1.4, 0.1, 1.5, 2400);
     return;
   }
 
@@ -202,12 +272,12 @@ export function cue(kind: "spark" | "arrive" | "tick") {
   const o = ctx.createOscillator();
   const g = ctx.createGain();
   o.type = "sine";
-  o.frequency.setValueAtTime(220, t);
-  o.frequency.linearRampToValueAtTime(330, t + 2.4);
+  o.frequency.setValueAtTime(146, t);
+  o.frequency.linearRampToValueAtTime(196, t + 2.6);
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.linearRampToValueAtTime(0.07, t + 1.2);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 4);
+  g.gain.linearRampToValueAtTime(0.06, t + 1.3);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 4.4);
   o.connect(g).connect(master);
   o.start(t);
-  o.stop(t + 4.2);
+  o.stop(t + 4.6);
 }

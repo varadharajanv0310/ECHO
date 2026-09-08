@@ -203,7 +203,7 @@ export const FluidParticlesBackground = ({
   return (
     <div
       ref={wrapRef}
-      className={cn("fixed inset-0 overflow-hidden pointer-events-none", className)}
+      className={cn("particles-layer fixed inset-0 overflow-hidden pointer-events-none", className)}
       style={{ zIndex: "var(--z-particles)" }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />

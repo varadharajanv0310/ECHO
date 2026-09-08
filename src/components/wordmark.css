@@ -2,6 +2,34 @@
   position: relative;
   display: grid;
   place-items: center;
+  isolation: isolate;
+}
+
+/* The bleed needs somewhere dark to fall into. On a bright violet field,
+   violet light on violet light is nothing at all. */
+.wm-wrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 150%;
+  height: 260%;
+  translate: -50% 0;
+  z-index: -1;
+  background: radial-gradient(
+    58% 50% at 50% 12%,
+    rgba(4, 3, 10, 0.94),
+    rgba(4, 3, 10, 0.7) 42%,
+    transparent 78%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1400ms ease 500ms;
+}
+
+.wm[data-state="in"] ~ * .wm-wrap::before,
+.wm-wrap:has(.wm[data-state="in"])::before {
+  opacity: 1;
 }
 
 .wm-defs {
@@ -46,10 +74,10 @@
   filter: url(#echo-bleed-soft);
   mask-image: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.12) 0%,
-    rgba(0, 0, 0, 0.8) 16%,
-    rgba(0, 0, 0, 0.26) 52%,
-    transparent 76%
+    rgba(0, 0, 0, 0.18) 0%,
+    #000 16%,
+    rgba(0, 0, 0, 0.42) 56%,
+    transparent 86%
   );
 }
 
@@ -60,9 +88,9 @@
   mask-image: linear-gradient(
     to bottom,
     transparent 8%,
-    rgba(0, 0, 0, 0.5) 34%,
-    rgba(0, 0, 0, 0.18) 62%,
-    transparent 82%
+    rgba(0, 0, 0, 0.72) 36%,
+    rgba(0, 0, 0, 0.3) 68%,
+    transparent 90%
   );
 }
 
@@ -72,23 +100,23 @@
   filter: url(#echo-bleed-soft);
   mask-image: linear-gradient(
     to bottom,
-    transparent 24%,
-    rgba(0, 0, 0, 0.34) 52%,
-    rgba(0, 0, 0, 0.12) 74%,
-    transparent 90%
+    transparent 26%,
+    rgba(0, 0, 0, 0.5) 56%,
+    rgba(0, 0, 0, 0.2) 78%,
+    transparent 96%
   );
 }
 
 /* Bright, tight strands falling straight out of each stem. */
 .wm__layer--strand {
-  color: #efe2ff;
+  color: #f0dcff;
   transform-origin: 50% 6%;
   filter: url(#echo-bleed-tight);
   mask-image: linear-gradient(
     to bottom,
     transparent 2%,
-    rgba(0, 0, 0, 0.85) 14%,
-    transparent 56%
+    #000 15%,
+    transparent 62%
   );
   mix-blend-mode: screen;
 }
@@ -111,6 +139,7 @@
 
 .wm__layer--core {
   color: #fff;
+  filter: url(#echo-warp);
 }
 
 /* Amber burning at the base of the letterforms only.
@@ -118,6 +147,7 @@
    white, so the burn would be invisible. It has to replace the white. */
 .wm__layer--burn {
   color: #ff8a3d;
+  filter: url(#echo-warp);
   mask-image: linear-gradient(
     to bottom,
     transparent 76%,
@@ -193,8 +223,8 @@
     transform: scaleY(1.02);
   }
   to {
-    opacity: 0.5;
-    transform: scaleY(2.9);
+    opacity: 0.92;
+    transform: scaleY(3.4);
   }
 }
 
@@ -204,8 +234,8 @@
     transform: scaleY(1.02);
   }
   to {
-    opacity: 0.34;
-    transform: scaleY(4.1);
+    opacity: 0.7;
+    transform: scaleY(4.9);
   }
 }
 
@@ -215,8 +245,8 @@
     transform: scaleY(1.02);
   }
   to {
-    opacity: 0.24;
-    transform: scaleY(5.4);
+    opacity: 0.5;
+    transform: scaleY(6.4);
   }
 }
 
@@ -227,7 +257,7 @@
   }
   to {
     opacity: 0.55;
-    transform: scaleY(2.2);
+    transform: scaleY(2.6);
   }
 }
 
@@ -273,12 +303,14 @@
     core-glow 2600ms 200ms ease-out both;
 }
 
+/* The warp has to be carried through the keyframes: a filter in an animation
+   replaces the static one outright rather than composing with it. */
 @keyframes core-glow {
   from {
-    filter: drop-shadow(0 0 0 rgba(176, 38, 255, 0));
+    filter: url(#echo-warp) drop-shadow(0 0 0 rgba(176, 38, 255, 0));
   }
   to {
-    filter: drop-shadow(0 0 38px rgba(176, 38, 255, 0.45))
+    filter: url(#echo-warp) drop-shadow(0 0 38px rgba(176, 38, 255, 0.45))
       drop-shadow(0 0 110px rgba(79, 6, 248, 0.3));
   }
 }
@@ -294,6 +326,6 @@
     opacity: 0;
   }
   to {
-    opacity: 0.85;
+    opacity: 0.9;
   }
 }

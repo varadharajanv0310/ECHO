@@ -26,8 +26,10 @@ export function Profile() {
   const setPhase = useSequence((s) => s.setPhase);
 
   const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
   const [mark, setMark] = useState<MarkId>("star");
   const [hue, setHue] = useState(276);
+  const [traits, setTraits] = useState<string[]>([]);
   const [worlds, setWorlds] = useState<string[]>([]);
 
   const ready = name.trim().length > 0 && worlds.length > 0;
@@ -37,9 +39,19 @@ export function Profile() {
       prev.includes(w) ? prev.filter((x) => x !== w) : [...prev, w],
     );
 
+  // Three is the cap. More than that and the trait stops describing anyone.
+  const toggleTrait = (t: string) =>
+    setTraits((prev) =>
+      prev.includes(t)
+        ? prev.filter((x) => x !== t)
+        : prev.length >= 3
+          ? prev
+          : [...prev, t],
+    );
+
   const submit = () => {
     if (!ready) return;
-    setProfile({ name: name.trim(), hue, mark, worlds });
+    setProfile({ name: name.trim(), bio: bio.trim(), hue, mark, traits, worlds });
     setPhase("dive");
   };
 
@@ -67,6 +79,19 @@ export function Profile() {
             autoFocus
           />
           <span className="pf__hint">{copy.profile.nameHint}</span>
+        </label>
+
+        {/* One line ---------------------------------------------------- */}
+        <label className="pf__field" style={{ "--d": "60ms" } as React.CSSProperties}>
+          <span className="pf__label">{copy.profile.bioLabel}</span>
+          <input
+            className="pf__bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value.slice(0, 90))}
+            placeholder={copy.profile.bioPlaceholder}
+            autoComplete="off"
+          />
+          <span className="pf__hint">{copy.profile.bioHint}</span>
         </label>
 
         {/* Mark and colour --------------------------------------------- */}
@@ -109,6 +134,27 @@ export function Profile() {
             </div>
             <span className="pf__hint">{copy.profile.colourHint}</span>
           </div>
+        </div>
+
+        {/* Traits ------------------------------------------------------ */}
+        <div className="pf__field" style={{ "--d": "190ms" } as React.CSSProperties}>
+          <span className="pf__label">{copy.profile.traitsLabel}</span>
+          <div className="pf__worlds">
+            {copy.traits.map((t) => (
+              <button
+                key={t}
+                type="button"
+                className="pf__world pf__world--trait"
+                data-on={traits.includes(t)}
+                data-dim={!traits.includes(t) && traits.length >= 3}
+                onClick={() => toggleTrait(t)}
+                aria-pressed={traits.includes(t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          <span className="pf__hint">{copy.profile.traitsHint}</span>
         </div>
 
         {/* Worlds ------------------------------------------------------ */}

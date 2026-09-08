@@ -10,9 +10,21 @@ export type SignalNode = {
   age: number;
   world: string;
   text: string;
+  /** Who let it go. Not an owner - just where it entered. */
+  author: string;
   /** How many signals this one went on to seed. */
   carried: number;
 };
+
+/**
+ * Names, not handles. Nothing here is unique and nothing is searchable by it,
+ * which is the point: two people called nine are simply two people called nine.
+ */
+export const NAMES = [
+  "havel", "orpheline", "nine", "brackish", "sunday", "vale", "tern", "moth",
+  "cinder", "quiet dog", "north", "almost", "verity", "sixth", "low tide",
+  "paper", "arden", "still", "gallery", "wren",
+];
 
 /** Deterministic, so the sky is the same one every time you come back to it. */
 function rng(seed: number) {
@@ -23,7 +35,11 @@ function rng(seed: number) {
   };
 }
 
-const COUNT = 220;
+/**
+ * Roughly half what it was. The tree reads as a structure you can follow only
+ * when you can see between the branches; past that it is just a bright mass.
+ */
+const COUNT = 112;
 
 /**
  * The constellation is a propagation tree, not a scatter.
@@ -48,6 +64,7 @@ export function buildConstellation(seed = 20260908): SignalNode[] {
       age: 0,
       world: copy.worlds[0],
       text: "",
+      author: "",
       carried: 0,
     },
   ];
@@ -75,7 +92,7 @@ export function buildConstellation(seed = 20260908): SignalNode[] {
     const outward = atOrigin
       ? rand() * Math.PI * 2
       : Math.atan2(p.z, p.x) + (rand() - 0.5) * 1.7;
-    const dist = 3.0 + rand() * 4.2 + hops * 0.5;
+    const dist = 3.8 + rand() * 5.0 + hops * 0.7;
 
     nodes.push({
       x: p.x + Math.cos(outward) * dist,
@@ -87,6 +104,7 @@ export function buildConstellation(seed = 20260908): SignalNode[] {
       age: Math.min(1, rand() * 0.55 + hops * 0.07),
       world: copy.worlds[Math.floor(rand() * copy.worlds.length)],
       text: copy.signals[Math.floor(rand() * copy.signals.length)],
+      author: NAMES[Math.floor(rand() * NAMES.length)],
       carried: 0,
     });
     p.carried += 1;

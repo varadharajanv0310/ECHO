@@ -65,9 +65,33 @@ export const copy = {
     colourHint: "Amber is reserved for what is dying.",
     worldsLabel: "Worlds",
     worldsHint: "Where you will be listening. Choose at least one.",
+    bioLabel: "One line",
+    bioHint: "Not a bio. What you are here for.",
+    bioPlaceholder: "Say why you are listening",
+    traitsLabel: "How you listen",
+    traitsHint: "Up to three. People find each other by these.",
     submit: "Emit",
     submitHint: "No email. No password. Nothing leaves this browser.",
   },
+
+  /**
+   * Temperaments rather than interests. On a platform with no follower graph,
+   * this is most of how one person finds another worth listening to.
+   */
+  traits: [
+    "Night owl",
+    "Carrier",
+    "Lurker",
+    "Archivist",
+    "Slow burn",
+    "First responder",
+    "Sentimental",
+    "Blunt",
+    "Curious",
+    "Homebody",
+    "Wanderer",
+    "Quiet",
+  ],
 
   /** Beat 10. */
   constellation: {

@@ -6,6 +6,8 @@ import frag from "@/shaders/node.frag.glsl";
 import { buildConstellation } from "./constellation-data";
 import { clamp, damp } from "@/lib/utils";
 import { useSequence } from "@/store/sequence";
+import { useUI } from "@/store/ui";
+import { cue } from "@/lib/audio";
 
 const VIOLET = new THREE.Color("#b026ff");
 const MAGENTA = new THREE.Color("#fa42b0");
@@ -128,14 +130,21 @@ export function Constellation() {
     let dragging = false;
     let lx = 0;
     let ly = 0;
+    let downX = 0;
+    let downY = 0;
 
-    const active = () => useSequence.getState().phase === "constellation";
+    // Only the bare sky is navigable. With a window open the pointer belongs
+    // to the window, or dragging inside a form would spin the constellation.
+    const active = () =>
+      useSequence.getState().phase === "constellation" &&
+      useUI.getState().panel === null &&
+      useUI.getState().openSignal === null;
 
     const down = (e: PointerEvent) => {
       if (!active()) return;
       dragging = true;
-      lx = e.clientX;
-      ly = e.clientY;
+      lx = downX = e.clientX;
+      ly = downY = e.clientY;
     };
     const move = (e: PointerEvent) => {
       if (!dragging || !active()) return;
@@ -147,8 +156,19 @@ export function Constellation() {
       // Never let the camera roll past the poles.
       cam.current.tPhi = clamp(cam.current.tPhi - dy * 0.004, 0.35, 2.6);
     };
-    const up = () => {
+    const up = (e: PointerEvent) => {
+      const wasDragging = dragging;
       dragging = false;
+      if (!wasDragging || !active()) return;
+
+      // A click is a press that did not travel. Anything further than a few
+      // pixels was someone moving the sky, not choosing something in it.
+      const moved = Math.hypot(e.clientX - downX, e.clientY - downY);
+      if (moved > 5) return;
+      if (hoverIdx.current > 0) {
+        cue("click");
+        useUI.getState().setOpenSignal(hoverIdx.current);
+      }
     };
     const wheel = (e: WheelEvent) => {
       if (!active()) return;

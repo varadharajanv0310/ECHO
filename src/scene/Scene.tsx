@@ -18,7 +18,7 @@ import { Constellation } from "./Constellation";
 export function Scene() {
   return (
     <div
-      className="pointer-events-none fixed inset-0"
+      className="scene-layer pointer-events-none fixed inset-0"
       style={{ zIndex: "var(--z-scene)" }}
     >
       <Canvas

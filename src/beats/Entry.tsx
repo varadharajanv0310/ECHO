@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { NebulaShader } from "@/components/ui/nebula-shader";
-import { FallingFigure } from "@/components/FallingFigure";
 import { Wordmark } from "@/components/Wordmark";
+import { Boot } from "./Boot";
 import { copy } from "@/copy";
 import { PHASES, useSequence } from "@/store/sequence";
 import { easeInOutCubic, remap } from "@/lib/utils";
@@ -90,10 +90,10 @@ export function Entry({ boost = 1 }: { boost?: number }) {
       return {
         // The void is a sky, not an empty screen. Stars are there from the
         // first frame; the cloud swells as the gate completes.
-        intensity: (0.55 + w * 0.5) * boost,
-        cloud: 0.35 + w * 0.75,
-        lights: 0.02 + w * 0.1,
-        starAmt: 0.85 + w * 0.25,
+        intensity: (0.9 + w * 0.25) * boost,
+        cloud: 1.1 + w * 0.25,
+        lights: 0.1 + w * 0.2,
+        starAmt: 1,
         warpAmt: 0.05,
         riseAmt: 0.08 + w * 0.22,
         speed: 0.3 + w * 0.08,
@@ -148,15 +148,11 @@ export function Entry({ boost = 1 }: { boost?: number }) {
         />
       </div>
 
-      <p className="entry__caption">{copy.voidCaption}</p>
-
-      {/* The figure sits behind the wordmark and sinks through it as ECHO
-          resolves, so the light it carries shows between the letters. */}
-      <FallingFigure className="entry__figure" />
-
       <div className="entry__word">
         <Wordmark state={revealed ? "in" : "out"} />
       </div>
+
+      <Boot />
 
       <div className="entry__credit" aria-hidden={!revealed}>
         {copy.credit.map((line, i) => (

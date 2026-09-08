@@ -126,7 +126,7 @@ export function Galaxy() {
         : phase === "dive"
           ? 1 - clamp(diveProgress / 0.55)
           : past
-            ? phase === "profile" || phase === "ignition"
+            ? phase === "profile"
               ? 0.16
               : 1
             : remap(passageProgress, 0.7, 1, 0, 1);
@@ -169,7 +169,7 @@ export function Galaxy() {
       phase === "dive"
         ? 0.34 + clamp(diveProgress / 0.5) * 2.2
         : past
-          ? phase === "profile" || phase === "ignition"
+          ? phase === "profile"
             ? 0.5
             : 0.34
           : remap(passageProgress, 0.7, 1, 0.08, 0.34);

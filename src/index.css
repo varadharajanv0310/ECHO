@@ -33,6 +33,7 @@
     --z-nebula: 10;
     --z-scene: 20;
     --z-content: 30;
+    --z-boot: 38;
     --z-grain: 40;
     --z-vignette: 45;
     --z-hud: 60;
@@ -91,4 +92,178 @@
     opacity: 1;
     transform: scale(1.15);
   }
+}
+
+
+/* =========================================================================
+   Theming.
+
+   Two grounds and four accents. The accents are all drawn from the existing
+   palette; amber is deliberately not offered as one, because amber is the
+   colour a signal turns when it is dying and letting somebody paint the whole
+   interface with it would break the one rule the visual language rests on.
+
+   Light mode is not a tint of dark mode. The entire piece is additive light on
+   black - a nebula, a road and a galaxy that are literally made of glow - and
+   glow added to white is nothing at all. So in light mode the rendered layers
+   are inverted and hue-rotated, which turns violet-light-on-black into
+   violet-ink-on-white and keeps every hue relationship intact.
+   ========================================================================= */
+
+/* Grain lifts the blacks in dark mode and bites the whites in light mode, so
+   the blend mode is part of the theme rather than a fixed property. */
+.grain-layer {
+  mix-blend-mode: screen;
+}
+
+:root[data-accent="violet"] {
+  --accent: #b026ff;
+  --accent-deep: #4f06f8;
+}
+:root[data-accent="magenta"] {
+  --accent: #fa42b0;
+  --accent-deep: #b8007a;
+}
+:root[data-accent="indigo"] {
+  --accent: #6f5bff;
+  --accent-deep: #2c1bc9;
+}
+:root[data-accent="ice"] {
+  --accent: #9db4ff;
+  --accent-deep: #4a63c9;
+}
+
+/* Accent drives the violet-bright token everything else already references. */
+:root[data-accent] {
+  --color-violet-bright: var(--accent);
+  --color-violet-deep: var(--accent-deep);
+}
+
+/* ------------------------------------------------------------ light mode */
+
+:root[data-mode="light"] {
+  --color-void: #f1edf7;
+  --color-void-lift: #e4dcf0;
+}
+
+:root[data-mode="light"] body {
+  color: #16111f;
+}
+
+/* Invert the rendered layers rather than trying to restyle them. */
+:root[data-mode="light"] .scene-layer,
+:root[data-mode="light"] .entry__nebula,
+:root[data-mode="light"] .particles-layer {
+  filter: invert(1) hue-rotate(180deg) saturate(1.15);
+}
+
+/* Grain has to bite into a light ground instead of lifting a dark one. */
+:root[data-mode="light"] .grain-layer {
+  mix-blend-mode: multiply;
+}
+
+:root[data-mode="light"] .vignette-layer {
+  opacity: 0.35;
+}
+
+/* Chrome flips to ink on paper. */
+:root[data-mode="light"] {
+  --glass: rgba(255, 253, 255, 0.86);
+  --glass-soft: rgba(20, 10, 40, 0.045);
+  --hair: rgba(20, 10, 40, 0.16);
+  --hair-soft: rgba(20, 10, 40, 0.09);
+}
+
+:root[data-mode="light"] .win__title,
+:root[data-mode="light"] .u-h,
+:root[data-mode="light"] .u-row__title,
+:root[data-mode="light"] .win__tab[data-on="true"],
+:root[data-mode="light"] .u-input,
+:root[data-mode="light"] .u-textarea,
+:root[data-mode="light"] .sw__text,
+:root[data-mode="light"] .sw__hop-name,
+:root[data-mode="light"] .sw__reply,
+:root[data-mode="light"] .pp__stats b,
+:root[data-mode="light"] .db__stat b,
+:root[data-mode="light"] .pp__tile,
+:root[data-mode="light"] .u-btn,
+:root[data-mode="light"] .u-chip[data-on="true"],
+:root[data-mode="light"] .u-toggle__text {
+  color: #16111f;
+}
+
+:root[data-mode="light"] .win__sub,
+:root[data-mode="light"] .u-label,
+:root[data-mode="light"] .u-hint,
+:root[data-mode="light"] .u-row__meta,
+:root[data-mode="light"] .win__tab,
+:root[data-mode="light"] .u-chip,
+:root[data-mode="light"] .u-empty,
+:root[data-mode="light"] .sw__hop-meta,
+:root[data-mode="light"] .pp__stats span,
+:root[data-mode="light"] .db__stat span,
+:root[data-mode="light"] .db__bar-label,
+:root[data-mode="light"] .rail__btn {
+  color: rgba(22, 17, 31, 0.62);
+}
+
+:root[data-mode="light"] .u-input,
+:root[data-mode="light"] .u-textarea {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+:root[data-mode="light"] .rail__btn[data-on="true"],
+:root[data-mode="light"] .win__close:hover,
+:root[data-mode="light"] .rail__btn:hover {
+  color: #16111f;
+}
+
+:root[data-mode="light"] .rail__label {
+  color: rgba(22, 17, 31, 0.8);
+}
+
+/* The HUD and constellation captions live over the sky, not over glass. */
+:root[data-mode="light"] .ch__name,
+:root[data-mode="light"] .ch__arrival,
+:root[data-mode="light"] .ch__card-text {
+  color: #16111f;
+}
+
+:root[data-mode="light"] .ch__card {
+  background: rgba(255, 253, 255, 0.86);
+}
+
+/* The scrim dims toward the ground it sits on, not toward black. */
+:root[data-mode="light"] .win-scrim {
+  background: rgba(236, 230, 246, 0.6);
+}
+
+/* The HUD sits directly on the sky, so it needs the ink colour too. */
+:root[data-mode="light"] .hud-label,
+:root[data-mode="light"] .ch__worlds,
+:root[data-mode="light"] .ch__hint,
+:root[data-mode="light"] .entry__credit-line,
+:root[data-mode="light"] .boot__caption,
+:root[data-mode="light"] .pl__kicker {
+  color: rgba(22, 17, 31, 0.6) !important;
+}
+
+:root[data-mode="light"] .win__tab {
+  color: rgba(22, 17, 31, 0.45);
+}
+
+:root[data-mode="light"] .u-hint,
+:root[data-mode="light"] .th__mode-hint {
+  color: rgba(22, 17, 31, 0.5);
+}
+
+:root[data-mode="light"] .u-empty {
+  color: rgba(22, 17, 31, 0.35);
+}
+
+/* Passage type is white light in dark mode; in light mode it is the ink. */
+:root[data-mode="light"] .pl__layer--core,
+:root[data-mode="light"] .passage__last-line,
+:root[data-mode="light"] .wm__layer--core {
+  color: #16111f;
 }

@@ -117,6 +117,34 @@
   transition: border-color 400ms ease;
 }
 
+.pf__bio {
+  width: 100%;
+  padding: 0.2rem 0 0.5rem;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: none;
+  outline: none;
+
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.7vw, 1.25rem);
+  font-weight: 400;
+  font-variation-settings: "wdth" 98, "wght" 400;
+  color: rgba(255, 255, 255, 0.9);
+  transition: border-color 400ms ease;
+}
+
+.pf__bio::placeholder {
+  color: rgba(255, 255, 255, 0.18);
+}
+
+.pf__bio:focus {
+  border-bottom-color: var(--color-violet-bright);
+}
+
+.pf__world--trait[data-dim="true"] {
+  opacity: 0.32;
+}
+
 .pf__name::placeholder {
   color: rgba(255, 255, 255, 0.2);
 }

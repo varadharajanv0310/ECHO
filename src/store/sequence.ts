@@ -31,19 +31,63 @@ export type LayerMix = {
 };
 
 export const LAYER_MIX: Record<Phase, LayerMix> = {
-  void: { particles: 0.08, nebula: 0.55, grain: 0.4, vignette: 0.92 },
-  reveal: { particles: 0.22, nebula: 1.0, grain: 0.46, vignette: 0.78 },
-  passage: { particles: 1.0, nebula: 0.0, grain: 0.52, vignette: 0.62 },
-  galaxy: { particles: 0.5, nebula: 0.0, grain: 0.48, vignette: 0.8 },
-  ignition: { particles: 0.3, nebula: 0.0, grain: 0.85, vignette: 0.2 },
-  profile: { particles: 0.65, nebula: 0.0, grain: 0.6, vignette: 0.85 },
-  dive: { particles: 0.0, nebula: 0.0, grain: 0.95, vignette: 0.35 },
-  constellation: { particles: 0.35, nebula: 0.0, grain: 0.55, vignette: 0.8 },
+  void: { particles: 0.08, nebula: 0.55, grain: 0.26, vignette: 0.92 },
+  reveal: { particles: 0.22, nebula: 1.0, grain: 0.3, vignette: 0.78 },
+  passage: { particles: 1.0, nebula: 0.0, grain: 0.34, vignette: 0.62 },
+  galaxy: { particles: 0.5, nebula: 0.0, grain: 0.32, vignette: 0.8 },
+  ignition: { particles: 0.3, nebula: 0.0, grain: 0.55, vignette: 0.2 },
+  profile: { particles: 0.65, nebula: 0.0, grain: 0.4, vignette: 0.85 },
+  dive: { particles: 0.0, nebula: 0.0, grain: 0.62, vignette: 0.35 },
+  constellation: { particles: 0.35, nebula: 0.0, grain: 0.36, vignette: 0.8 },
 };
 
 const STORAGE_KEY = "echo.profile";
+const SETTINGS_KEY = "echo.settings";
 
-type Profile = { name: string; hue: number; mark: string; worlds: string[] };
+export type Song = { title: string; artist: string };
+export type Link = { label: string; value: string };
+
+export type Profile = {
+  name: string;
+  hue: number;
+  mark: string;
+  worlds: string[];
+  /** One line, written at creation. */
+  bio: string;
+  /** How this person listens. Chosen at creation, editable later. */
+  traits: string[];
+
+  /* Everything below is added later, from the profile panel. */
+  status?: string;
+  songs?: Song[];
+  games?: string[];
+  links?: Link[];
+};
+
+export type ThemeMode = "dark" | "light";
+export type Accent = "violet" | "magenta" | "indigo" | "ice";
+
+export type Settings = {
+  mode: ThemeMode;
+  accent: Accent;
+  /** Suppresses the flashframe and hard cuts. */
+  reducedFlash: boolean;
+  /** 0-1 multiplier over the grain layer. */
+  grain: number;
+  receive: string[];
+  show: string[];
+  whoCanAdd: "anyone" | "carried" | "nobody";
+};
+
+export const DEFAULT_SETTINGS: Settings = {
+  mode: "dark",
+  accent: "violet",
+  reducedFlash: false,
+  grain: 1,
+  receive: ["Carries", "Replies", "Signals from my Worlds"],
+  show: ["Signals still travelling", "Signals fading"],
+  whoCanAdd: "carried",
+};
 
 export type HoveredSignal = {
   text: string;
@@ -62,6 +106,17 @@ function readProfile(): Profile | null {
   }
 }
 
+function readSettings(): Settings {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    return raw
+      ? { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<Settings>) }
+      : DEFAULT_SETTINGS;
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+}
+
 type SequenceState = {
   phase: Phase;
   /** 0-1, how far the preload + minimum-dwell gate has got. Drives nebula intensity. */
@@ -73,6 +128,7 @@ type SequenceState = {
   /** The signal under the cursor in the constellation, or null. */
   hoveredSignal: HoveredSignal;
   profile: Profile | null;
+  settings: Settings;
 
   setPhase: (p: Phase) => void;
   advance: () => void;
@@ -81,6 +137,8 @@ type SequenceState = {
   setDiveProgress: (n: number) => void;
   setHoveredSignal: (s: HoveredSignal) => void;
   setProfile: (p: Profile) => void;
+  patchProfile: (p: Partial<Profile>) => void;
+  setSettings: (s: Partial<Settings>) => void;
 };
 
 /** `?phase=galaxy` jumps straight to a beat. `?reset` clears persistence. */
@@ -126,6 +184,7 @@ export const useSequence = create<SequenceState>((set, get) => ({
   diveProgress: START === "constellation" ? 1 : 0,
   hoveredSignal: null,
   profile: readProfile(),
+  settings: readSettings(),
 
   setPhase: (phase) => set({ phase }),
 
@@ -146,6 +205,26 @@ export const useSequence = create<SequenceState>((set, get) => ({
       /* private mode - the sequence still works, it just won't be remembered */
     }
     set({ profile });
+  },
+
+  patchProfile: (patch) => {
+    const next = { ...(get().profile as Profile), ...patch };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      /* private mode */
+    }
+    set({ profile: next });
+  },
+
+  setSettings: (patch) => {
+    const next = { ...get().settings, ...patch };
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    } catch {
+      /* private mode */
+    }
+    set({ settings: next });
   },
 }));
 

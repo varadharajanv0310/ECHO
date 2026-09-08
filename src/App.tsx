@@ -14,6 +14,7 @@ import { GalaxyBeat } from "@/beats/GalaxyBeat";
 import { Ignition } from "@/beats/Ignition";
 import { Profile } from "@/beats/Profile";
 import { ConstellationHud } from "@/beats/ConstellationHud";
+import { Panels } from "@/ui/Panels";
 import { useLenis } from "@/lib/useLenis";
 import { useSequence, LAYER_MIX } from "@/store/sequence";
 import { tuning } from "@/lib/tuning";
@@ -29,8 +30,35 @@ export default function App() {
   const passageProgress = useSequence((s) => s.passageProgress);
   const setPhase = useSequence((s) => s.setPhase);
   const mix = LAYER_MIX[phase];
+  const grainSetting = useSequence((s) => s.settings.grain);
+  const mode = useSequence((s) => s.settings.mode);
+  const accent = useSequence((s) => s.settings.accent);
+
+  // Theme lives on the document element so it reaches the fixed layers and the
+  // canvases, which sit outside any React-owned wrapper.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.mode = mode;
+    root.dataset.accent = accent;
+    root.style.colorScheme = mode;
+  }, [mode, accent]);
 
   useLenis();
+
+  // Arriving at the sky without a profile is only possible by jumping straight
+  // to a phase. Give them an anonymous one rather than a dead Profile button.
+  useEffect(() => {
+    if (phase !== "constellation") return;
+    if (useSequence.getState().profile) return;
+    useSequence.getState().setProfile({
+      name: "Unregistered",
+      hue: 276,
+      mark: "star",
+      worlds: ["3AM"],
+      bio: "",
+      traits: [],
+    });
+  }, [phase]);
 
   // The road runs out and the galaxy is what is left.
   useEffect(() => {
@@ -97,9 +125,10 @@ export default function App() {
       {phase === "ignition" && <Ignition />}
       {phase === "profile" && <Profile />}
       <ConstellationHud />
+      <Panels />
 
       <GrainLayer
-        opacity={mix.grain * c.grain}
+        opacity={mix.grain * c.grain * grainSetting}
         size={c.grainSize}
         contrast={c.grainContrast}
         cadence={c.grainCadence}
