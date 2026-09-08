@@ -32,6 +32,14 @@
   --hair-soft: hsl(var(--accent-h) 70% 78% / 0.1);
   --blur: blur(26px) saturate(1.5);
 
+  /* Type, in three weights of one ink. Surfaces built on these flip with the
+     mode on their own; a surface that hardcodes white has to be remembered
+     again in the light block, and the ones that were forgotten came out white
+     on white. */
+  --ink: rgba(255, 255, 255, 0.92);
+  --ink-2: rgba(255, 255, 255, 0.56);
+  --ink-3: rgba(255, 255, 255, 0.34);
+
   /* One radius scale. Everything on this surface is a soft rectangle. */
   --r-lg: 22px;
   --r-md: 14px;
@@ -373,7 +381,7 @@
   border: 1px solid var(--hair-soft);
   border-radius: var(--r-md);
   background: var(--glass-soft);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ink-2);
   cursor: none;
   flex-shrink: 0;
   transition:
@@ -382,7 +390,7 @@
 }
 
 .win__close:hover {
-  color: #fff;
+  color: var(--ink);
   border-color: var(--hair);
 }
 
@@ -481,7 +489,10 @@
 
 .u-input::placeholder,
 .u-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  /* Fainter than --ink-3, but the same ink: on paper a white placeholder is
+     an empty box with no hint of what goes in it. */
+  color: var(--ink-3);
+  opacity: 0.62;
 }
 
 .u-select option {

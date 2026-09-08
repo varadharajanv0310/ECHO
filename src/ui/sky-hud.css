@@ -50,9 +50,17 @@
   font-variation-settings: "wdth" 92, "wght" 380;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.78);
   translate: -50% 0.9rem;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+
+  /* These are the only labels that can land on top of something bright: a
+     planet sits inside its own sun's glow for part of every orbit, and in
+     light mode that glow is dense ink. A shadow is not enough at that point,
+     so the words get a plate of the ground they are standing on - which also
+     matches the glass everything else in the interface is made of. */
+  border-radius: var(--r-sm, 10px);
+  background: rgba(10, 6, 22, 0.42);
+  backdrop-filter: blur(7px);
 }
 
 .skl[data-hovered="true"] {
@@ -66,23 +74,11 @@
 :root[data-mode="light"] .skl[data-kind="1"] {
   color: rgba(22, 17, 31, 0.42);
 }
-:root[data-mode="light"] /* A planet is a sentence somebody wrote, so it is set as one: the display
-   face, mixed case, no tracking. Everything else in the sky is a name and gets
-   the mono treatment; running these words through the same style would turn a
-   thing a person said into a label on a diagram. It sits below its planet so
-   the orbit above it stays clean. */
-.skl[data-kind="2"] {
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-variation-settings: "wdth" 92, "wght" 380;
-  letter-spacing: 0;
-  text-transform: none;
-  color: rgba(255, 255, 255, 0.62);
-  translate: -50% 0.9rem;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+:root[data-mode="light"] .skl[data-kind="2"] {
+  color: rgba(22, 17, 31, 0.88);
+  background: rgba(255, 255, 255, 0.62);
 }
-
-.skl[data-hovered="true"] {
+:root[data-mode="light"] .skl[data-hovered="true"] {
   color: #16111f;
   text-shadow: 0 0 12px hsl(280 90% 70%);
 }
@@ -145,7 +141,8 @@
 .skb__sep {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--ink-3);
+  opacity: 0.55;
 }
 
 .skb__back {

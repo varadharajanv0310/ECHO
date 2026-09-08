@@ -186,6 +186,10 @@
   --glass-soft: rgba(28, 12, 56, 0.05);
   --hair: rgba(28, 12, 56, 0.24);
   --hair-soft: rgba(28, 12, 56, 0.13);
+
+  --ink: rgba(22, 17, 31, 0.92);
+  --ink-2: rgba(22, 17, 31, 0.62);
+  --ink-3: rgba(22, 17, 31, 0.45);
 }
 
 /* On black a window is defined by being lighter than its surroundings. On
