@@ -381,10 +381,13 @@ export function ProfileWindow({ star }: { star: number | null }) {
               <section className="u-card">
                 <h3 className="u-h">Banner</h3>
                 <div className="pw__banners">
+                  {/* Both classes: the gradients are defined on .pw__banner,
+                      the swatch sizing on .pw__banner-pick. With only the
+                      latter these render as four empty outlines. */}
                   {BANNERS.map((b) => (
                     <button
                       key={b}
-                      className="pw__banner-pick"
+                      className="pw__banner pw__banner-pick"
                       data-b={b}
                       data-on={b === view.banner}
                       onClick={() => patch({ banner: b })}

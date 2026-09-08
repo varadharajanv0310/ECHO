@@ -49,11 +49,19 @@ export function Sky() {
   // The reader is placed into the sky before geometry is built, and everything
   // they have said becomes planets around their own star. Rebuilding on change
   // is what makes Create actually do something.
+  //
+  // The wrapper is not decoration. getSky returns one shared instance that
+  // placeMe and syncMine edit in place - they have to, or nothing else reading
+  // the sky would see the change - which means the value handed back here is
+  // the same object every time. The geometry memo below keys on it, and with a
+  // stable identity it would never rebuild: a new signal would exist in the
+  // store, and in the sky data, and simply not be drawn. A fresh wrapper round
+  // the same arrays is what tells React the view has moved on.
   const sky = useMemo(() => {
     const s = getSky();
     if (profile) placeMe(s, profile.name, profile.hue, profile.worlds);
     syncMine(s, emissions);
-    return s;
+    return { ...s };
   }, [profile, emissions]);
 
   /* ------------------------------------------------------------ geometry */

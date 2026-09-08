@@ -23,6 +23,11 @@ const CLOSE_MS = 190;
  * away. Switching directly from one panel to another swaps immediately, since
  * both are the same window and animating a handover between them would just be
  * a stutter in the middle of a decision the person already made.
+ *
+ * A profile and a panel are two different layers, so the same handover would
+ * otherwise cross-fade two full-size windows on top of each other. The rule is
+ * the same one: whichever layer is on its way out is dropped the instant the
+ * other is on its way in, and only animates away when nothing is replacing it.
  */
 export function Panels() {
   const phase = useSequence((s) => s.phase);
@@ -42,7 +47,7 @@ export function Panels() {
       <SkyHud />
       <SkyDock />
 
-      {visiting.shown !== null && (
+      {visiting.shown !== null && !(visiting.closing && panel) && (
         <div
           className="win-layer"
           data-closing={visiting.closing}
@@ -52,7 +57,7 @@ export function Panels() {
         </div>
       )}
 
-      {shown && (
+      {shown && !(closing && profileOf !== null) && (
         <div
           className="win-layer"
           data-closing={closing}

@@ -4,6 +4,7 @@ import { copy } from "@/copy";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import "./constellation-hud.css";
+import { getSky } from "@/scene/sky-data";
 
 /**
  * Who you are, and one line telling you how to move.
@@ -48,7 +49,7 @@ export function ConstellationHud() {
       </div>
 
       <p className="ch__arrival" data-gone={settled || level !== "cluster"}>
-        {copy.constellation.arrival}
+        {copy.constellation.arrival(getSky().constellations.length)}
       </p>
 
       <p className="ch__hint">{hint}</p>

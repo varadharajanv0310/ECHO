@@ -99,7 +99,13 @@ export const copy = {
 
   /** Beat 10. */
   constellation: {
-    arrival: "Seven places. Nothing here reached you by itself.",
+    /**
+     * Takes the count, so the line cannot drift from the sky it describes -
+     * it said seven for a sky that has six. Spelled out, because a numeral in
+     * the middle of that sentence reads like a stat.
+     */
+    arrival: (n: number) =>
+      `${["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"][n] ?? n} places. Nothing here reached you by itself.`,
     hintCluster: "Drag to look. Click a world to go in.",
     hintWorld: "Click a person to stand at them.",
     hintStar: "Click something they are carrying.",
