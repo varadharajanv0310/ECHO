@@ -23,19 +23,19 @@ Target: **WCAG 2.2 Level AA**.
 
 ## Summary
 
-| Area | Status | Where |
-| --- | --- | --- |
-| Keyboard operable end to end | Done | `src/ui/SkyNav.tsx`, `src/ui/Rail.tsx` |
-| Skip link to main content | Done | `src/App.tsx`, `src/ui/ui.css` |
-| Visible focus indicator on every control | Done | `src/ui/ui.css` |
-| Focus trap and restore in dialogs | Done | `src/ui/Window.tsx` |
-| Landmarks (`main`, `nav`, `footer`, `dialog`) | Done | `src/App.tsx`, `src/components/Hud.tsx` |
-| Live region for state changes | Done | `src/App.tsx` |
-| Decorative graphics hidden from AT | Done | canvas overlay layers |
-| `prefers-reduced-motion` honoured | Done | `src/index.css`, motion settings |
-| Touch targets at least 44px | Done | `src/ui/handheld.css` |
-| Reflow to 320px without horizontal scroll | Done | `src/ui/responsive.css` |
-| axe-core violations | 0 | see [Testing](#testing) |
+| Area                                          | Status | Where                                   |
+| --------------------------------------------- | ------ | --------------------------------------- |
+| Keyboard operable end to end                  | Done   | `src/ui/SkyNav.tsx`, `src/ui/Rail.tsx`  |
+| Skip link to main content                     | Done   | `src/App.tsx`, `src/ui/ui.css`          |
+| Visible focus indicator on every control      | Done   | `src/ui/ui.css`                         |
+| Focus trap and restore in dialogs             | Done   | `src/ui/Window.tsx`                     |
+| Landmarks (`main`, `nav`, `footer`, `dialog`) | Done   | `src/App.tsx`, `src/components/Hud.tsx` |
+| Live region for state changes                 | Done   | `src/App.tsx`                           |
+| Decorative graphics hidden from AT            | Done   | canvas overlay layers                   |
+| `prefers-reduced-motion` honoured             | Done   | `src/index.css`, motion settings        |
+| Touch targets at least 44px                   | Done   | `src/ui/handheld.css`                   |
+| Reflow to 320px without horizontal scroll     | Done   | `src/ui/responsive.css`                 |
+| axe-core violations                           | 0      | see [Testing](#testing)                 |
 
 ## Keyboard navigation
 
@@ -50,12 +50,12 @@ drift apart. It sits off-screen until focus enters it, at which point it
 becomes visible: a keyboard user needs to see where they are, and a sighted
 mouse user should never have a list of names over their sky.
 
-| Key | Effect |
-| --- | --- |
-| `Tab` / `Shift+Tab` | Move through the rail, then the sky navigation |
-| `Enter` / `Space` | Activate the focused control |
-| `Backspace` | Go up one level (place → cluster, person → place) |
-| `Escape` | Close whatever window or panel is open |
+| Key                 | Effect                                            |
+| ------------------- | ------------------------------------------------- |
+| `Tab` / `Shift+Tab` | Move through the rail, then the sky navigation    |
+| `Enter` / `Space`   | Activate the focused control                      |
+| `Backspace`         | Go up one level (place → cluster, person → place) |
+| `Escape`            | Close whatever window or panel is open            |
 
 Tab order in a production build is: skip link → the five rail buttons → sky
 navigation → any open window (trapped, see below). No control is reachable by
@@ -85,12 +85,12 @@ pointer that is not reachable by keyboard.
 
 ## Semantic structure and landmarks
 
-| Landmark | Element | File |
-| --- | --- | --- |
-| `main` | `<main id="main" tabIndex={-1} aria-label="ECHO">` | `src/App.tsx` |
-| `navigation` | `<nav aria-label="Sky navigation">` | `src/ui/SkyNav.tsx` |
-| `contentinfo` | `<footer aria-label="Session status">` | `src/components/Hud.tsx` |
-| `dialog` | `<section role="dialog" aria-modal aria-labelledby>` | `src/ui/Window.tsx` |
+| Landmark      | Element                                              | File                     |
+| ------------- | ---------------------------------------------------- | ------------------------ |
+| `main`        | `<main id="main" tabIndex={-1} aria-label="ECHO">`   | `src/App.tsx`            |
+| `navigation`  | `<nav aria-label="Sky navigation">`                  | `src/ui/SkyNav.tsx`      |
+| `contentinfo` | `<footer aria-label="Session status">`               | `src/components/Hud.tsx` |
+| `dialog`      | `<section role="dialog" aria-modal aria-labelledby>` | `src/ui/Window.tsx`      |
 
 Headings descend without skipping levels within a view. Lists of things are
 `<ul>` / `<li>`; a conversation is a sequence of `<article>` elements; facts

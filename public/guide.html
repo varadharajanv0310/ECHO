@@ -72,29 +72,8 @@
 
 /* The guide follows the reader's machine, the same way the application does.
    Ink on paper rather than a grey wash: the violet survives, the ground
-   inverts, and the hairlines darken enough to still be hairlines. */
-@media (prefers-color-scheme: light) {
-  :root {
-    --ground: #f6f3fb;
-    --ground-2: #ece6f6;
-    --surface: rgba(24, 12, 48, 0.035);
-    --surface-2: rgba(24, 12, 48, 0.06);
-    --hair: rgba(86, 46, 150, 0.18);
-    --hair-2: rgba(86, 46, 150, 0.32);
-
-    --ink: rgba(19, 12, 32, 0.94);
-    --ink-2: rgba(38, 26, 62, 0.68);
-    --ink-3: rgba(38, 26, 62, 0.45);
-
-    --accent: hsl(276 74% 46%);
-    --accent-deep: hsl(276 70% 38%);
-    --magenta: hsl(322 72% 46%);
-    --amber: #b8480d;
-
-    --glow: 0 0 40px hsl(276 80% 55% / 0.16);
-  }
-}
-
+   inverts, and the hairlines darken enough to still be hairlines. An explicit
+   `data-theme="dark"` still wins over the operating system. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --ground: #f4f2fb;
@@ -500,8 +479,8 @@ footer a { color: var(--ink-2); }
     nobody does.
   </p>
   <div class="links">
-    <a class="btn btn--go" href="https://varadharajanv0310.github.io/ECHO/">Open the sky</a>
-    <a class="btn" href="https://github.com/varadharajanv0310/ECHO">Source</a>
+    <a class="btn btn--go" href="https://varadharajanv0310.github.io/ECHO/" rel="noopener noreferrer">Open the sky</a>
+    <a class="btn" href="https://github.com/varadharajanv0310/ECHO" rel="noopener noreferrer">Source</a>
   </div>
 </header>
 
@@ -966,7 +945,7 @@ footer a { color: var(--ink-2); }
 
 <footer>
   ECHO · built for The Frontend Odyssey 2026 ·
-  <a href="https://github.com/varadharajanv0310/ECHO">github.com/varadharajanv0310/ECHO</a>
+  <a href="https://github.com/varadharajanv0310/ECHO" rel="noopener noreferrer">github.com/varadharajanv0310/ECHO</a>
 </footer>
 
 </div>

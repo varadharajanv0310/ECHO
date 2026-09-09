@@ -151,7 +151,7 @@ export function MenuPanel() {
                 className="u-btn"
                 href={`${import.meta.env.BASE_URL}guide.html`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 Read the field guide
               </a>

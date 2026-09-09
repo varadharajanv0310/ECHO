@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/varadharajanv0310/ECHO/security/advisories/new
+    about: Report privately rather than in a public issue. See SECURITY.md.
+  - name: How ECHO works
+    url: https://varadharajanv0310.github.io/ECHO/guide.html
+    about: The field guide answers most questions about the mechanics.

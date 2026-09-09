@@ -39,13 +39,17 @@ export function markSeen() {
 export function useUnseen(): number {
   const emissions = useSequence((s) => s.emissions);
   const dms = useSequence((s) => s.dms);
-  const [, tick] = useState(0);
 
-  // Everything here is derived from the clock, so it has to be re-read now and
-  // then or the dot only ever appears when something else re-renders.
+  // The clock is held in state rather than read while rendering. Everything
+  // below is derived from it, so it has to move on its own or the dot only
+  // ever appears when something else happens to re-render - but reading
+  // Date.now() in the render body would make this component's output depend on
+  // when React chose to call it.
+  const [now, tick] = useState(() => Date.now());
+
   useEffect(() => {
-    const t = setInterval(() => tick((n) => n + 1), 20000);
-    const seen = () => tick((n) => n + 1);
+    const t = setInterval(() => tick(Date.now()), 20000);
+    const seen = () => tick(Date.now());
     window.addEventListener("echo:seen", seen);
     return () => {
       clearInterval(t);
@@ -57,7 +61,6 @@ export function useUnseen(): number {
   if (!since) return 0;
 
   const sky = getSky();
-  const now = Date.now();
   let n = 0;
 
   emissions.forEach((e) => {

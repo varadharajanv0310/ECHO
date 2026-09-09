@@ -349,19 +349,35 @@ export function ProfileWindow({ star }: { star: number | null }) {
             <section className="u-card">
               <h3 className="u-h">{own ? "Your shelf" : `${view.name} plays`}</h3>
               <div className="pw__shelf">
+                {/* On your own shelf a tile is a control, so it is a button
+                    and can be reached with the tab key. On somebody else's it
+                    is a picture of a thing they like, so it stays a figure -
+                    a control that does nothing is worse than no control. */}
                 {(own ? GAMES : GAMES.filter((g) => view.games.includes(g.id))).map(
-                  (g) => (
-                    <figure
-                      className="pw__tile"
-                      key={g.id}
-                      data-on={view.games.includes(g.id)}
-                      data-pick={own}
-                      onClick={own ? () => toggleIn("games", g.id) : undefined}
-                    >
-                      <Cover title={g.title} size={92} />
-                      <figcaption>{g.title}</figcaption>
-                    </figure>
-                  ),
+                  (g) =>
+                    own ? (
+                      <button
+                        type="button"
+                        className="pw__tile"
+                        key={g.id}
+                        data-on={view.games.includes(g.id)}
+                        data-pick
+                        aria-pressed={view.games.includes(g.id)}
+                        onClick={() => toggleIn("games", g.id)}
+                      >
+                        <Cover title={g.title} size={92} />
+                        <span className="pw__tile-name">{g.title}</span>
+                      </button>
+                    ) : (
+                      <figure
+                        className="pw__tile"
+                        key={g.id}
+                        data-on={view.games.includes(g.id)}
+                      >
+                        <Cover title={g.title} size={92} />
+                        <figcaption>{g.title}</figcaption>
+                      </figure>
+                    ),
                 )}
               </div>
               {own && (

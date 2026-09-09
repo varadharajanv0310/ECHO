@@ -130,7 +130,12 @@ export function Tour() {
 
   return (
     <div className="tour" style={{ zIndex: "var(--z-tour)" }}>
-      <div className="tour__scrim" onClick={go(end)} />
+      <button
+        type="button"
+        className="tour__scrim"
+        onClick={go(end)}
+        aria-label="Skip the tour"
+      />
 
       {stage === "welcome" ? (
         <section
@@ -240,7 +245,12 @@ function RailTour({
 
   return (
     <div className="tour" style={{ zIndex: "var(--z-tour)" }}>
-      <div className="tour__scrim" onClick={onSkip} />
+      <button
+        type="button"
+        className="tour__scrim"
+        onClick={onSkip}
+        aria-label="Skip the tour"
+      />
 
       {/* Cut a hole over the control being described, so it stays lit while
           everything else drops back. */}

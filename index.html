@@ -7,6 +7,37 @@
     <meta name="theme-color" content="#FBF9FF" media="(prefers-color-scheme: light)" />
     <meta name="color-scheme" content="dark light" />
 
+    <!--
+      Content Security Policy.
+
+      Everything ECHO runs is same-origin: the bundle, the styles and both
+      variable fonts ship with the build. There is no analytics, no error
+      reporting service and no third-party script, so nothing here needs a
+      remote origin. `frame-ancestors 'self'` is the clickjacking control;
+      `object-src 'none'` and `base-uri 'self'` close two older holes.
+
+      `'unsafe-inline'` is on styles rather than scripts because the interface
+      derives every surface from a hue written as an inline custom property.
+      Scripts have no such allowance.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self';
+               style-src 'self' 'unsafe-inline';
+               img-src 'self' data: blob:;
+               font-src 'self' data:;
+               connect-src 'self';
+               media-src 'self' data:;
+               worker-src 'self' blob:;
+               object-src 'none';
+               base-uri 'self';
+               form-action 'self';
+               frame-ancestors 'self'"
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="apple-touch-icon" href="./favicon.svg" />
     <link rel="manifest" href="./manifest.webmanifest" />
@@ -54,7 +85,7 @@
       <p style="font: 16px/1.6 system-ui; max-width: 42ch; margin: 4rem auto; color: #cfc9e6">
         ECHO is a rendered space rather than a document, so it needs JavaScript
         to draw anything. The source and a full written walkthrough are at
-        <a style="color: #b79cff" href="https://github.com/varadharajanv0310/ECHO">github.com/varadharajanv0310/ECHO</a>.
+        <a style="color: #b79cff" href="https://github.com/varadharajanv0310/ECHO" rel="noopener noreferrer">github.com/varadharajanv0310/ECHO</a>.
       </p>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>

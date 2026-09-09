@@ -1,5 +1,14 @@
 # ECHO
 
+[![CI](https://github.com/varadharajanv0310/ECHO/actions/workflows/ci.yml/badge.svg)](https://github.com/varadharajanv0310/ECHO/actions/workflows/ci.yml)
+[![Deploy](https://github.com/varadharajanv0310/ECHO/actions/workflows/deploy.yml/badge.svg)](https://github.com/varadharajanv0310/ECHO/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-8B6DF0.svg)](LICENSE)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![three.js](https://img.shields.io/badge/three.js-r185-000000?logo=threedotjs&logoColor=white)](https://threejs.org)
+[![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev)
+[![Tests](https://img.shields.io/badge/tests-102%20passing-3FB950)](#testing)
+
 ### [Open the sky →](https://varadharajanv0310.github.io/ECHO/) · [Field guide →](https://varadharajanv0310.github.io/ECHO/guide.html)
 
 ![The cluster: six places, and nothing else on screen](docs/shots/cluster.jpg)
@@ -24,7 +33,7 @@ and nothing ever leaves it.
 
 ---
 
-## Mandatory features
+## Features
 
 Every required capability, where it is implemented, and how to reach it in the
 running app.
@@ -33,56 +42,56 @@ running app.
 
 Users create content and share it into the network.
 
-| | |
-| --- | --- |
-| **Create** | `src/ui/panels/CreatePanel.tsx` — compose a post, choose the place it is published to, and set how long it lives (12 hours / 1 day / 3 days). |
-| **Publish** | `emit()` in `src/store/sequence.ts` — writes the post and renders it immediately in the 3D scene. |
+|                    |                                                                                                                                                                                                                       |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Create**         | `src/ui/panels/CreatePanel.tsx` — compose a post, choose the place it is published to, and set how long it lives (12 hours / 1 day / 3 days).                                                                         |
+| **Publish**        | `emit()` in `src/store/sequence.ts` — writes the post and renders it immediately in the 3D scene.                                                                                                                     |
 | **Share / repost** | `carry()` in `src/store/sequence.ts`, control in `src/ui/SkyDock.tsx` — resharing another user's post adds it to your own space, credits the original author, and extends its lifetime. This is the sharing mechanic. |
-| **Reply** | `sendDM()` with subject context — replying to a post keeps a reference to what it replied to. |
-| **Try it** | Rail → **+** → pick a place → write → *Emit*. Then open anyone's post and press *Carry this*. |
+| **Reply**          | `sendDM()` with subject context — replying to a post keeps a reference to what it replied to.                                                                                                                         |
+| **Try it**         | Rail → **+** → pick a place → write → _Emit_. Then open anyone's post and press _Carry this_.                                                                                                                         |
 
 ### 2. Content Discovery
 
 Users find content and other users through multiple discovery surfaces.
 
-| | |
-| --- | --- |
-| **Search** | `src/ui/panels/SearchPanel.tsx` — full-text search across all posts and all users, with filters by place and by post lifetime. |
-| **Browse** | Four-level spatial browse — all places → one place → one user → their posts (`src/scene/Sky.tsx`). |
-| **Explore by topic** | Six topic communities. Entering one shows only the users publishing there. |
-| **Activity feed** | Dashboard → *Responses* — replies and reshares your content received. |
-| **Try it** | Rail → **search icon**, or click any place in the 3D view to browse into it. |
+|                      |                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Search**           | `src/ui/panels/SearchPanel.tsx` — full-text search across all posts and all users, with filters by place and by post lifetime. |
+| **Browse**           | Four-level spatial browse — all places → one place → one user → their posts (`src/scene/Sky.tsx`).                             |
+| **Explore by topic** | Six topic communities. Entering one shows only the users publishing there.                                                     |
+| **Activity feed**    | Dashboard → _Responses_ — replies and reshares your content received.                                                          |
+| **Try it**           | Rail → **search icon**, or click any place in the 3D view to browse into it.                                                   |
 
 ### 3. Personalized Experience
 
 Every user configures their own identity and their own interface.
 
-| | |
-| --- | --- |
-| **Profile** | `src/ui/ProfileWindow.tsx` — display name, status, bio, avatar mark, banner, and interest tags. |
-| **Theming** | User-selected accent colour drives the entire interface through one `--accent-h` custom property, plus light/dark mode. Profile → *Theme*. |
-| **Interests** | Curated catalogue of 70 games and 59 songs (`src/lib/library.ts`); the shelf a user builds is shown on their profile. |
-| **Connections** | Add users; their star is marked everywhere you meet them and they are listed in the Dashboard. |
-| **Preferences** | `src/ui/panels/MenuPanel.tsx` — notification settings, visibility settings, motion and grain controls, all persisted. |
-| **Try it** | Rail → **profile icon** → *Theme*. |
+|                 |                                                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Profile**     | `src/ui/ProfileWindow.tsx` — display name, status, bio, avatar mark, banner, and interest tags.                                            |
+| **Theming**     | User-selected accent colour drives the entire interface through one `--accent-h` custom property, plus light/dark mode. Profile → _Theme_. |
+| **Interests**   | Curated catalogue of 70 games and 59 songs (`src/lib/library.ts`); the shelf a user builds is shown on their profile.                      |
+| **Connections** | Add users; their star is marked everywhere you meet them and they are listed in the Dashboard.                                             |
+| **Preferences** | `src/ui/panels/MenuPanel.tsx` — notification settings, visibility settings, motion and grain controls, all persisted.                      |
+| **Try it**      | Rail → **profile icon** → _Theme_.                                                                                                         |
 
 ### 4. Navigation & User Flow
 
-| | |
-| --- | --- |
+|                        |                                                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **Primary navigation** | Persistent rail, `src/ui/Rail.tsx` — five destinations, `<nav>` landmark, active state, keyboard reachable. |
-| **Breadcrumb** | `src/ui/SkyHud.tsx` — always shows current location and every level is clickable to go back. |
-| **Back** | Explicit back control at every depth, plus browser-consistent behaviour. |
-| **Onboarding flow** | `src/ui/Tour.tsx` — a guided first-run walkthrough plus coach marks over each control. |
-| **Deep links** | `?phase=` routes to any stage for direct entry. |
+| **Breadcrumb**         | `src/ui/SkyHud.tsx` — always shows current location and every level is clickable to go back.                |
+| **Back**               | Explicit back control at every depth, plus browser-consistent behaviour.                                    |
+| **Onboarding flow**    | `src/ui/Tour.tsx` — a guided first-run walkthrough plus coach marks over each control.                      |
+| **Deep links**         | `?phase=` routes to any stage for direct entry.                                                             |
 
 ### 5. Responsive & Accessible UI
 
-| | |
-| --- | --- |
-| **Responsive** | Breakpoint system in `src/ui/responsive.css` — mobile, tablet, laptop and wide tiers, plus touch refinements. Fluid type and spacing throughout via `clamp()`. |
+|                |                                                                                                                                                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Responsive** | Breakpoint system in `src/ui/responsive.css` — mobile, tablet, laptop and wide tiers, plus touch refinements. Fluid type and spacing throughout via `clamp()`.                                                                               |
 | **Accessible** | Semantic landmarks, heading hierarchy, skip link, ARIA roles and labels, focus trap in dialogs, full keyboard navigation including the 3D scene, visible focus states, `prefers-reduced-motion` support, and a documented no-WebGL fallback. |
-| **Verified** | See `docs/ACCESSIBILITY.md`. |
+| **Verified**   | See `docs/ACCESSIBILITY.md`.                                                                                                                                                                                                                 |
 
 ### 6. Creative & Original Design
 
@@ -94,13 +103,47 @@ no component library, no template.
 
 ---
 
----
+## Tech Stack
 
-## Running it
+| Concern       | Choice                                      |
+| ------------- | ------------------------------------------- |
+| Build tool    | Vite 8 (Rollup/rolldown production build)   |
+| Language      | TypeScript 7, `strict`                      |
+| UI runtime    | React 19                                    |
+| 3D            | three.js 0.185 with @react-three/fiber 9    |
+| Shaders       | GLSL, compiled by `vite-plugin-glsl`        |
+| State         | zustand 5                                   |
+| Styling       | Tailwind v4 plus a stylesheet per component |
+| Smooth scroll | Lenis                                       |
+| Testing       | Vitest 5, Testing Library, jsdom            |
+| Linting       | oxlint, with `jsx-a11y`, `react` and `unicorn` rule sets |
+| Formatting    | Prettier 3                                  |
+| CI/CD         | GitHub Actions to GitHub Pages              |
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for why each of these was chosen.
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** 20 or newer
+- **pnpm** 9 or newer — `corepack enable` will provide it
+- A browser with WebGL2
+
+There is nothing else to configure: no environment variables, no API keys and
+no services to start. See [.env.example](.env.example), which exists to say so.
+
+### Installation
 
 ```bash
-pnpm install
+git clone https://github.com/varadharajanv0310/ECHO.git
 ```
+
+```bash
+cd ECHO && pnpm install
+```
+
+### Running locally
 
 ```bash
 pnpm dev
@@ -108,21 +151,23 @@ pnpm dev
 
 The dev server runs on port 5180.
 
+### Building for production
+
 ```bash
 pnpm build
 ```
 
 ### Scripts
 
-| Script | What it does |
-| --- | --- |
-| `pnpm dev` | Vite dev server with HMR, on port 5180 |
-| `pnpm build` | `tsc -b`, then a production build into `dist/` |
-| `pnpm preview` | Serve the built `dist/` locally |
-| `pnpm test` | Run the Vitest suite once |
-| `pnpm test:watch` | Vitest in watch mode |
-| `pnpm coverage` | The suite with v8 coverage |
-| `pnpm typecheck` | Types only, no emit |
+| Script            | What it does                                   |
+| ----------------- | ---------------------------------------------- |
+| `pnpm dev`        | Vite dev server with HMR, on port 5180         |
+| `pnpm build`      | `tsc -b`, then a production build into `dist/` |
+| `pnpm preview`    | Serve the built `dist/` locally                |
+| `pnpm test`       | Run the Vitest suite once                      |
+| `pnpm test:watch` | Vitest in watch mode                           |
+| `pnpm coverage`   | The suite with v8 coverage                     |
+| `pnpm typecheck`  | Types only, no emit                            |
 
 ## Testing
 
@@ -141,27 +186,27 @@ asserts the dialog role, Escape to close, and focus containment under both
 
 ## Documentation
 
-| Document | What is in it |
-| --- | --- |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Layering, data flow, state, the rendering pipeline, and the reasoning behind each choice |
-| [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) | Keyboard model, screen reader support, focus management, contrast, motion, what was tested, and what is still not solved |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, code style, testing expectations, the accessibility bar and the performance budget |
-| [docs/echo-components.md](docs/echo-components.md) | The provided components, and what was done with them |
-| [LICENSE](LICENSE) | MIT |
+| Document                                           | What is in it                                                                                                            |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [ARCHITECTURE.md](ARCHITECTURE.md)                 | Layering, data flow, state, the rendering pipeline, and the reasoning behind each choice                                 |
+| [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md)     | Keyboard model, screen reader support, focus management, contrast, motion, what was tested, and what is still not solved |
+| [CONTRIBUTING.md](CONTRIBUTING.md)                 | Setup, code style, testing expectations, the accessibility bar and the performance budget                                |
+| [docs/echo-components.md](docs/echo-components.md) | The provided components, and what was done with them                                                                     |
+| [LICENSE](LICENSE)                                 | MIT                                                                                                                      |
 
-## Reviewing it
+## Usage
 
 The whole thing is one continuous piece of choreography, so reviewing a later
 beat should not mean replaying the earlier ones every time.
 
-| URL | What it does |
-| --- | --- |
-| `/` | Normal entry. First visit runs the full sequence. |
-| `/?reset` | Clears the stored profile and replays from the void. |
-| `/?phase=galaxy` | Jumps straight to a beat. Any phase name works. |
-| `/?phase=passage&p=0.62` | Jumps to a point inside the passage. |
-| `/?debug` | Opens the tuning panel on the deployed build. |
-| `/?nogl` | Forces the no-WebGL fallback, on a machine that has it. |
+| URL                      | What it does                                            |
+| ------------------------ | ------------------------------------------------------- |
+| `/`                      | Normal entry. First visit runs the full sequence.       |
+| `/?reset`                | Clears the stored profile and replays from the void.    |
+| `/?phase=galaxy`         | Jumps straight to a beat. Any phase name works.         |
+| `/?phase=passage&p=0.62` | Jumps to a point inside the passage.                    |
+| `/?debug`                | Opens the tuning panel on the deployed build.           |
+| `/?nogl`                 | Forces the no-WebGL fallback, on a machine that has it. |
 
 Phase names: `void`, `reveal`, `passage`, `galaxy`, `ignition`, `profile`,
 `dive`, `constellation`.
@@ -186,31 +231,31 @@ re-render the tree.
 
 ## The sequence
 
-| Beat | State | What happens |
-| --- | --- | --- |
-| 1 | `void` | Loading. Starfield, nebula cloud, a falling figure. |
-| 2 | `reveal` | The void stains. ECHO resolves out of the nebula. |
-| 3–5 | `passage` | The bleed becomes a road. Six stops. The galaxy appears. |
-| 6 | `galaxy` | The only interactive object on the page. |
-| 7a | `ignition` | A sub drops, a spark ignites, the frame blows out. |
-| 7b | — | A returning visitor skips 7a and 8 and dives straight in. |
-| 8 | `profile` | Name, mark, colour, Worlds. No email, no password. |
-| 9 | `dive` | The warp. |
-| 10 | `constellation` | Arrival. The sky settles. |
+| Beat | State           | What happens                                              |
+| ---- | --------------- | --------------------------------------------------------- |
+| 1    | `void`          | Loading. Starfield, nebula cloud, a falling figure.       |
+| 2    | `reveal`        | The void stains. ECHO resolves out of the nebula.         |
+| 3–5  | `passage`       | The bleed becomes a road. Six stops. The galaxy appears.  |
+| 6    | `galaxy`        | The only interactive object on the page.                  |
+| 7a   | `ignition`      | A sub drops, a spark ignites, the frame blows out.        |
+| 7b   | —               | A returning visitor skips 7a and 8 and dives straight in. |
+| 8    | `profile`       | Name, mark, colour, Worlds. No email, no password.        |
+| 9    | `dive`          | The warp.                                                 |
+| 10   | `constellation` | Arrival. The sky settles.                                 |
 
 ![The wordmark resolving out of the nebula](docs/shots/reveal.jpg)
-*Beat 2. The bleed is an SVG `feGaussianBlur` with a two-value `stdDeviation`,
+_Beat 2. The bleed is an SVG `feGaussianBlur` with a two-value `stdDeviation`,
 blurring six times harder vertically than horizontally, so every letter stem
-becomes its own falling strand.*
+becomes its own falling strand._
 
 ![The galaxy, the only interactive object on the page](docs/shots/galaxy.jpg)
-*Beat 6. Click it.*
+_Beat 6. Click it._
 
 Two structural decisions carry the whole thing:
 
 **Beats 1 and 2 are one component.** The void does not unmount and the reveal
 does not mount. The nebula, the figure and the wordmark are all present
-throughout; only their visibility changes. That is what lets the void *stain*
+throughout; only their visibility changes. That is what lets the void _stain_
 into the reveal instead of cutting to it.
 
 **Beats 3 through 10 are one canvas.** Road, galaxy, warp and constellation are
@@ -225,35 +270,35 @@ the handoffs are genuinely seamless rather than well-timed.
 
 Four levels, and the trail across the top always says which one you are in.
 
-| Level | What it is | What you can do |
-| --- | --- | --- |
-| Cluster | Six places | Drag to look. Click a place to fly into it. |
-| Place | The people standing in it, joined into a figure | Click a person to stand at them. |
-| Person | Their star, with their signals on rings around it | Click a signal to read it. Click them again to open who they are. |
-| Signal | One thing somebody said | Read it, reply, or **carry** it. |
+| Level   | What it is                                        | What you can do                                                   |
+| ------- | ------------------------------------------------- | ----------------------------------------------------------------- |
+| Cluster | Six places                                        | Drag to look. Click a place to fly into it.                       |
+| Place   | The people standing in it, joined into a figure   | Click a person to stand at them.                                  |
+| Person  | Their star, with their signals on rings around it | Click a signal to read it. Click them again to open who they are. |
+| Signal  | One thing somebody said                           | Read it, reply, or **carry** it.                                  |
 
 ![A place, with its people joined into a figure](docs/shots/world.jpg)
-*A place. Only the people standing in it are drawn, and the figure between them
-is a nearest-neighbour chain — you are joined to it when you arrive.*
+_A place. Only the people standing in it are drawn, and the figure between them
+is a nearest-neighbour chain — you are joined to it when you arrive._
 
 ![Standing at your own star, three signals on rings around it](docs/shots/system.jpg)
-*Standing at somebody. Their signals orbit them, newest closest in, each
-labelled with what it actually says.*
+_Standing at somebody. Their signals orbit them, newest closest in, each
+labelled with what it actually says._
 
 **Carrying is the only verb that matters.** Opening somebody else's signal lets
 you carry it: it starts orbiting your star as well, keeps their name and their
-colour, is labelled *via them*, and its clock restarts. It is the only way
+colour, is labelled _via them_, and its clock restarts. It is the only way
 anything travels and the only way anything survives. Put it down and nothing
 else is holding it up.
 
 ![Reading one of somebody's signals, with the carry control](docs/shots/someone.jpg)
-*Opening a signal. How many people are carrying it, how long it has left, and
-the one button that changes anything for anybody else.*
+_Opening a signal. How many people are carrying it, how long it has left, and
+the one button that changes anything for anybody else._
 
 **Colour is identity.** Everyone picks a hue. It tints their star, their
 profile window, and your cursor while you are with them, through a single
 `--accent-h` custom property that every glass surface derives from. Nothing in
-the interface hardcodes a violet. A carried signal keeps *its author's* hue, so
+the interface hardcodes a violet. A carried signal keeps _its author's_ hue, so
 your own system shows at a glance what you wrote and what you are holding for
 other people.
 
@@ -261,8 +306,8 @@ other people.
 one thing: dying. It is deliberately absent from the colours you can pick for
 yourself.
 
-**You find out who.** A carry is reported by name — *carried by north*, or
-*carried by nobody* — never as a count. Which person chose to hold your thing
+**You find out who.** A carry is reported by name — _carried by north_, or
+_carried by nobody_ — never as a count. Which person chose to hold your thing
 is the whole payoff of the mechanic, and a number is the one thing ECHO refuses
 to put on anybody's work.
 
@@ -282,21 +327,21 @@ you read them.
 
 ### The five controls
 
-| | |
-| --- | --- |
-| **Profile** | Name, one line, mark, banner, colour; shelves for games and music from a catalogue with generated cover art; handles for anywhere else you are. |
-| **Menu** | Ground and accent, grain, reduced flashing, what reaches you, the opening sequence again, the tutorial again, the field guide. |
-| **Create** | Choose a place, write it, give it 12 hours / a day / three days. It appears immediately, orbiting your star. |
-| **Search** | Signals and people. Results are scrambled by a hash of the id — stable between renders, and unrelated to who wrote a thing or when. There is no best result in a place with no scores. |
-| **Dashboard** | Split three ways: what you **sent** and how long it has left, what came **back**, and the people you are actually **talking to**. |
+|               |                                                                                                                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Profile**   | Name, one line, mark, banner, colour; shelves for games and music from a catalogue with generated cover art; handles for anywhere else you are.                                        |
+| **Menu**      | Ground and accent, grain, reduced flashing, what reaches you, the opening sequence again, the tutorial again, the field guide.                                                         |
+| **Create**    | Choose a place, write it, give it 12 hours / a day / three days. It appears immediately, orbiting your star.                                                                           |
+| **Search**    | Signals and people. Results are scrambled by a hash of the id — stable between renders, and unrelated to who wrote a thing or when. There is no best result in a place with no scores. |
+| **Dashboard** | Split three ways: what you **sent** and how long it has left, what came **back**, and the people you are actually **talking to**.                                                      |
 
 ![A profile: banner, mark, traits, shelves for games and music](docs/shots/profile.jpg)
-*A profile. The window is tinted by that person's hue — visiting somebody
-should feel like walking into their room, not reading their row in a database.*
+_A profile. The window is tinted by that person's hue — visiting somebody
+should feel like walking into their room, not reading their row in a database._
 
 ![The dashboard, split into sent, responses and messages](docs/shots/dashboard.jpg)
-*The dashboard. Every clock runs down; the only thing that resets one is
-somebody choosing to carry what you said.*
+_The dashboard. Every clock runs down; the only thing that resets one is
+somebody choosing to carry what you said._
 
 ### Onboarding
 
@@ -335,7 +380,7 @@ without being remembered twice.
 
 ---
 
-## Structure
+## Project Structure
 
 ```
 src/
@@ -364,21 +409,21 @@ rather than hoping something unmounts late.
 
 ---
 
-## Visual identity
+## Design System
 
 **Palette**, sampled from the reference set rather than guessed. The references
 mass at hue 258–300 and tail to 324, with almost no warm content anywhere —
 which is why amber is rare here too.
 
-| Token | Value | Role |
-| --- | --- | --- |
-| `--color-void` | `#04030A` | Ground. Near-total black, shifted toward violet. |
-| `--color-violet-deep` | `#4F06F8` | The road. |
-| `--color-violet` | `#8B2FF8` | Life, propagation. |
-| `--color-violet-bright` | `#B026FF` | Resonance. |
-| `--color-magenta` | `#FA42B0` | Reach. |
-| `--color-amber` | `#FF7326` | **Decay and death only.** Used at a whisper. |
-| `--color-spark` | `#FFFFFF` | Ignition. |
+| Token                   | Value     | Role                                             |
+| ----------------------- | --------- | ------------------------------------------------ |
+| `--color-void`          | `#04030A` | Ground. Near-total black, shifted toward violet. |
+| `--color-violet-deep`   | `#4F06F8` | The road.                                        |
+| `--color-violet`        | `#8B2FF8` | Life, propagation.                               |
+| `--color-violet-bright` | `#B026FF` | Resonance.                                       |
+| `--color-magenta`       | `#FA42B0` | Reach.                                           |
+| `--color-amber`         | `#FF7326` | **Decay and death only.** Used at a whisper.     |
+| `--color-spark`         | `#FFFFFF` | Ignition.                                        |
 
 Life is violet, death is amber, ignition is white. Brightness carries a hue as
 well as a luminance, which is what stops the interface going flat purple.
@@ -392,7 +437,7 @@ prism smear, with a width axis the wordmark animates so ECHO physically widens
 as it resolves. Geist Mono for system voice, labels and credit blocks.
 
 **Texture.** Film grain over everything at fixed screen density, rendered at DPR
-1 so it belongs to the screen and not to the content. It *screens* rather than
+1 so it belongs to the screen and not to the content. It _screens_ rather than
 overlays, because in a frame that is ninety percent black the grain has to live
 in the blacks. It reshuffles at 24fps rather than at display rate — grain that
 changes every frame at 120Hz stops looking like emulsion and starts looking like
@@ -407,10 +452,10 @@ one place the interface stopped agreeing with itself.
 
 ---
 
-## Techniques worth naming
+## Technical Highlights
 
 **Anisotropic blur is what makes the bleed work.** A CSS `blur()` is isotropic
-and gives a soft halo. The references all show light falling in *strands*. An
+and gives a soft halo. The references all show light falling in _strands_. An
 SVG `feGaussianBlur` with a two-value `stdDeviation` blurs roughly six times
 harder vertically than horizontally, which turns every letter stem into its own
 falling strand. The same trick, at a different scale, is what turns noise into
@@ -474,24 +519,68 @@ nothing and decelerating so the streaks shorten back into stars.
 
 ---
 
-## Known scope
+## Roadmap
 
-Desktop is what this is designed for and what it is best on. A handheld pass
-exists and is deliberate rather than a reflow: it is gated on `(pointer: coarse)`
-and a narrow screen, so a desktop browser dragged narrow keeps the full
-treatment. On a phone the camera stands further back in proportion to the
-aspect — the field of view is vertical, so a tall thin screen loses the
-horizontal field and half the sky with it — taps are resolved against a
-position the app tracks itself rather than r3f's move-only pointer, labels are
-shorter and clamped inside the frame, the rail becomes a bottom bar with the
-dock above it, panels become full-screen sheets, and the passage is shorter to
-scroll. Render resolution is capped tighter there too.
+Where this goes next, in the order it would be worth doing.
 
-There is no network between browsers, so there is nobody else really online.
-Everyone in the sky is generated and so is what they do with your signals; the
-mechanic is modelled honestly rather than mocked up, but it is a working
-argument, not a product with users.
+**Near term**
 
-## Deploying
+- [ ] Container queries for the panels, so a window adapts to its own width
+      rather than the viewport's
+- [ ] Virtualised search results, for when a sky has thousands of signals
+- [ ] Per-place figures authored by hand, rather than derived, for the six
+      opening Worlds
+- [ ] A second pass on the sound design: the cues are one-shots, and the sky
+      should have a floor
 
-Pushes to `main` build and publish to GitHub Pages automatically.
+**Further out**
+
+- [ ] Deep links into a place or a person, so a sky can be shared as a URL
+- [ ] Export and import of a profile, as a file the reader holds
+- [ ] An optional peer channel, so two browsers can share one sky without a
+      server between them
+- [ ] Narration of the canvas itself for screen readers — the sky navigation
+      gives the structure, but not the composition
+
+## Deployment
+
+Pushes to `main` build and publish to GitHub Pages automatically, via
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). The workflow
+typechecks and runs the test suite before it builds, so a failing test stops a
+deploy rather than shipping with it.
+
+Every push and pull request also runs [`ci.yml`](.github/workflows/ci.yml):
+typecheck, lint, tests, coverage, build, and a dependency audit.
+
+## Contributing
+
+Contributions are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) covers the setup,
+the code style, what a change is expected to prove, and the accessibility and
+performance bars it has to clear.
+
+In short, before opening a pull request:
+
+```bash
+pnpm verify
+```
+
+That runs typecheck, lint, tests and build in one go — the same four things CI
+will run.
+
+## License
+
+[MIT](LICENSE) © V Varadharajan.
+
+## Acknowledgements
+
+- **The Frontend Odyssey 2026** for the brief, and for the constraint that
+  made it interesting: frontend only, no backend, no database.
+- **[three.js](https://threejs.org)** and
+  **[@react-three/fiber](https://r3f.docs.pmnd.rs)**, which are the reason a
+  single canvas can hold a whole sky.
+- **[Lenis](https://lenis.darkroom.engineering)** for scroll that behaves like
+  a camera move rather than a scrollbar.
+- **[zustand](https://zustand.docs.pmnd.rs)**, for state that needed no
+  provider tree.
+- **Archivo** and **Geist Mono**, the two variable faces the whole visual
+  identity rests on.

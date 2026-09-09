@@ -11,15 +11,28 @@
   padding: clamp(1rem, 3vh, 2.5rem);
 }
 
+/* A button rather than a div, because clicking the backdrop dismisses the
+   tour and that has to be reachable without a mouse. It is styled back down
+   to a plain surface: no border, no chrome, and its accessible name comes
+   from aria-label rather than from anything visible. */
 .tour__scrim {
   position: absolute;
   inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
   background: radial-gradient(
     120% 90% at 50% 50%,
     rgba(6, 3, 14, 0.5),
     rgba(6, 3, 14, 0.82)
   );
   animation: tour-scrim 260ms ease both;
+}
+
+.tour__scrim:focus-visible {
+  outline: 2px solid hsl(var(--accent-h) 95% 72%);
+  outline-offset: -4px;
 }
 
 :root[data-mode="light"] .tour__scrim {

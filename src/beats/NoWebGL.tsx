@@ -42,7 +42,7 @@ export function NoWebGL() {
             className="ngl__btn"
             href="https://github.com/varadharajanv0310/ECHO"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             Source
           </a>
