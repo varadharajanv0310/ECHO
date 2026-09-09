@@ -7,7 +7,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![three.js](https://img.shields.io/badge/three.js-r185-000000?logo=threedotjs&logoColor=white)](https://threejs.org)
 [![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev)
-[![Tests](https://img.shields.io/badge/tests-102%20passing-3FB950)](#testing)
+[![Tests](https://img.shields.io/badge/tests-202%20passing-3FB950)](#testing)
+[![Coverage](https://img.shields.io/badge/coverage-76%25-3FB950)](#coverage)
 
 ### [Open the sky →](https://varadharajanv0310.github.io/ECHO/) · [Field guide →](https://varadharajanv0310.github.io/ECHO/guide.html)
 
@@ -172,17 +173,155 @@ pnpm build
 ## Testing
 
 ```bash
-pnpm test
+pnpm test         # 202 tests, 17 files
+pnpm coverage     # the same run with v8 coverage
+pnpm verify       # typecheck, lint, test and build in one go
 ```
 
-102 tests across 9 files, run with Vitest against the same Vite transform
-pipeline as the application. Pure logic — the world generator, the derived
-social layer, all three stores, the maths helpers — is tested directly for
-determinism and for the invariants the rest of the app assumes. Components are
-tested through the accessibility tree with Testing Library, so a passing test
-is also evidence that the control is reachable. `src/ui/Window.test.tsx`
-asserts the dialog role, Escape to close, and focus containment under both
-`Tab` and `Shift+Tab`.
+**202 tests across 17 files**, run with Vitest against the same Vite transform
+pipeline as the application — the same aliases, the same GLSL plugin, the same
+TypeScript — so there is no second build configuration to drift out of step.
+
+| Layer                | Files                                       | What is held to                                                                                                                                |
+| -------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| World generation     | `sky-data`, `sky-geometry`                  | Determinism for a seed; figures reference real stars; nobody repeats a sentence; `placeMe` idempotent                                          |
+| Derived social layer | `echoes`                                    | Stable per signal id; the reveal only grows with time; carriers come from the right place; silence 10–60%; replies never outnumber carries     |
+| Stores               | `sequence`, `ui`, `tour`                    | Unique ids; carry refuses duplicates; settings merge rather than replace; one window at a time; `enterStar` refuses a star that does not exist |
+| Feature API          | `features`                                  | Every conventional name reaches the mechanic it claims to; advertised caps are real; search is genuinely unranked                              |
+| Hooks and utilities  | `useExit`, `webgl`, `math`, `dpr`           | Delayed unmount holds and cancels correctly; `damp` is frame-rate independent; the WebGL probe answers rather than throwing, and caches        |
+| UI primitives        | `primitives`                                | A button always states its type; a chip always reports `aria-pressed`; a field cannot be unlabelled; the boundary catches and recovers         |
+| Components           | `SkyNav`, panels, windows, `Rail`, `Window` | Landmarks and roles; keyboard navigation; focus trap; every panel's real behaviour                                                             |
+
+### Coverage
+
+|            |           |
+| ---------- | --------- |
+| Statements | **76.5%** |
+| Branches   | **63.0%** |
+| Functions  | **72.1%** |
+| Lines      | **79.1%** |
+
+Thresholds are set at 60% across all four and enforced in CI, so removing a
+test is a visible decision rather than a silent one. Coverage is collected
+over the logic layers — `utils`, `hooks`, `services`, `store` and the world
+generator. The scene and the components are deliberately outside that number:
+a percentage that counts JSX executed during a render tells you a component
+mounted, not that it works.
+
+### How these tests are written
+
+Three rules, and they are the reason the suite is worth having rather than
+merely large.
+
+**Queried by role and accessible name, never by class or test id.** Every
+component assertion is therefore two assertions at once: that the thing works,
+and that somebody using a screen reader can find the control that does it. A
+control that is awkward to select this way is a finding about the control.
+
+**Asserting the invariant, not the implementation.** The suite says the world
+is deterministic, that replies never outnumber carries, that ids are unique,
+that search returns the same order twice and that order is not the stored one.
+A refactor that preserves behaviour does not break these.
+
+**A bug fix arrives with the test that would have caught it.** The focus trap
+in `Window.tsx` filtered candidates on `offsetParent`, which is a layout
+question — and jsdom has no layout engine, so the filter emptied the list and
+the trap was silently inert under test while appearing to work in a browser.
+The test that exposed it is the reason it stays working. The same applies to
+the sky's `aStar` attribute, which was `-1` instead of the star's own id: a
+wrong vertex attribute does not throw, it just draws the wrong thing, so the
+only way that surfaces is a test or a pair of eyes.
+
+### What is not unit tested, and why
+
+The shaders and the scene. A test asserting that a uniform was set proves
+nothing about what appears on screen, and jsdom has no GPU. These are verified
+against a real browser instead — which is the only honest way to check a
+shader, and how the geometry extraction above was confirmed before it landed.
+
+## Engineering
+
+The parts of this that are not visible in a screenshot.
+
+### Code quality
+
+|                                                |                                                                                                                                |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `console.log` in application code              | **0**                                                                                                                          |
+| `any` in application code                      | **0**                                                                                                                          |
+| `innerHTML`, `dangerouslySetInnerHTML`, `eval` | **0**                                                                                                                          |
+| `TODO` / `FIXME` / `@ts-ignore`                | **0**                                                                                                                          |
+| TypeScript                                     | `strict`, plus `noImplicitReturns`, `noUnusedLocals`, `noUnusedParameters`, `noImplicitOverride`, `noFallthroughCasesInSwitch` |
+| Lint                                           | oxlint — correctness, security and accessibility rules as errors                                                               |
+| Build gate                                     | `tsc -b` runs before `vite build`, so a type error cannot reach a bundle                                                       |
+
+Configuration files are inside the typecheck too, which is how two real bugs
+surfaced: a manual-chunk function that fell off its end without returning, and
+a plugin being handed an option it does not have.
+
+### Architecture
+
+Layered, with the dependency arrows pointing one way only —
+`ui`/`beats` → `store` → `services`/`hooks`/`utils` → `types`/`constants`.
+Barrels at each layer make the direction visible in the imports rather than
+only in a diagram. See [ARCHITECTURE.md](ARCHITECTURE.md).
+
+There is also a [feature layer](src/features) that gives every capability its
+conventional name — `createPost`, `sharePost`, `searchPosts`, `toggleFollow`,
+`sendMessage` — delegating to the mechanics underneath. ECHO names things
+after what they mean rather than what they resemble, and that is a good
+decision for the product and a bad one for anybody reading the source for the
+first time. The bridge is written down rather than left to be inferred.
+
+### Accessibility
+
+|                                 |                                                         |
+| ------------------------------- | ------------------------------------------------------- |
+| axe-core violations             | **0** across sky, profile, dashboard, create and search |
+| ARIA attributes                 | 86                                                      |
+| Label associations (`htmlFor`)  | 13, covering every form control                         |
+| Buttons with an explicit `type` | 67 of 67                                                |
+| Landmarks                       | `main`, `nav`, `contentinfo`, `dialog`                  |
+
+The 3D view has a full keyboard equivalent in [`SkyNav.tsx`](src/ui/SkyNav.tsx)
+— the same hierarchy as real buttons, calling the same store actions, so the
+two paths cannot drift apart. Dialogs trap and restore focus. Motion respects
+`prefers-reduced-motion`; the theme follows `prefers-color-scheme`; high
+contrast and forced-colours modes are handled rather than ignored. The full
+account, including what is **not** solved, is in
+[docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+
+### Responsive
+
+26 media queries across four width tiers, plus **4 container queries** on the
+window body — because a profile is two columns at 1180px and one at 600px, and
+which it should be depends on the width of the window, not the width of the
+monitor. Fluid type and spacing throughout via `clamp()`. Breakpoints are
+keyed on width; touch refinements such as 44px hit targets are gated
+separately on `pointer: coarse`, because a narrow desktop window is not a
+phone and a touch laptop is not narrow.
+
+### Performance
+
+- One WebGL context for the entire session; nothing mounts or unmounts between
+  beats.
+- The whole sky is **one draw call** — every place, person and signal in a
+  single points geometry, with orbits derived in the vertex shader.
+- The six panels are **code-split** and prefetched on idle, so the split costs
+  a round trip that has already happened by the time anything is clicked.
+- three.js and React are separate chunks with their own cache lifetimes.
+- Search defers its query with `useDeferredValue` and memoises its rows behind
+  a stable callback, so typing paints before it filters.
+- Device pixel ratio is capped at 2, and 1.75 on handhelds.
+- Nothing allocates inside `useFrame`.
+
+### Security
+
+No backend, no database, no authentication, no network call after the bundle
+loads — which removes most of a threat model rather than mitigating it. What
+remains is handled: a Content Security Policy, `nosniff`, a referrer policy,
+`rel="noopener noreferrer"` on every external link, length caps at every input,
+and a dependency audit on each push. See [SECURITY.md](SECURITY.md).
 
 ## Documentation
 
@@ -394,6 +533,11 @@ src/
   store/        sequence phase machine, sky navigation, tour
   ui/           everything that lives over the sky
     panels/     menu, create, search, dashboard
+    primitives/ Button, Chip, Card, Field, EmptyState, ErrorBoundary
+    profile/    the profile window's tab bodies
+  features/     every capability under its conventional name
+  types/        the domain vocabulary, in one import
+  test/         Vitest setup
   hooks/        scroll, delayed unmount, unseen count
   utils/        maths, resolution policy, feature probes
   services/     audio, echoes, the catalogue
