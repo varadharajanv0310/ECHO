@@ -30,6 +30,18 @@ export const copy = {
 
   scrollCue: "Scroll",
 
+  /** Shown when the browser cannot give us a WebGL context at all. */
+  noWebGL: {
+    lede: "This browser cannot open a WebGL context, and every part of ECHO you came to see - the nebula, the road, the galaxy, the sky - is drawn with one. Nothing is broken at your end or ours; the graphics are simply switched off.",
+    fixTitle: "Usually one of these",
+    fixes: [
+      "Hardware acceleration is off. In Chrome it is Settings → System → Use graphics acceleration when available.",
+      "You are on a remote desktop or a virtual machine, where it is off by default.",
+      "The browser has blocklisted the graphics driver. A different browser on the same machine will often work.",
+    ],
+    foot: "The idea does not need the graphics. The field guide has all of it in writing.",
+  },
+
   /**
    * The passage. Six stops, each one sentence. The order is the argument:
    * what it became, what we removed, what it costs, what a signal is, what

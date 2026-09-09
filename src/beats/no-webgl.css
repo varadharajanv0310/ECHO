@@ -1,0 +1,141 @@
+/* =========================================================================
+   The no-WebGL screen.
+
+   Everything here is plain CSS on a plain gradient - no canvas, no shader, no
+   font-variation tricks that depend on the variable font having loaded. This
+   is the one screen in ECHO that has to render when the machine is having
+   trouble, so it asks the machine for as little as possible.
+   ========================================================================= */
+
+.ngl {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: clamp(1.25rem, 5vw, 3rem);
+  background:
+    radial-gradient(120% 90% at 50% 0%, #1a0a35 0%, transparent 60%),
+    radial-gradient(100% 80% at 50% 100%, #2a0b3d 0%, transparent 62%),
+    #06040e;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+.ngl__box {
+  width: min(620px, 100%);
+}
+
+.ngl__eyebrow {
+  margin: 0 0 1.6rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #ff7326;
+}
+
+.ngl__word {
+  margin: 0 0 1.4rem;
+  font-size: clamp(3rem, 11vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  color: #fff;
+  /* The bleed, at a fraction of the strength the real wordmark uses, so the
+     page is recognisably the same product without needing a filter. */
+  text-shadow: 0 0 46px rgba(176, 38, 255, 0.55);
+}
+
+.ngl__lede {
+  margin: 0 0 2rem;
+  font-size: clamp(0.98rem, 2vw, 1.1rem);
+  line-height: 1.62;
+  color: rgba(232, 224, 255, 0.72);
+  text-wrap: pretty;
+}
+
+.ngl__how {
+  margin: 0 0 2rem;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid rgba(196, 160, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.ngl__how-title {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(232, 224, 255, 0.5);
+}
+
+.ngl__how ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.ngl__how li {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(232, 224, 255, 0.66);
+}
+
+.ngl__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.8rem;
+}
+
+.ngl__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid rgba(196, 160, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease;
+}
+
+.ngl__btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(196, 160, 255, 0.6);
+}
+
+.ngl__btn--go {
+  background: #8b2ff8;
+  border-color: transparent;
+  color: #fff;
+}
+
+.ngl__btn--go:hover {
+  background: #a04dff;
+  border-color: transparent;
+}
+
+.ngl__btn:focus-visible {
+  outline: 2px solid #b026ff;
+  outline-offset: 3px;
+}
+
+.ngl__foot {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  line-height: 1.7;
+  color: rgba(232, 224, 255, 0.38);
+}

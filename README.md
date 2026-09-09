@@ -52,6 +52,7 @@ beat should not mean replaying the earlier ones every time.
 | `/?phase=galaxy` | Jumps straight to a beat. Any phase name works. |
 | `/?phase=passage&p=0.62` | Jumps to a point inside the passage. |
 | `/?debug` | Opens the tuning panel on the deployed build. |
+| `/?nogl` | Forces the no-WebGL fallback, on a machine that has it. |
 
 Phase names: `void`, `reveal`, `passage`, `galaxy`, `ignition`, `profile`,
 `dive`, `constellation`.
