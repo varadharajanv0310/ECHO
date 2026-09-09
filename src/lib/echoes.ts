@@ -1,4 +1,4 @@
-import type { Emission } from "@/store/sequence";
+import type { DirectMessage, Emission } from "@/store/sequence";
 
 /**
  * What comes back.
@@ -111,4 +111,71 @@ export function echoesFor(e: Emission, who: string[], now = Date.now()) {
 export function lastCarry(e: Emission, who: string[], now = Date.now()) {
   const { carries } = echoesFor(e, who, now);
   return carries.length ? carries[carries.length - 1].at : e.at;
+}
+
+/* --------------------------------------------------------------- messages */
+
+const DM_REPLIES = [
+  "I did carry it, yes.",
+  "You are the only person who has said anything about it.",
+  "It was a strange week for it.",
+  "Ha. I wondered if anyone would notice.",
+  "Thank you for that.",
+  "I nearly did not send it.",
+  "Same to you, whenever you need it.",
+  "It has been sitting with me since.",
+  "That is a kinder reading than I gave it.",
+  "Come back to 3AM sometime.",
+  "I will hold onto it a while longer.",
+  "You said it back better.",
+];
+
+/** When somebody answers, in seconds after you said something to them. */
+const DM_BEATS = [55, 210, 520];
+
+/**
+ * What somebody says back.
+ *
+ * The same derivation as a carry, and for the same reason: nobody is really
+ * there, so an answer is a function of the message and the clock rather than
+ * something written down. It stays identical across a reload and needs no
+ * timer running in the background.
+ *
+ * A thread where every message is yours reads as shouting into a room. A
+ * thread where every message is answered reads as a bot. Roughly half of what
+ * you send gets something back, and it can take a few minutes, which is about
+ * how people actually behave.
+ */
+export function replyTo(dm: DirectMessage, now = Date.now()): DirectMessage[] {
+  if (!dm.mine) return [];
+  const out: DirectMessage[] = [];
+
+  DM_BEATS.forEach((secs, i) => {
+    const h = hash(dm.id * 7 + i * 101);
+    if (h % 100 >= [52, 22, 9][i]) return;
+    const at = dm.at + secs * 1000;
+    if (at > now) return;
+    out.push({
+      id: dm.id * 8 + i + 1,
+      withStar: dm.withStar,
+      name: dm.name,
+      text: DM_REPLIES[(hash(dm.id * 13 + i) >>> 7) % DM_REPLIES.length],
+      at,
+      mine: false,
+    });
+  });
+
+  return out;
+}
+
+/**
+ * A whole conversation, yours and theirs, oldest first.
+ *
+ * Merged at read time rather than stored, so the replies appear as time passes
+ * without anything having been written while you were away.
+ */
+export function thread(mine: DirectMessage[], now = Date.now()): DirectMessage[] {
+  return mine
+    .flatMap((d) => [d, ...replyTo(d, now)])
+    .sort((a, b) => a.at - b.at);
 }

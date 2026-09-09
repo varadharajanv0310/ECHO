@@ -61,7 +61,9 @@ export function SkyDock() {
       const p = useSequence.getState().profile;
       useSequence.getState().emit(p?.worlds[0] ?? "Open Sky", t, 24);
     } else {
-      useSequence.getState().sendDM(who.id, who.name, t);
+      // If something of theirs is open, the reply is about that. Sending it
+      // without the subject is how a reply becomes a message from nowhere.
+      useSequence.getState().sendDM(who.id, who.name, t, held?.text);
       setSaid((s) => [{ id: Date.now(), to: who.name, text: t }, ...s]);
     }
     setText("");
@@ -100,7 +102,10 @@ export function SkyDock() {
           <span className="dock__kind">{held.kind}</span>
           <p className="dock__text">{held.text}</p>
           <span className="dock__meta">
-            {held.carried} carried it ·{" "}
+            {held.carried === 0
+              ? "nobody has carried it"
+              : `${held.carried} ${held.carried === 1 ? "person has" : "people have"} carried it`}{" "}
+            ·{" "}
             {held.age > 0.72
               ? "fading"
               : `${Math.max(1, Math.round((1 - held.age) * 24))}h left`}

@@ -469,3 +469,30 @@
 :root[data-mode="light"] .pw__link b {
   color: hsl(var(--accent-h) 78% 40%);
 }
+
+/* Theirs sits on the other side and in a quieter shell, so a thread reads as
+   two people rather than one column of text. */
+.pw__msg[data-mine="false"] {
+  align-self: flex-start;
+  border-color: var(--hair-soft);
+  background: var(--glass-soft);
+  color: var(--ink-2);
+}
+
+.pw__thread {
+  align-items: stretch;
+}
+
+/* What a reply was about, above the reply itself. */
+.pw__msg-on {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

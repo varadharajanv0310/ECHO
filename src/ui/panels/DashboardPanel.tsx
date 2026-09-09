@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Mark, MARKS, type MarkId } from "@/components/Mark";
 import { getSky, myStar, peopleIn } from "@/scene/sky-data";
-import { echoesFor, lastCarry } from "@/lib/echoes";
+import { echoesFor, lastCarry, thread } from "@/lib/echoes";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { Window } from "../Window";
@@ -71,9 +71,12 @@ export function DashboardPanel() {
       byStar.set(d.withStar, list);
     });
     return [...byStar.entries()]
-      .map(([star, list]) => ({ star, list, last: list[0] }))
+      .map(([star, mine]) => {
+        const full = thread(mine, now);
+        return { star, list: full, last: full[full.length - 1] };
+      })
       .sort((a, b) => b.last.at - a.last.at);
-  }, [dms]);
+  }, [dms, now]);
 
   return (
     <Window
@@ -148,7 +151,7 @@ export function DashboardPanel() {
                   <div className="u-row__main">
                     <span className="u-row__title">{t.last.text}</span>
                     <span className="u-row__meta">
-                      {t.last.name} · {t.list.length}{" "}
+                      {t.last.mine ? "you" : t.last.name} · {t.list.length}{" "}
                       {t.list.length === 1 ? "message" : "messages"} ·{" "}
                       {ago(t.last.at)}
                     </span>
@@ -184,7 +187,7 @@ export function DashboardPanel() {
                       {e.world} · {ago(e.at)} ·{" "}
                       {carries.length === 0
                         ? "carried by nobody"
-                        : `carried ${carries.length}×`}{" "}
+                        : `carried by ${[...new Set(carries.map((x) => x.by))].join(", ")}`}{" "}
                       ·{" "}
                       {hoursLeft < 1 ? "gone" : `${Math.round(hoursLeft)}h left`}
                     </span>

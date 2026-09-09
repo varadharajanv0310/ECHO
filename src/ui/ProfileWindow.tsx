@@ -4,6 +4,7 @@ import { Cover } from "./Cover";
 import { copy } from "@/copy";
 import { GAMES, SONGS, PLACES, byId, pickFor, handlesFor, placeLabel } from "@/lib/library";
 import { getSky } from "@/scene/sky-data";
+import { thread as buildThread } from "@/lib/echoes";
 import { cue } from "@/lib/audio";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
@@ -97,7 +98,10 @@ export function ProfileWindow({ star }: { star: number | null }) {
   if (!own && !them) return null;
 
   const isFriend = star !== null && friends.includes(star);
-  const thread = star !== null ? dms.filter((d) => d.withStar === star) : [];
+  // Both sides, oldest first. A column of only your own messages is not a
+  // conversation, it is a transcript of you talking to a wall.
+  const thread =
+    star !== null ? buildThread(dms.filter((d) => d.withStar === star)) : [];
 
   const toggleIn = (key: "games" | "songs", id: string) => {
     const cur = (profile?.[key] ?? []) as string[];
@@ -183,8 +187,16 @@ export function ProfileWindow({ star }: { star: number | null }) {
                 <span className="u-label">Message</span>
                 {thread.length > 0 && (
                   <div className="pw__thread">
-                    {thread.slice(0, 4).map((d) => (
-                      <p key={d.id} className="pw__msg">
+                    {thread.slice(-5).map((d) => (
+                      <p
+                        key={d.id}
+                        className="pw__msg"
+                        data-mine={d.mine}
+                        title={d.onText ? `on “${d.onText}”` : undefined}
+                      >
+                        {d.onText && (
+                          <span className="pw__msg-on">on “{d.onText}”</span>
+                        )}
                         {d.text}
                       </p>
                     ))}

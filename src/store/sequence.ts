@@ -105,6 +105,14 @@ export type DirectMessage = {
   text: string;
   at: number;
   mine: boolean;
+  /**
+   * The signal this was said about, if it was said about one.
+   *
+   * Replying to something of somebody's used to arrive as a bare message with
+   * no trace of what it was answering, which is the one piece of context that
+   * made it worth sending.
+   */
+  onText?: string;
 };
 
 export type ThemeMode = "dark" | "light";
@@ -200,7 +208,7 @@ type SequenceState = {
   carry: (source: number, from: string, hue: number, text: string) => void;
   drop: (source: number) => void;
   toggleFriend: (star: number) => void;
-  sendDM: (star: number, name: string, text: string) => void;
+  sendDM: (star: number, name: string, text: string, onText?: string) => void;
 };
 
 /**
@@ -340,9 +348,9 @@ export const useSequence = create<SequenceState>((set, get) => ({
     set({ friends: next });
   },
 
-  sendDM: (star, name, text) => {
+  sendDM: (star, name, text, onText) => {
     const next = [
-      { id: newId(), withStar: star, name, text, at: Date.now(), mine: true },
+      { id: newId(), withStar: star, name, text, at: Date.now(), mine: true, onText },
       ...get().dms,
     ];
     writeList("echo.dms", next);
