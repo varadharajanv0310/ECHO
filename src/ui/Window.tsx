@@ -117,7 +117,8 @@ export function Window({
             told to exit, so its unresolved children blocked the outer one from
             ever completing. Keying a motion element gives the same arrival and
             nothing to hold. */}
-        <div className="win__body">
+        {/* Scrolls internally, so Lenis has to leave its gestures alone. */}
+        <div className="win__body" data-lenis-prevent>
           <div key={active} className="win__tabin">
             {children}
           </div>

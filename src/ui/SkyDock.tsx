@@ -85,7 +85,11 @@ export function SkyDock() {
     >
       {/* What you are holding, if anything. */}
       {held && (
-        <div className="dock__open" data-closing={thingShown.closing}>
+        <div
+          className="dock__open"
+          data-closing={thingShown.closing}
+          data-lenis-prevent
+        >
           <button
             className="dock__close"
             onClick={() => openPlanet(null)}

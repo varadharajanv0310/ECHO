@@ -134,7 +134,11 @@ export function Tour() {
       <div className="tour__scrim" onClick={go(end)} />
 
       {stage === "welcome" ? (
-        <section className="tour__card tour__card--hello" key="hello">
+        <section
+          className="tour__card tour__card--hello"
+          key="hello"
+          data-lenis-prevent
+        >
           <p className="tour__eyebrow">Signal acquired</p>
           <h2 className="tour__hello">You are in.</h2>
           <p className="tour__body">
@@ -155,7 +159,7 @@ export function Tour() {
           </div>
         </section>
       ) : (
-        <section className="tour__card" key={step}>
+        <section className="tour__card" key={step} data-lenis-prevent>
           <div className="tour__art">{DECK[step].art}</div>
 
           <div className="tour__text">

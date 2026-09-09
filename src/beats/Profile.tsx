@@ -56,7 +56,14 @@ export function Profile() {
   };
 
   return (
-    <div className="pf" style={{ zIndex: "var(--z-content)" }}>
+    // Lenis binds to the window and prevents default on wheel and touch, so
+    // a nested scroller is inert unless it is marked. Without this the form
+    // cannot be scrolled at all and nobody on a phone gets past it.
+    <div
+      className="pf"
+      data-lenis-prevent
+      style={{ zIndex: "var(--z-content)" }}
+    >
       <form
         className="pf__inner"
         onSubmit={(e) => {
