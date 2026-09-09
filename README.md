@@ -152,6 +152,25 @@ other people.
 one thing: dying. It is deliberately absent from the colours you can pick for
 yourself.
 
+**You find out who.** A carry is reported by name — *carried by north*, or
+*carried by nobody* — never as a count. Which person chose to hold your thing
+is the whole payoff of the mechanic, and a number is the one thing ECHO refuses
+to put on anybody's work.
+
+**Replies keep their subject.** Answering something of somebody's carries what
+it was about, so a reply never arrives as a message from nowhere. People answer
+back, too — about half the time, after a few minutes — so a thread reads as two
+people rather than a transcript of you talking to a wall.
+
+**Adding somebody marks their star.** A dot in their own accent, wherever you
+meet them in the sky, and a list in the dashboard of the ones you have not
+spoken to yet. The sky stops being the same generated field for everyone.
+
+**One badge, on your own inbox.** The dashboard carries a dot when something has
+landed since you last looked. It is a count of things waiting to be read rather
+than a measure of how well anything did, and it goes back to nothing the moment
+you read them.
+
 ### The five controls
 
 | | |
@@ -183,6 +202,17 @@ is ever in at one moment. It can be replayed from the menu.
 
 The longer version is the **[field guide](https://varadharajanv0310.github.io/ECHO/guide.html)**,
 which ships from the same build.
+
+### When it cannot run
+
+Every part of ECHO worth seeing is a shader, so there is a real screen for a
+browser that cannot open a WebGL context — what is wrong, the three things it
+usually is, and the two links that still work. Hardware acceleration is off by
+default on a lot of remote desktops and virtual machines. `?nogl` forces it.
+
+`prefers-reduced-motion` is honoured: the flashframe softens by default and the
+decorative animations collapse. The scroll-driven parts stay, because the road
+only moves when a reader moves it.
 
 ### Light mode
 
