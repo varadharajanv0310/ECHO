@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Mark, MARKS, type MarkId } from "@/components/Mark";
 import { getSky, myStar, peopleIn } from "@/scene/sky-data";
 import { echoesFor, lastCarry, thread } from "@/lib/echoes";
+import { markSeen } from "@/lib/unseen";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { Window } from "../Window";
@@ -49,6 +50,13 @@ export function DashboardPanel() {
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 5000);
     return () => clearInterval(t);
+  }, []);
+
+  // Opening this is reading them. Marked on unmount as well as on open, so
+  // anything that lands while you are sitting here does not come back as new.
+  useEffect(() => {
+    markSeen();
+    return markSeen;
   }, []);
 
   /** What came back, newest first. Derived, never stored. */

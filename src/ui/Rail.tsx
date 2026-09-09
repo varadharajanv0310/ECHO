@@ -1,4 +1,5 @@
 import { PANELS, useUI, type PanelId } from "@/store/ui";
+import { useUnseen } from "@/lib/unseen";
 import "./ui.css";
 
 const ICONS: Record<PanelId, string> = {
@@ -29,6 +30,9 @@ const LABELS: Record<PanelId, string> = {
 export function Rail() {
   const panel = useUI((s) => s.panel);
   const setPanel = useUI((s) => s.setPanel);
+  // The only number in ECHO that is allowed to be shown, and only because it
+  // is a count of things waiting to be read rather than a measure of anything.
+  const unseen = useUnseen();
 
   return (
     <nav className="rail" style={{ zIndex: "var(--z-rail)" }} aria-label="Main">
@@ -51,6 +55,13 @@ export function Rail() {
             />
           </svg>
           <span className="rail__label">{LABELS[id]}</span>
+          {id === "dashboard" && unseen > 0 && (
+            <span
+              className="rail__dot"
+              aria-label={`${unseen} new`}
+              data-many={unseen > 9}
+            />
+          )}
         </button>
       ))}
     </nav>
