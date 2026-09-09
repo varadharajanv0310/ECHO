@@ -19,6 +19,7 @@ import { useLenis } from "@/hooks/useLenis";
 import { useSequence, LAYER_MIX } from "@/store";
 import { tuning } from "@/constants/tuning";
 import { copy } from "@/copy";
+import { ErrorBoundary } from "@/ui/primitives";
 
 /** Panel is on in dev, and reachable on the deployed build with ?debug. */
 const PANEL =
@@ -133,14 +134,26 @@ export default function App() {
       <Defs />
 
       <main id="main" tabIndex={-1} aria-label="ECHO">
-        <Scene />
-        <Entry boost={c.nebulaBoost} />
-        <Passage />
-        <GalaxyBeat />
-        {phase === "ignition" && <Ignition />}
-        {phase === "profile" && <Profile />}
-        <ConstellationHud />
-        <Panels />
+        {/* The scene and the chrome fail separately.
+
+            A thrown error inside the canvas would otherwise unmount the whole
+            tree and leave a dark rectangle - which is exactly what a machine
+            with no WebGL shows, so the two most likely failures would look
+            identical to the person they happened to. Boundaries here mean a
+            broken panel keeps the sky, and a broken sky keeps the panels. */}
+        <ErrorBoundary label="The sky">
+          <Scene />
+          <Entry boost={c.nebulaBoost} />
+          <Passage />
+          <GalaxyBeat />
+          {phase === "ignition" && <Ignition />}
+          {phase === "profile" && <Profile />}
+        </ErrorBoundary>
+
+        <ErrorBoundary label="This panel">
+          <ConstellationHud />
+          <Panels />
+        </ErrorBoundary>
       </main>
 
       {/* Phase changes are announced once, politely, for anyone who cannot see

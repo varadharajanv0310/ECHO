@@ -4,6 +4,7 @@ import { useSequence, useUI } from "@/store";
 import { cue } from "@/services/audio";
 import { myStar } from "@/scene/sky-data";
 import { Window } from "../Window";
+import { Chip } from "@/ui/primitives";
 
 export const CREATE_TABS = ["Signal", "World"] as const;
 
@@ -90,15 +91,9 @@ export function CreatePanel() {
                 <span className="u-label">Where it lands</span>
                 <div className="u-chips">
                   {copy.worlds.map((w) => (
-                    <button
-                      type="button"
-                      key={w}
-                      className="u-chip"
-                      data-on={world === w}
-                      onClick={() => setWorld(w)}
-                    >
+                    <Chip key={w} selected={world === w} onClick={() => setWorld(w)}>
                       {w}
-                    </button>
+                    </Chip>
                   ))}
                 </div>
               </section>
@@ -124,15 +119,13 @@ export function CreatePanel() {
                 <span className="u-label">How long it has</span>
                 <div className="u-chips">
                   {LIFETIMES.map((l) => (
-                    <button
-                      type="button"
+                    <Chip
                       key={l.h}
-                      className="u-chip"
-                      data-on={life === l.h}
+                      selected={life === l.h}
                       onClick={() => setLife(l.h)}
                     >
                       {l.label}
-                    </button>
+                    </Chip>
                   ))}
                 </div>
                 <p className="u-hint" style={{ marginTop: "0.8rem" }}>

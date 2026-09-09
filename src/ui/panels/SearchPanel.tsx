@@ -5,6 +5,7 @@ import { copy } from "@/copy";
 import { getSky } from "@/scene/sky-data";
 import { useUI } from "@/store";
 import { Window } from "../Window";
+import { Chip } from "@/ui/primitives";
 
 export const SEARCH_TABS = ["Signals", "People"] as const;
 
@@ -184,30 +185,26 @@ export function SearchPanel() {
           <span className="u-label">World</span>
           <div className="u-chips">
             {copy.worlds.map((w) => (
-              <button
-                type="button"
+              <Chip
                 key={w}
-                className="u-chip"
-                data-on={world === w}
+                selected={world === w}
                 onClick={() => setWorld(world === w ? null : w)}
               >
                 {w}
-              </button>
+              </Chip>
             ))}
           </div>
         </section>
 
         {tab === "Signals" ? (
           <>
-            <button
-              type="button"
-              className="u-chip"
-              data-on={onlyFading}
+            <Chip
+              selected={onlyFading}
               onClick={() => setOnlyFading(!onlyFading)}
               style={{ justifySelf: "start" }}
             >
               Only what is fading
-            </button>
+            </Chip>
 
             <section className="u-card" data-settling={settling}>
               <span className="u-label">
@@ -227,15 +224,13 @@ export function SearchPanel() {
               <span className="u-label">Temperament</span>
               <div className="u-chips">
                 {copy.traits.map((t) => (
-                  <button
-                    type="button"
+                  <Chip
                     key={t}
-                    className="u-chip"
-                    data-on={trait === t}
+                    selected={trait === t}
                     onClick={() => setTrait(trait === t ? null : t)}
                   >
                     {t}
-                  </button>
+                  </Chip>
                 ))}
               </div>
             </section>

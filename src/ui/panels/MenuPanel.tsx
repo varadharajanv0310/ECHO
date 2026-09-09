@@ -1,6 +1,7 @@
 import { getLenis } from "@/hooks/useLenis";
 import { useSequence, DEFAULT_SETTINGS, useUI, useTour } from "@/store";
 import { Window } from "../Window";
+import { Chip } from "@/ui/primitives";
 
 // No Appearance tab. Ground and accent belong to the profile, where a person
 // picks their colour, and the only other thing in that room was a second
@@ -100,15 +101,13 @@ export function MenuPanel() {
               <h3 className="u-h">What reaches you</h3>
               <div className="u-chips">
                 {RECEIVE.map((r) => (
-                  <button
-                    type="button"
+                  <Chip
                     key={r}
-                    className="u-chip"
-                    data-on={settings.receive.includes(r)}
+                    selected={settings.receive.includes(r)}
                     onClick={() => toggleIn("receive", r)}
                   >
                     {r}
-                  </button>
+                  </Chip>
                 ))}
               </div>
             </section>
@@ -117,15 +116,13 @@ export function MenuPanel() {
               <h3 className="u-h">What you see in the sky</h3>
               <div className="u-chips">
                 {SHOW.map((r) => (
-                  <button
-                    type="button"
+                  <Chip
                     key={r}
-                    className="u-chip"
-                    data-on={settings.show.includes(r)}
+                    selected={settings.show.includes(r)}
                     onClick={() => toggleIn("show", r)}
                   >
                     {r}
-                  </button>
+                  </Chip>
                 ))}
               </div>
             </section>
