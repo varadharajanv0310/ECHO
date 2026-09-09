@@ -21,6 +21,12 @@ if (!window.matchMedia) {
   })) as unknown as typeof window.matchMedia;
 }
 
+// jsdom implements no scrolling at all, so this is missing from every element
+// rather than merely inert. A conversation opens at its foot by calling it.
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = vi.fn();
+}
+
 if (!window.requestAnimationFrame) {
   window.requestAnimationFrame = (cb: FrameRequestCallback) =>
     setTimeout(() => cb(performance.now()), 16) as unknown as number;

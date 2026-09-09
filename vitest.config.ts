@@ -19,9 +19,20 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json-summary"],
+      reporter: ["text", "json-summary", "lcov"],
       include: ["src/lib/**", "src/store/**", "src/scene/sky-data.ts"],
-      exclude: ["**/*.test.*", "src/lib/tuning.ts"],
+      // audio.ts is a Web Audio graph: every branch it has is a decision about
+      // a node that jsdom does not implement, so covering it would mean
+      // asserting that mocks were called. tuning.ts is a constants table.
+      exclude: ["**/*.test.*", "src/lib/tuning.ts", "src/lib/audio.ts"],
+      // A floor, not a target. It exists so that deleting a test is a visible
+      // decision rather than a silent one.
+      thresholds: {
+        statements: 60,
+        branches: 60,
+        functions: 60,
+        lines: 60,
+      },
     },
   },
 });
