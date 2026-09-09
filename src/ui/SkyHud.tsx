@@ -54,6 +54,7 @@ export function SkyHud() {
         el.dataset.kind = String(l.kind);
         el.dataset.hovered = String(l.hovered);
         el.dataset.from = l.from ?? "";
+        el.dataset.friend = String(!!l.friend);
         if (el.textContent !== l.text) el.textContent = l.text;
       });
     };

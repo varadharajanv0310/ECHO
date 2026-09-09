@@ -7,6 +7,8 @@ export type SkyLabel = {
   hovered: boolean;
   /** Set only on something you are holding for somebody else. */
   from?: string;
+  /** Somebody you added. Marked so the sky is recognisably yours. */
+  friend?: boolean;
 };
 
 /**

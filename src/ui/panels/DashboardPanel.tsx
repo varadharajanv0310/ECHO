@@ -86,6 +86,9 @@ export function DashboardPanel() {
       .sort((a, b) => b.last.at - a.last.at);
   }, [dms, now]);
 
+  /** Added, but never spoken to. */
+  const quiet = friends.filter((id) => !threads.some((t) => t.star === id));
+
   return (
     <Window
       title="Dashboard"
@@ -167,6 +170,41 @@ export function DashboardPanel() {
                 </button>
               );
             })}
+
+            {/* Adding somebody used to lead nowhere: no list, and no way back
+                to them unless you remembered which World they were standing
+                in. They are here until you have said something. */}
+            {quiet.length > 0 && (
+              <>
+                <h3 className="u-h" style={{ marginTop: "1.6rem" }}>
+                  People you added
+                </h3>
+                {quiet.map((id) => {
+                  const person = sky.stars[id];
+                  if (!person) return null;
+                  return (
+                    <button
+                      className="u-row sr__hit"
+                      key={id}
+                      onClick={() => openProfile(id)}
+                    >
+                      <Mark
+                        mark={MARKS[id % MARKS.length] as MarkId}
+                        hue={person.hue}
+                        size={22}
+                      />
+                      <div className="u-row__main">
+                        <span className="u-row__title">{person.name}</span>
+                        <span className="u-row__meta">
+                          {sky.constellations[person.constellation].world} ·
+                          nothing said yet
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </>
+            )}
           </section>
         ) : (
           <section className="u-card">

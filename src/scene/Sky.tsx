@@ -74,6 +74,7 @@ export function Sky() {
   const profile = useSequence((s) => s.profile);
   const emissions = useSequence((s) => s.emissions);
   const carried = useSequence((s) => s.carried);
+  const friends = useSequence((s) => s.friends);
   const mode = useSequence((s) => s.settings.mode);
 
   // The reader is placed into the sky before geometry is built, and everything
@@ -588,6 +589,10 @@ export function Sky() {
             ? `${text.slice(0, LABEL_MAX - 1)}…`
             : text,
         from: hit.kind === 2 ? borrowed.get(hit.id) : undefined,
+        // Adding somebody did nothing you could see. Now their star is marked
+        // wherever you meet it, so the sky is recognisably yours rather than
+        // the same generated field for everyone.
+        friend: hit.kind === 1 && friends.includes(hit.id),
       });
     }
 

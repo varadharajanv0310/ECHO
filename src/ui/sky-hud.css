@@ -226,3 +226,25 @@
 :root[data-mode="light"] .skl[data-kind="2"][data-from]:not([data-from=""])::after {
   color: hsl(var(--accent-h) 78% 40%);
 }
+
+/* Somebody you added. A dot before the name in their own accent - enough to
+   pick them out of a World at a glance, not enough to rank them above anyone. */
+.skl[data-friend="true"] {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.skl[data-friend="true"]::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: hsl(var(--accent-h) 95% 68%);
+  vertical-align: middle;
+  box-shadow: 0 0 6px hsl(var(--accent-h) 95% 62%);
+}
+
+:root[data-mode="light"] .skl[data-friend="true"] {
+  color: rgba(22, 17, 31, 0.7);
+}
