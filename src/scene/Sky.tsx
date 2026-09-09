@@ -9,12 +9,12 @@ import ringVert from "@/shaders/ring.vert.glsl";
 import ringFrag from "@/shaders/ring.frag.glsl";
 import { getSky, placeMe, syncMine, myStar } from "@/scene/sky-data";
 import { skyLabels, type SkyLabel } from "@/scene/sky-labels";
-import { clamp, damp } from "@/lib/utils";
-import { isHandheld } from "@/lib/dpr";
-import { cue } from "@/lib/audio";
+import { clamp, damp } from "@/utils/math";
+import { isHandheld } from "@/utils/dpr";
+import { cue } from "@/services/audio";
 import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
-import { tuning } from "@/lib/tuning";
+import { tuning } from "@/constants/tuning";
 
 /** Camera distance at each level. Flying in is a real approach, not a swap. */
 const DIST = { cluster: 74, constellation: 17, star: 2.6 };

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { damp } from "@/lib/utils";
+import { damp } from "@/utils/math";
 import { useSequence } from "@/store/sequence";
 import "./cursor.css";
 

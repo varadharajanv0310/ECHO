@@ -4,7 +4,7 @@ import { Wordmark } from "@/components/Wordmark";
 import { Boot } from "./Boot";
 import { copy } from "@/copy";
 import { PHASES, useSequence } from "@/store";
-import { easeInOutCubic, remap } from "@/lib/utils";
+import { easeInOutCubic, remap } from "@/utils/math";
 import "./entry.css";
 
 /** Minimum dwell on the void. Long enough to land, short enough not to annoy. */

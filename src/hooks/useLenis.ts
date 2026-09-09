@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { useSequence } from "@/store/sequence";
-import { isHandheld } from "@/lib/dpr";
+import { isHandheld } from "@/utils/dpr";
 
 /**
  * Total scroll length of the passage. Six stops plus an arrival and a run-out.

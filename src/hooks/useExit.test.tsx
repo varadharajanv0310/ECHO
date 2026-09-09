@@ -70,7 +70,7 @@ describe("hasWebGL", () => {
   // right in a browser and means each test here needs its own copy.
   const fresh = async () => {
     vi.resetModules();
-    return (await import("./webgl")).hasWebGL;
+    return (await import("@/utils/webgl")).hasWebGL;
   };
 
   it("says no rather than throwing when there is no context to be had", async () => {

@@ -70,7 +70,7 @@ Every user configures their own identity and their own interface.
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Profile**     | `src/ui/ProfileWindow.tsx` — display name, status, bio, avatar mark, banner, and interest tags.                                            |
 | **Theming**     | User-selected accent colour drives the entire interface through one `--accent-h` custom property, plus light/dark mode. Profile → _Theme_. |
-| **Interests**   | Curated catalogue of 70 games and 59 songs (`src/lib/library.ts`); the shelf a user builds is shown on their profile.                      |
+| **Interests**   | Curated catalogue of 70 games and 59 songs (`src/services/library.ts`); the shelf a user builds is shown on their profile.                 |
 | **Connections** | Add users; their star is marked everywhere you meet them and they are listed in the Dashboard.                                             |
 | **Preferences** | `src/ui/panels/MenuPanel.tsx` — notification settings, visibility settings, motion and grain controls, all persisted.                      |
 | **Try it**      | Rail → **profile icon** → _Theme_.                                                                                                         |
@@ -105,20 +105,20 @@ no component library, no template.
 
 ## Tech Stack
 
-| Concern       | Choice                                      |
-| ------------- | ------------------------------------------- |
-| Build tool    | Vite 8 (Rollup/rolldown production build)   |
-| Language      | TypeScript 7, `strict`                      |
-| UI runtime    | React 19                                    |
-| 3D            | three.js 0.185 with @react-three/fiber 9    |
-| Shaders       | GLSL, compiled by `vite-plugin-glsl`        |
-| State         | zustand 5                                   |
-| Styling       | Tailwind v4 plus a stylesheet per component |
-| Smooth scroll | Lenis                                       |
-| Testing       | Vitest 5, Testing Library, jsdom            |
+| Concern       | Choice                                                   |
+| ------------- | -------------------------------------------------------- |
+| Build tool    | Vite 8 (Rollup/rolldown production build)                |
+| Language      | TypeScript 7, `strict`                                   |
+| UI runtime    | React 19                                                 |
+| 3D            | three.js 0.185 with @react-three/fiber 9                 |
+| Shaders       | GLSL, compiled by `vite-plugin-glsl`                     |
+| State         | zustand 5                                                |
+| Styling       | Tailwind v4 plus a stylesheet per component              |
+| Smooth scroll | Lenis                                                    |
+| Testing       | Vitest 5, Testing Library, jsdom                         |
 | Linting       | oxlint, with `jsx-a11y`, `react` and `unicorn` rule sets |
-| Formatting    | Prettier 3                                  |
-| CI/CD         | GitHub Actions to GitHub Pages              |
+| Formatting    | Prettier 3                                               |
+| CI/CD         | GitHub Actions to GitHub Pages                           |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for why each of these was chosen.
 
@@ -394,7 +394,10 @@ src/
   store/        sequence phase machine, sky navigation, tour
   ui/           everything that lives over the sky
     panels/     menu, create, search, dashboard
-  lib/          scroll, audio, echoes, library, tuning, maths
+  hooks/        scroll, delayed unmount, unseen count
+  utils/        maths, resolution policy, feature probes
+  services/     audio, echoes, the catalogue
+  constants/    scene tuning
   copy.ts       every word in the interface
 public/
   guide.html    the field guide, shipped alongside the app

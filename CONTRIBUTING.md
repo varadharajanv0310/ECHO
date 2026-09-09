@@ -36,15 +36,15 @@ entirely client-side.
 
 ## Scripts
 
-| Script | What it does |
-| --- | --- |
-| `pnpm dev` | Vite dev server with HMR |
-| `pnpm build` | `tsc -b`, then a production build into `dist/` |
-| `pnpm preview` | Serve the built `dist/` locally |
-| `pnpm test` | Run the Vitest suite once |
-| `pnpm test:watch` | Vitest in watch mode |
-| `pnpm coverage` | The suite with v8 coverage |
-| `pnpm typecheck` | Types only, no emit |
+| Script            | What it does                                   |
+| ----------------- | ---------------------------------------------- |
+| `pnpm dev`        | Vite dev server with HMR                       |
+| `pnpm build`      | `tsc -b`, then a production build into `dist/` |
+| `pnpm preview`    | Serve the built `dist/` locally                |
+| `pnpm test`       | Run the Vitest suite once                      |
+| `pnpm test:watch` | Vitest in watch mode                           |
+| `pnpm coverage`   | The suite with v8 coverage                     |
+| `pnpm typecheck`  | Types only, no emit                            |
 
 ## Project structure
 
@@ -55,7 +55,10 @@ src/beats/       the opening sequence, one component per stage
 src/scene/       everything inside the WebGL canvas
 src/shaders/     GLSL
 src/store/       zustand stores — the only mutable state
-src/lib/         pure helpers and hooks
+src/hooks/       React hooks
+src/utils/       pure functions
+src/services/    audio, echoes, the catalogue
+src/constants/   tuning tables
 src/ui/          windows, panels, chrome, keyboard navigation
 src/components/  shared presentational pieces
 src/types/       shared domain types
@@ -105,7 +108,7 @@ pnpm test
 
 What is expected of a change:
 
-- **New logic in `src/lib`, `src/store` or `src/scene/sky-data.ts` comes with
+- **New logic in `src/utils`, `src/services`, `src/store` or `src/scene/sky-data.ts` comes with
   tests.** These are pure, so there is no excuse not to.
 - **Test the invariant, not the implementation.** The suite asserts that the
   world is deterministic, that replies never outnumber carries, that ids are
@@ -142,7 +145,7 @@ break by accident.
   addressed by index; changing what is focused sets a uniform.
 - **Nothing allocates inside `useFrame`.** No new vectors, no array methods
   that return arrays, no object literals.
-- **Respect the DPR cap** in `src/lib/dpr.ts`.
+- **Respect the DPR cap** in `src/utils/dpr.ts`.
 - Derived values that feed the scene are memoised, and the store is read
   through selectors rather than whole.
 

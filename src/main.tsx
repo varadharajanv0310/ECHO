@@ -8,7 +8,7 @@ import "@fontsource-variable/geist-mono";
 import "./index.css";
 import App from "./App";
 import { NoWebGL } from "./beats/NoWebGL";
-import { hasWebGL } from "./lib/webgl";
+import { hasWebGL } from "@/utils/webgl";
 
 // Last on purpose. Every rule in here overrides one from a component
 // stylesheet at the same specificity, so it has to be evaluated after all of

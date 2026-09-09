@@ -1,47 +1,24 @@
 /**
- * The helper layer: pure functions and hooks with no knowledge of the
- * component tree above them.
+ * The former home of everything that was not a component.
  *
- * Nothing in here imports from `ui/`, `beats/` or `scene/`, which is what
- * makes it testable on its own and safe to call from anywhere. This barrel
- * exists so a consumer can take what it needs in one import rather than four.
+ * `lib/` had become the drawer: React hooks next to pure maths next to a Web
+ * Audio graph next to a data catalogue. Those are four different kinds of
+ * module, with four different reasons to change and four different testing
+ * stories, so they are now four directories:
+ *
+ *   `@/hooks`      React hooks - useExit, useLenis, useUnseen
+ *   `@/utils`      pure functions - maths, resolution policy, feature probes
+ *   `@/services`   the stateful, side-effecting layer - audio, echoes, library
+ *   `@/constants`  tuning tables
+ *
+ * This module re-exports all of it so an existing import keeps working, and so
+ * that a consumer wanting several of them can still take one import. Prefer
+ * the specific barrel in new code: it says which layer you are reaching into.
  *
  * @packageDocumentation
  */
 
-/** Class name composition, and the easing and interpolation maths. */
-export { cn, clamp, remap, damp, easeOutExpo, easeInOutCubic } from "./utils";
-
-/** Whether this machine can draw anything at all. */
-export { hasWebGL } from "./webgl";
-
-/** Resolution policy: how many device pixels are worth paying for. */
-export { renderDpr, isHandheld } from "./dpr";
-
-/** The derived social layer: who carried a signal, who answered it. */
-export { echoesFor, lastCarry, replyTo, thread } from "./echoes";
-export type { Carry, Reply } from "./echoes";
-
-/** The shelves: games, records, cover art and the places people are from. */
-export {
-  GAMES,
-  SONGS,
-  PLACES,
-  coverFor,
-  pickFor,
-  byId,
-  placeLabel,
-  handlesFor,
-} from "./library";
-export type { Entry, Cover } from "./library";
-
-/** Sound: one shared context, started only on a real gesture. */
-export { startAudio, setMuted, setAudioPhase, cue, isMuted, isStarted } from "./audio";
-
-/** Hooks. */
-export { useExit } from "./useExit";
-export { useLenis, getLenis, PASSAGE_VH } from "./useLenis";
-export { useUnseen, markSeen } from "./unseen";
-
-/** Scene tuning constants, in one place so they can be found. */
-export { tuning } from "./tuning";
+export * from "@/utils";
+export * from "@/hooks";
+export * from "@/services";
+export * from "@/constants";

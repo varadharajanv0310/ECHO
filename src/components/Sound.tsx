@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cue, isMuted, setAudioPhase, setMuted, startAudio } from "@/lib/audio";
+import { cue, isMuted, setAudioPhase, setMuted, startAudio } from "@/services/audio";
 import { useSequence } from "@/store/sequence";
 import "./sound.css";
 

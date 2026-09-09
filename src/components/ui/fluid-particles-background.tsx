@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
-import { damp } from "@/lib/utils";
-import { renderDpr } from "@/lib/dpr";
+import { cn } from "@/utils/math";
+import { damp } from "@/utils/math";
+import { renderDpr } from "@/utils/dpr";
 
 interface FluidParticlesProps {
   particleCount?: number;

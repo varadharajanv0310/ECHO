@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Mark, MARKS } from "@/components/Mark";
 import type { MarkId } from "@/types";
 import { getSky, myStar } from "@/scene/sky-data";
-import { cue } from "@/lib/audio";
+import { cue } from "@/services/audio";
 import { useUI, useSequence } from "@/store";
-import { useExit } from "@/lib/useExit";
+import { useExit } from "@/hooks/useExit";
 import "./sky-dock.css";
 
 type Said = { id: number; to: string; text: string };

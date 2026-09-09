@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { copy } from "@/copy";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/math";
 import "./wordmark.css";
 
 const LETTERS = copy.wordmark.split("");

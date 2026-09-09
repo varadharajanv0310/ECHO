@@ -90,12 +90,12 @@ export type {
   Carry,
   /** One person answering a signal. */
   Reply,
-} from "@/lib/echoes";
+} from "@/services/echoes";
 
 /* -------------------------------------------------------------- the shelf */
 
 /** A game or record that can sit on a profile shelf. */
-export type { Entry, Cover } from "@/lib/library";
+export type { Entry, Cover } from "@/services/library";
 
 /* ------------------------------------------------------------------ marks */
 

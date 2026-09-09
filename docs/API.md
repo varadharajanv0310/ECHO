@@ -2,7 +2,7 @@
 
 The public surface of ECHO's internal modules: the three stores, the hooks, the
 derivation functions and the domain types. Everything here is importable
-through a barrel — `@/store`, `@/lib`, `@/types` — rather than by reaching into
+through a barrel — `@/store`, `@/services`, `@/utils`, `@/hooks`, `@/types` — rather than by reaching into
 a file.
 
 - [Stores](#stores)

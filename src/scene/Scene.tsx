@@ -3,7 +3,7 @@ import { Road } from "./Road";
 import { Galaxy } from "./Galaxy";
 import { WarpField } from "./WarpField";
 import { Sky } from "@/scene/Sky";
-import { renderDpr } from "@/lib/dpr";
+import { renderDpr } from "@/utils/dpr";
 
 /**
  * The persistent canvas.

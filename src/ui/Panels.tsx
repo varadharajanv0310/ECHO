@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useSequence, useUI } from "@/store";
-import { useExit } from "@/lib/useExit";
+import { useExit } from "@/hooks/useExit";
 import { SkyHud } from "./SkyHud";
 import { SkyDock } from "./SkyDock";
 import { Rail } from "./Rail";

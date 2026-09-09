@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import ECHO_FRAG from "@/shaders/echo-nebula.frag.glsl";
-import { damp } from "@/lib/utils";
-import { renderDpr } from "@/lib/dpr";
+import { damp } from "@/utils/math";
+import { renderDpr } from "@/utils/dpr";
 
 const VERT = `#version 300 es
 precision highp float;

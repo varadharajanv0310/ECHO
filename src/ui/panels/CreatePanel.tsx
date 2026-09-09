@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { copy } from "@/copy";
 import { useSequence, useUI } from "@/store";
-import { cue } from "@/lib/audio";
+import { cue } from "@/services/audio";
 import { myStar } from "@/scene/sky-data";
 import { Window } from "../Window";
 

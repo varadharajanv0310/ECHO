@@ -1,4 +1,4 @@
-import { getLenis } from "@/lib/useLenis";
+import { getLenis } from "@/hooks/useLenis";
 import { useSequence, DEFAULT_SETTINGS, useUI, useTour } from "@/store";
 import { Window } from "../Window";
 

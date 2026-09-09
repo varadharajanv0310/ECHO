@@ -11,10 +11,10 @@ import {
   pickFor,
   handlesFor,
   placeLabel,
-} from "@/lib/library";
+} from "@/services/library";
 import { getSky } from "@/scene/sky-data";
-import { thread as buildThread } from "@/lib/echoes";
-import { cue } from "@/lib/audio";
+import { thread as buildThread } from "@/services/echoes";
+import { cue } from "@/services/audio";
 import { useSequence, useUI } from "@/store";
 import { Window } from "./Window";
 import "./profile-window.css";

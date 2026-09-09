@@ -15,7 +15,7 @@ same GLSL plugin, the same TypeScript.
 The codebase divides cleanly into three kinds of thing, and each is tested the
 way it can honestly be tested.
 
-**Pure logic** — `src/lib`, `src/store`, `src/scene/sky-data.ts`. Deterministic
+**Pure logic** — `src/utils`, `src/services`, `src/store`, `src/scene/sky-data.ts`. Deterministic
 functions and state machines with no DOM and no GPU. These are tested directly
 and thoroughly, because there is no excuse not to.
 
@@ -63,7 +63,7 @@ would have caught it.
 pnpm coverage
 ```
 
-Collected with v8 over the logic layers — `src/lib`, `src/store` and
+Collected with v8 over the logic layers — `src/utils`, `src/services`, `src/store` and
 `src/scene/sky-data.ts`. The component and scene layers are deliberately
 outside that measurement: a coverage number that counts JSX executed during a
 render tells you a component mounted, not that it works.

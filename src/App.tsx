@@ -15,9 +15,9 @@ import { Ignition } from "@/beats/Ignition";
 import { Profile } from "@/beats/Profile";
 import { ConstellationHud } from "@/beats/ConstellationHud";
 import { Panels } from "@/ui/Panels";
-import { useLenis } from "@/lib/useLenis";
+import { useLenis } from "@/hooks/useLenis";
 import { useSequence, LAYER_MIX } from "@/store";
-import { tuning } from "@/lib/tuning";
+import { tuning } from "@/constants/tuning";
 import { copy } from "@/copy";
 
 /** Panel is on in dev, and reachable on the deployed build with ?debug. */

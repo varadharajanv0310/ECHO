@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { PassageLine } from "@/components/PassageLine";
 import { copy } from "@/copy";
-import { clamp, remap } from "@/lib/utils";
-import { PASSAGE_VH } from "@/lib/useLenis";
+import { clamp, remap } from "@/utils/math";
+import { PASSAGE_VH } from "@/hooks/useLenis";
 import { useSequence } from "@/store";
 import "./passage.css";
 

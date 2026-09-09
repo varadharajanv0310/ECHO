@@ -1,6 +1,6 @@
 import { PANELS, useUI } from "@/store";
 import type { PanelId } from "@/types";
-import { useUnseen } from "@/lib/unseen";
+import { useUnseen } from "@/hooks/useUnseen";
 import "./ui.css";
 
 const ICONS: Record<PanelId, string> = {

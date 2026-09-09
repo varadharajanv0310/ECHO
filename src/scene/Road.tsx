@@ -3,9 +3,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import frag from "@/shaders/road.frag.glsl";
 import vert from "@/shaders/road.vert.glsl";
-import { damp, remap } from "@/lib/utils";
+import { damp, remap } from "@/utils/math";
 import { useSequence } from "@/store/sequence";
-import { tuning } from "@/lib/tuning";
+import { tuning } from "@/constants/tuning";
 
 /**
  * The road at beats 3 to 5.

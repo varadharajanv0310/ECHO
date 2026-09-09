@@ -1,5 +1,5 @@
 import { copy } from "@/copy";
-import { echoesFor } from "@/lib/echoes";
+import { echoesFor } from "@/services/echoes";
 import type { Carried, Emission } from "@/store/sequence";
 
 /**

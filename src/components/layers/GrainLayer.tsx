@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { damp } from "@/lib/utils";
+import { damp } from "@/utils/math";
 
 type Props = {
   opacity?: number;

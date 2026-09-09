@@ -47,17 +47,17 @@ Three properties shape every decision below:
 
 ## Tech stack
 
-| Concern | Choice | Why |
-| --- | --- | --- |
-| Build tool | Vite 8 | Native ESM dev server, Rollup production build, first-class GLSL plugin |
-| Language | TypeScript 7 (strict) | Every module is typed; `any` is not used in application code |
-| UI runtime | React 19 | Concurrent rendering, transitions, stable `Suspense` |
-| 3D | three.js 0.185 + @react-three/fiber 9 | Declarative scene graph over one WebGL renderer |
-| Shaders | GLSL via `vite-plugin-glsl` | Shaders are source files, not template strings |
-| State | zustand 5 | Three small stores, selector subscriptions, no provider tree |
-| Styling | Tailwind v4 plus a stylesheet per component | Utilities for layout, real CSS for the parts that are design |
-| Smooth scroll | Lenis | Frame-synced scroll drives the opening sequence |
-| Testing | Vitest 5, Testing Library, jsdom | Same transform pipeline as the app, no second build |
+| Concern       | Choice                                      | Why                                                                     |
+| ------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
+| Build tool    | Vite 8                                      | Native ESM dev server, Rollup production build, first-class GLSL plugin |
+| Language      | TypeScript 7 (strict)                       | Every module is typed; `any` is not used in application code            |
+| UI runtime    | React 19                                    | Concurrent rendering, transitions, stable `Suspense`                    |
+| 3D            | three.js 0.185 + @react-three/fiber 9       | Declarative scene graph over one WebGL renderer                         |
+| Shaders       | GLSL via `vite-plugin-glsl`                 | Shaders are source files, not template strings                          |
+| State         | zustand 5                                   | Three small stores, selector subscriptions, no provider tree            |
+| Styling       | Tailwind v4 plus a stylesheet per component | Utilities for layout, real CSS for the parts that are design            |
+| Smooth scroll | Lenis                                       | Frame-synced scroll drives the opening sequence                         |
+| Testing       | Vitest 5, Testing Library, jsdom            | Same transform pipeline as the app, no second build                     |
 
 ## Directory structure
 
@@ -69,7 +69,11 @@ src/
 ├── scene/               Everything inside the WebGL canvas
 ├── shaders/             GLSL, one file per program stage
 ├── store/               zustand stores (sequence, ui, tour)
-├── lib/                 Pure helpers and hooks, no React tree assumptions
+├── hooks/               React hooks shared across components
+├── utils/               Pure functions: maths, resolution policy, probes
+├── services/            The stateful layer: audio, echoes, the catalogue
+├── constants/           Values that are chosen rather than computed
+├── lib/                 Re-exports the four above, for an import that wants several
 ├── components/          Presentational pieces shared across beats
 │   ├── layers/          Full-screen visual layers (grain, vignette)
 │   └── ui/              Background effects
@@ -100,8 +104,8 @@ The source is layered, and the dependency arrows only ever point downward.
         └───────────────┬─────────────────────────────────────────┘
                         │
         ┌───────────────▼──────────────┐  ┌───────────────────────┐
-        │  scene/ — canvas contents,   │  │  lib/ — pure helpers,  │
-        │  world derivation            │  │  hooks, math           │
+        │  scene/ — canvas contents,   │  │  services/ · hooks/    │
+        │  world derivation            │  │  utils/ · constants/   │
         └───────────────┬──────────────┘  └──────────┬────────────┘
                         │                            │
         ┌───────────────▼────────────────────────────▼────────────┐
@@ -111,9 +115,10 @@ The source is layered, and the dependency arrows only ever point downward.
 
 Rules that hold throughout:
 
-- `lib/` imports nothing from `ui/`, `beats/` or `scene/`. It is testable in
-  isolation, and most of its tests run without a DOM.
-- `store/` imports from `lib/` only. Stores never import components.
+- `utils/`, `hooks/`, `services/` and `constants/` import nothing from `ui/`,
+  `beats/` or `scene/`. They are testable in isolation, and everything outside
+  `hooks/` runs without a DOM.
+- `store/` imports from those four only. Stores never import components.
 - `scene/` and `ui/` may both read stores; they never read each other.
 - `shaders/` and `types/` are leaves.
 
@@ -126,7 +131,7 @@ seed ──► scene/sky-data.ts ──► the world (places, people, signals)
   store/sequence.ts ── what the person has said, carried, sent
                     │
                     ▼
-  lib/echoes.ts ──► responses, carriers, replies (derived from hashes)
+  services/echoes.ts ──► responses, carriers, replies (from hashes)
                     │
         ┌───────────┴───────────┐
         ▼                       ▼
@@ -144,11 +149,11 @@ which is what lets it be stable across reloads without storing anything.
 
 Three zustand stores, each with a single responsibility:
 
-| Store | File | Holds |
-| --- | --- | --- |
+| Store         | File                    | Holds                                                                                                           |
+| ------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `useSequence` | `src/store/sequence.ts` | The person: profile, signals emitted, carries, friends, direct messages, settings. Persisted to `localStorage`. |
-| `useUI` | `src/store/ui.ts` | Where you are and what is open: level, focused place, focused person, open panel, open window. Not persisted. |
-| `useTour` | `src/store/tour.ts` | The guided tour's stage machine. |
+| `useUI`       | `src/store/ui.ts`       | Where you are and what is open: level, focused place, focused person, open panel, open window. Not persisted.   |
+| `useTour`     | `src/store/tour.ts`     | The guided tour's stage machine.                                                                                |
 
 Components subscribe with selectors (`useUI((s) => s.level)`) so that a change
 to one field does not re-render everything that touches the store. Actions are
@@ -176,7 +181,7 @@ Everything the sky contains is uploaded once as attribute buffers and
 addressed by index. Changing which star is focused sets a uniform; it does not
 rebuild geometry.
 
-Device pixel ratio is capped in `src/lib/dpr.ts` (2 on desktop, 1.75 on
+Device pixel ratio is capped in `src/utils/dpr.ts` (2 on desktop, 1.75 on
 handhelds) so that a high-density display does not quadruple the fragment
 count for no visible gain.
 
@@ -240,7 +245,7 @@ The full account, including what was tested and how, is in
 Vitest runs against the same Vite transform pipeline as the application, so
 there is no second build configuration to keep in step.
 
-- **Pure logic** (`src/lib`, `src/store`, `src/scene/sky-data.ts`) is tested
+- **Pure logic** (`src/utils`, `src/services`, `src/store`, `src/scene/sky-data.ts`) is tested
   directly: determinism, boundaries, and the invariants the rest of the app
   assumes.
 - **Components** are tested with Testing Library through the accessibility

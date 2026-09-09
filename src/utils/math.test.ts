@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { clamp, damp, remap } from "./utils";
+import { clamp, damp, remap } from "./math";
 
 describe("clamp", () => {
   it("holds a value inside the range", () => {

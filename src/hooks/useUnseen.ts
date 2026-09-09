@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getSky, peopleIn } from "@/scene/sky-data";
 import { useSequence } from "@/store/sequence";
-import { echoesFor, replyTo } from "@/lib/echoes";
+import { echoesFor, replyTo } from "@/services/echoes";
 
 /**
  * Whether anything has happened to you since you last looked.

@@ -3,9 +3,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import vert from "@/shaders/galaxy.vert.glsl";
 import frag from "@/shaders/galaxy.frag.glsl";
-import { clamp, damp, remap } from "@/lib/utils";
+import { clamp, damp, remap } from "@/utils/math";
 import { useSequence } from "@/store/sequence";
-import { tuning } from "@/lib/tuning";
+import { tuning } from "@/constants/tuning";
 
 const COUNT = 140000;
 const RADIUS = 9;

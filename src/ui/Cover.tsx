@@ -1,4 +1,4 @@
-import { coverFor } from "@/lib/library";
+import { coverFor } from "@/services/library";
 
 type Props = { title: string; size?: number; radius?: number };
 
