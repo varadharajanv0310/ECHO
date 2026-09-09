@@ -81,7 +81,15 @@ export function Window({
         root.querySelectorAll<HTMLElement>(
           'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
-      ).filter((el: HTMLElement) => el.offsetParent !== null);
+      ).filter((el: HTMLElement) => {
+        // Visibility rather than layout: offsetParent is a layout question and
+        // is always null without a layout engine, which would empty this list
+        // entirely under test and quietly disable the trap.
+        if (el.hasAttribute("hidden")) return false;
+        if (el.getAttribute("aria-hidden") === "true") return false;
+        const cs = getComputedStyle(el);
+        return cs.display !== "none" && cs.visibility !== "hidden";
+      });
 
     focusable()[0]?.focus();
 
