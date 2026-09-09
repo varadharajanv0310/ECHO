@@ -10,7 +10,7 @@ const base = process.env.GITHUB_PAGES ? "/ECHO/" : "/";
 
 export default defineConfig({
   base,
-  plugins: [react(), tailwindcss(), glsl({ compress: false })],
+  plugins: [react(), tailwindcss(), glsl()],
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
     // react-three-fiber renders through its own reconciler. If Vite hands it a
@@ -31,10 +31,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Rolldown, which Vite 8 builds with, takes the function form only.
-        manualChunks(id: string) {
-          if (!id.includes("node_modules")) return;
+        // Returning undefined means "no opinion, put it where you would have".
+        manualChunks(id: string): string | undefined {
+          if (!id.includes("node_modules")) return undefined;
           if (id.includes("three") || id.includes("@react-three")) return "three";
           if (id.includes("react") || id.includes("scheduler")) return "react";
+          return undefined;
         },
       },
     },

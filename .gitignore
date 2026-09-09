@@ -13,3 +13,6 @@ dist-ssr
 
 # Test coverage output
 coverage
+
+# Reference imagery, kept locally rather than in the repository
+refs/

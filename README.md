@@ -398,7 +398,6 @@ src/
   copy.ts       every word in the interface
 public/
   guide.html    the field guide, shipped alongside the app
-refs/           reference imagery, not shipped
 ```
 
 **Stack.** Vite, React 19, TypeScript, Tailwind v4, three.js / react-three-fiber

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { memo, useCallback, useDeferredValue, useMemo, useState } from "react";
 import { Mark, MARKS } from "@/components/Mark";
 import type { MarkId } from "@/types";
 import { copy } from "@/copy";
@@ -14,6 +14,71 @@ function scramble(n: number) {
   h ^= h >>> 13;
   return Math.imul(h, 0xc2b2ae35) >>> 0;
 }
+
+type SignalHit = {
+  id: number;
+  star: number;
+  text: string;
+  age: number;
+  author: string;
+  world: string;
+};
+
+type PersonHit = {
+  id: number;
+  name: string;
+  hue: number;
+  traits: string[];
+  world: string;
+};
+
+/**
+ * One result, memoised.
+ *
+ * A search over this sky returns up to forty rows, and without this every one
+ * of them re-renders on every keystroke even though almost all of them are
+ * still the same row. `onSelect` is passed as a stable callback so the
+ * comparison actually holds.
+ */
+const SignalRow = memo(function SignalRow({
+  hit,
+  onSelect,
+}: {
+  hit: SignalHit;
+  onSelect: (star: number) => void;
+}) {
+  return (
+    <button type="button" className="u-row sr__hit" onClick={() => onSelect(hit.star)}>
+      <div className="u-row__main">
+        <span className="u-row__title">{hit.text}</span>
+        <span className="u-row__meta">
+          {hit.author} · {hit.world}
+          {hit.age > 0.72 ? " · fading" : ""}
+        </span>
+      </div>
+    </button>
+  );
+});
+
+const PersonRow = memo(function PersonRow({
+  hit,
+  onSelect,
+}: {
+  hit: PersonHit;
+  onSelect: (star: number) => void;
+}) {
+  return (
+    <button type="button" className="u-row sr__hit" onClick={() => onSelect(hit.id)}>
+      <Mark mark={MARKS[hit.id % MARKS.length] as MarkId} hue={hit.hue} size={22} />
+      <div className="u-row__main">
+        <span className="u-row__title">{hit.name}</span>
+        <span className="u-row__meta">
+          {hit.traits.join(" · ")} — {hit.world}
+        </span>
+      </div>
+    </button>
+  );
+});
 
 /**
  * Search.
@@ -34,10 +99,25 @@ export function SearchPanel() {
   const [trait, setTrait] = useState<string | null>(null);
   const [onlyFading, setOnlyFading] = useState(false);
 
+  /**
+   * Typing updates the field immediately; the results are allowed to lag.
+   *
+   * Every keystroke otherwise re-filters and re-sorts every signal in the sky
+   * synchronously before the character appears, so the input goes heavy
+   * exactly when somebody is typing fast. Deferring the term lets React paint
+   * the keystroke first and compute the list at a lower priority, which is the
+   * right way round: the field is what the person is looking at.
+   */
+  const deferredQ = useDeferredValue(q);
+  const settling = q !== deferredQ;
+
   const sky = useMemo(() => getSky(), []);
 
+  // Stable across renders, so the memoised rows below actually stay memoised.
+  const select = useCallback((star: number) => enterStar(star), [enterStar]);
+
   const signals = useMemo(() => {
-    const term = q.trim().toLowerCase();
+    const term = deferredQ.trim().toLowerCase();
     return (
       sky.planets
         .map((p) => {
@@ -60,7 +140,7 @@ export function SearchPanel() {
         .sort((a, b) => scramble(a.id) - scramble(b.id))
         .slice(0, 40)
     );
-  }, [sky, q, world, onlyFading]);
+  }, [sky, deferredQ, world, onlyFading]);
 
   const people = useMemo(
     () =>
@@ -68,9 +148,11 @@ export function SearchPanel() {
         .map((st) => ({ ...st, world: sky.constellations[st.constellation].world }))
         .filter((p) => (trait ? p.traits.includes(trait) : true))
         .filter((p) => (world ? p.world === world : true))
-        .filter((p) => (q.trim() ? p.name.includes(q.trim().toLowerCase()) : true))
+        .filter((p) =>
+          deferredQ.trim() ? p.name.includes(deferredQ.trim().toLowerCase()) : true,
+        )
         .slice(0, 30),
-    [sky, q, trait, world],
+    [sky, deferredQ, trait, world],
   );
 
   return (
@@ -127,7 +209,7 @@ export function SearchPanel() {
               Only what is fading
             </button>
 
-            <section className="u-card">
+            <section className="u-card" data-settling={settling}>
               <span className="u-label">
                 {signals.length} {signals.length === 1 ? "signal" : "signals"}
               </span>
@@ -135,20 +217,7 @@ export function SearchPanel() {
                 <p className="u-empty">Nothing matches. It may already be gone.</p>
               )}
               {signals.map((s) => (
-                <button
-                  type="button"
-                  key={s.id}
-                  className="u-row sr__hit"
-                  onClick={() => enterStar(s.star)}
-                >
-                  <div className="u-row__main">
-                    <span className="u-row__title">{s.text}</span>
-                    <span className="u-row__meta">
-                      {s.author} · {s.world}
-                      {s.age > 0.72 ? " · fading" : ""}
-                    </span>
-                  </div>
-                </button>
+                <SignalRow key={s.id} hit={s} onSelect={select} />
               ))}
             </section>
           </>
@@ -171,7 +240,7 @@ export function SearchPanel() {
               </div>
             </section>
 
-            <section className="u-card">
+            <section className="u-card" data-settling={settling}>
               <span className="u-label">
                 {people.length} {people.length === 1 ? "person" : "people"}
               </span>
@@ -179,24 +248,7 @@ export function SearchPanel() {
                 <p className="u-empty">Nobody listening like that here</p>
               )}
               {people.map((p) => (
-                <button
-                  type="button"
-                  className="u-row sr__hit"
-                  key={p.id}
-                  onClick={() => enterStar(p.id)}
-                >
-                  <Mark
-                    mark={MARKS[p.id % MARKS.length] as MarkId}
-                    hue={p.hue}
-                    size={22}
-                  />
-                  <div className="u-row__main">
-                    <span className="u-row__title">{p.name}</span>
-                    <span className="u-row__meta">
-                      {p.traits.join(" · ")} — {p.world}
-                    </span>
-                  </div>
-                </button>
+                <PersonRow key={p.id} hit={p} onSelect={select} />
               ))}
             </section>
           </>

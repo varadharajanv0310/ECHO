@@ -211,3 +211,70 @@
     color: var(--ink-2);
   }
 }
+
+/* -------------------------------------------------------- container queries */
+
+/* A window is not the viewport.
+
+   Everything above sizes against the screen, which is the right question for
+   the chrome and the wrong one for a panel: the profile is a two-column layout
+   at 1180px wide and a stacked one at 600px, and which of those it should be
+   depends on how wide the window is, not on how wide the monitor is. A narrow
+   window on a wide screen was getting the wide layout and overflowing inside
+   itself.
+
+   The window body is the container; the layouts inside it ask it directly. */
+.win__body {
+  container-type: inline-size;
+  container-name: panel;
+}
+
+@container panel (max-width: 700px) {
+  .pw,
+  .mw,
+  .pw__places,
+  .db__stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* At this width the aside is competing with the thread rather than
+     supporting it, and the thread is the reason the window is open. */
+  .mw__who {
+    display: none;
+  }
+}
+
+@container panel (min-width: 701px) and (max-width: 1000px) {
+  .db__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mw {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
+  }
+}
+
+@container panel (min-width: 1001px) {
+  .db__stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* The shelf is a wrapping grid of covers rather than a fixed count, so it
+   fills whatever the container gives it without a breakpoint per size. */
+@container panel (min-width: 480px) {
+  .pw__shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* Container queries are widely supported, but a browser without them must not
+   get a broken layout - it gets the width-based tiers above, which still
+   produce a correct page. This block only adds the refinement. */
+@supports not (container-type: inline-size) {
+  .win__body {
+    container-type: normal;
+  }
+}
