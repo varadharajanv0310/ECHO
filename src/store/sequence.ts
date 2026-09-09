@@ -130,10 +130,24 @@ export type Settings = {
   whoCanAdd: "anyone" | "carried" | "nobody";
 };
 
+/**
+ * Whether the machine has asked for less movement.
+ *
+ * ECHO is almost entirely motion, and the one part that is not under the
+ * reader's control is the ignition - a white frame that fills the screen. The
+ * setting to soften it existed but was buried in a menu you can only reach by
+ * surviving the thing it protects you from. If the operating system has
+ * already said no, that is an answer, and it should not have to be given
+ * twice.
+ */
+const calmRequested =
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+
 export const DEFAULT_SETTINGS: Settings = {
   mode: "dark",
   accent: "violet",
-  reducedFlash: false,
+  reducedFlash: calmRequested,
   grain: 1,
   receive: ["Carries", "Replies", "Signals from my Worlds"],
   show: ["Signals still travelling", "Signals fading"],

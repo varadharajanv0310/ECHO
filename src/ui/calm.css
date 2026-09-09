@@ -1,0 +1,35 @@
+/* =========================================================================
+   Less movement, when the machine has asked for it.
+
+   The scroll-driven parts of ECHO stay: the road only moves because a reader
+   moved it, and taking that away would leave nothing to do. What goes is the
+   motion nobody asked for - things sliding in, drifting, pulsing and falling
+   on their own. Everything below still arrives, it just arrives already there.
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .win,
+  .win-scrim,
+  .win-layer[data-closing="true"] .win,
+  .dock,
+  .dock__open,
+  .rail__dot,
+  .tour__card,
+  .tour__tip,
+  .tour__scrim,
+  .tour__spot,
+  .skb__back,
+  .skb__group,
+  .ch,
+  .entry__thread::after,
+  .pf {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  /* Transitions are fine at a length nobody would call an animation. */
+  * {
+    transition-duration: 120ms !important;
+  }
+}

@@ -14,6 +14,7 @@ import { hasWebGL } from "./lib/webgl";
 // stylesheet at the same specificity, so it has to be evaluated after all of
 // them - which means importing it after the tree that pulls them in.
 import "./ui/handheld.css";
+import "./ui/calm.css";
 
 // Deliberately not wrapped in StrictMode. Double-invoked effects would create
 // and tear down WebGL contexts and rAF loops twice, which makes the trail
