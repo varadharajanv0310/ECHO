@@ -160,6 +160,7 @@ export function Entry({ boost = 1 }: { boost?: number }) {
             {line}
           </span>
         ))}
+        <span className="entry__scroll">{copy.scrollCue}</span>
         <span className="entry__thread" aria-hidden />
       </div>
     </div>

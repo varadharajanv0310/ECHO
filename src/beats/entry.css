@@ -84,16 +84,45 @@
   color: rgba(255, 255, 255, 0.42);
 }
 
-/* The scroll affordance, without a word for it: a thread of light falling
-   downward out of the credit block, prefiguring the road. */
+/* The scroll affordance.
+   
+   The thread below was meant to carry this alone - a line of light falling out
+   of the credit block, prefiguring the road. It is one pixel wide over a lit
+   nebula, which is to say invisible, and a falling thread is not a gesture
+   anybody recognises. The whole piece is behind a scroll nobody was being
+   told to make.
+   
+   So it gets the word as well. Quiet, in the same micro-type as the credits,
+   breathing slowly so it reads as waiting for you rather than as decoration. */
+.entry__scroll {
+  margin-top: 1.5rem;
+  font-size: 9.5px;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: rgba(255, 255, 255, 0.72);
+  animation: scroll-breathe 3.4s ease-in-out infinite;
+}
+
+@keyframes scroll-breathe {
+  0%, 100% { opacity: 0.42; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry__scroll {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
 .entry__thread {
   position: relative;
   width: 1px;
-  height: 54px;
-  margin-top: 1.6rem;
+  height: 44px;
+  margin-top: 0.75rem;
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.34),
     rgba(255, 255, 255, 0)
   );
   overflow: hidden;
