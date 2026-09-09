@@ -6,8 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /** Clamp n into [min, max]. */
-export const clamp = (n: number, min = 0, max = 1) =>
-  Math.min(max, Math.max(min, n));
+export const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
 /** Map n from [inMin, inMax] to [outMin, outMax], clamped. */
 export const remap = (
@@ -22,8 +21,7 @@ export const remap = (
 export const damp = (current: number, target: number, lambda: number, dt: number) =>
   current + (target - current) * (1 - Math.exp(-lambda * dt));
 
-export const easeOutExpo = (t: number) =>
-  t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+export const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
 
 export const easeInOutCubic = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;

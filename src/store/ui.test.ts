@@ -4,8 +4,13 @@ import { getSky } from "@/scene/sky-data";
 
 beforeEach(() => {
   useUI.setState({
-    level: "cluster", constellation: null, star: null,
-    planet: null, panel: null, profileOf: null, messaging: null,
+    level: "cluster",
+    constellation: null,
+    star: null,
+    planet: null,
+    panel: null,
+    profileOf: null,
+    messaging: null,
   });
 });
 

@@ -62,10 +62,26 @@ export function NebulaShader({
   // Props are targets. The loop chases them, so a phase change eases the
   // field open instead of snapping it, and nothing here re-renders per frame.
   const live = useRef({
-    paused, speed, intensity, cloud, lights, starAmt, warpAmt, riseAmt, responsiveness,
+    paused,
+    speed,
+    intensity,
+    cloud,
+    lights,
+    starAmt,
+    warpAmt,
+    riseAmt,
+    responsiveness,
   });
   live.current = {
-    paused, speed, intensity, cloud, lights, starAmt, warpAmt, riseAmt, responsiveness,
+    paused,
+    speed,
+    intensity,
+    cloud,
+    lights,
+    starAmt,
+    warpAmt,
+    riseAmt,
+    responsiveness,
   };
 
   const errRef = useRef(onShaderError);

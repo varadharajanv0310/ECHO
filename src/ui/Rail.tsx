@@ -5,7 +5,8 @@ import "./ui.css";
 
 const ICONS: Record<PanelId, string> = {
   // Simple, single-weight glyphs. At 18px anything more detailed is mud.
-  profile: "M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Z M4 20.5c0-3.6 3.6-5.6 8-5.6s8 2 8 5.6",
+  profile:
+    "M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Z M4 20.5c0-3.6 3.6-5.6 8-5.6s8 2 8 5.6",
   menu: "M4 7h16 M4 12h16 M4 17h16",
   create: "M12 5v14 M5 12h14",
   search: "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z M20 20l-4-4",
@@ -39,6 +40,7 @@ export function Rail() {
     <nav className="rail" style={{ zIndex: "var(--z-rail)" }} aria-label="Main">
       {PANELS.map((id) => (
         <button
+          type="button"
           key={id}
           className="rail__btn"
           data-on={panel === id}

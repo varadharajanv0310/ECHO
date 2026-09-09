@@ -60,11 +60,7 @@ export function Profile() {
     // Lenis binds to the window and prevents default on wheel and touch, so
     // a nested scroller is inert unless it is marked. Without this the form
     // cannot be scrolled at all and nobody on a phone gets past it.
-    <div
-      className="pf"
-      data-lenis-prevent
-      style={{ zIndex: "var(--z-content)" }}
-    >
+    <div className="pf" data-lenis-prevent style={{ zIndex: "var(--z-content)" }}>
       <form
         className="pf__inner"
         onSubmit={(e) => {
@@ -75,9 +71,14 @@ export function Profile() {
         <p className="pf__title">{copy.profile.title}</p>
 
         {/* Name -------------------------------------------------------- */}
-        <label className="pf__field" style={{ "--d": "0ms" } as React.CSSProperties}>
+        <label
+          className="pf__field"
+          htmlFor="pf-name"
+          style={{ "--d": "0ms" } as React.CSSProperties}
+        >
           <span className="pf__label">{copy.profile.nameLabel}</span>
           <input
+            id="pf-name"
             className="pf__name"
             value={name}
             onChange={(e) => setName(e.target.value.slice(0, 24))}
@@ -90,9 +91,14 @@ export function Profile() {
         </label>
 
         {/* One line ---------------------------------------------------- */}
-        <label className="pf__field" style={{ "--d": "60ms" } as React.CSSProperties}>
+        <label
+          className="pf__field"
+          htmlFor="pf-bio"
+          style={{ "--d": "60ms" } as React.CSSProperties}
+        >
           <span className="pf__label">{copy.profile.bioLabel}</span>
           <input
+            id="pf-bio"
             className="pf__bio"
             value={bio}
             onChange={(e) => setBio(e.target.value.slice(0, 90))}
@@ -186,7 +192,10 @@ export function Profile() {
         </div>
 
         {/* Emit -------------------------------------------------------- */}
-        <div className="pf__submit-wrap" style={{ "--d": "300ms" } as React.CSSProperties}>
+        <div
+          className="pf__submit-wrap"
+          style={{ "--d": "300ms" } as React.CSSProperties}
+        >
           <button className="pf__submit" type="submit" disabled={!ready}>
             <Mark mark={mark} hue={hue} size={20} glow={ready} />
             <span>{copy.profile.submit}</span>

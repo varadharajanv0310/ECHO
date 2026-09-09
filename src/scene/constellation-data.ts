@@ -21,9 +21,26 @@ export type SignalNode = {
  * which is the point: two people called nine are simply two people called nine.
  */
 export const NAMES = [
-  "havel", "orpheline", "nine", "brackish", "sunday", "vale", "tern", "moth",
-  "cinder", "quiet dog", "north", "almost", "verity", "sixth", "low tide",
-  "paper", "arden", "still", "gallery", "wren",
+  "havel",
+  "orpheline",
+  "nine",
+  "brackish",
+  "sunday",
+  "vale",
+  "tern",
+  "moth",
+  "cinder",
+  "quiet dog",
+  "north",
+  "almost",
+  "verity",
+  "sixth",
+  "low tide",
+  "paper",
+  "arden",
+  "still",
+  "gallery",
+  "wren",
 ];
 
 /** Deterministic, so the sky is the same one every time you come back to it. */

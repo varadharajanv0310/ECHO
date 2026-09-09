@@ -1,5 +1,14 @@
 import { describe, it, expect } from "vitest";
-import { GAMES, SONGS, PLACES, byId, coverFor, handlesFor, pickFor, placeLabel } from "./library";
+import {
+  GAMES,
+  SONGS,
+  PLACES,
+  byId,
+  coverFor,
+  handlesFor,
+  pickFor,
+  placeLabel,
+} from "./library";
 
 describe("catalogue", () => {
   it("has no duplicate ids across games and songs", () => {

@@ -160,6 +160,25 @@
   color: #16111f;
 }
 
+/* The same theme, taken from the operating system rather than from a stored
+   choice.
+
+   `data-mode` is written by JavaScript once the saved settings have been read,
+   which means the first frame on a machine set to light is the dark ground,
+   corrected a moment later. That flash is the thing this block removes: it
+   applies the light tokens straight from the OS preference, and stands down as
+   soon as an explicit choice exists to disagree with it. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-mode="dark"]) {
+    --color-void: #f1edf7;
+    --color-void-lift: #e4dcf0;
+  }
+
+  :root:not([data-mode="dark"]) body {
+    color: #16111f;
+  }
+}
+
 /* The scene is no longer inverted wholesale. Road, galaxy, warp and sky each
    have a light-mode path inside their own shader, where the hues survive and
    glow becomes pigment. Inverting the finished frame was a colour swap, not a

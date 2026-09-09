@@ -64,7 +64,10 @@ export function DashboardPanel() {
     () =>
       emissions
         .flatMap((e) =>
-          echoesFor(e, peopleIn(sky, e.world), now).replies.map((r) => ({ ...r, onText: e.text })),
+          echoesFor(e, peopleIn(sky, e.world), now).replies.map((r) => ({
+            ...r,
+            onText: e.text,
+          })),
         )
         .sort((a, b) => b.at - a.at),
     [emissions, now],
@@ -142,14 +145,13 @@ export function DashboardPanel() {
           <section className="u-card">
             <h3 className="u-h">People you are talking to</h3>
             {threads.length === 0 && (
-              <p className="u-empty">
-                Nobody yet. Stand at someone and say something.
-              </p>
+              <p className="u-empty">Nobody yet. Stand at someone and say something.</p>
             )}
             {threads.map((t) => {
               const person = sky.stars[t.star];
               return (
                 <button
+                  type="button"
                   className="u-row sr__hit"
                   key={t.star}
                   onClick={() => openMessages(t.star)}
@@ -163,8 +165,7 @@ export function DashboardPanel() {
                     <span className="u-row__title">{t.last.text}</span>
                     <span className="u-row__meta">
                       {t.last.mine ? "you" : t.last.name} · {t.list.length}{" "}
-                      {t.list.length === 1 ? "message" : "messages"} ·{" "}
-                      {ago(t.last.at)}
+                      {t.list.length === 1 ? "message" : "messages"} · {ago(t.last.at)}
                     </span>
                   </div>
                 </button>
@@ -184,6 +185,7 @@ export function DashboardPanel() {
                   if (!person) return null;
                   return (
                     <button
+                      type="button"
                       className="u-row sr__hit"
                       key={id}
                       onClick={() => openMessages(id)}
@@ -196,8 +198,8 @@ export function DashboardPanel() {
                       <div className="u-row__main">
                         <span className="u-row__title">{person.name}</span>
                         <span className="u-row__meta">
-                          {sky.constellations[person.constellation].world} ·
-                          nothing said yet
+                          {sky.constellations[person.constellation].world} · nothing
+                          said yet
                         </span>
                       </div>
                     </button>
@@ -222,6 +224,7 @@ export function DashboardPanel() {
               const dying = hoursLeft < e.life * 0.28;
               return (
                 <button
+                  type="button"
                   className="u-row sr__hit"
                   key={e.id}
                   onClick={() => myStar() >= 0 && enterStar(myStar())}
@@ -234,8 +237,7 @@ export function DashboardPanel() {
                       {carries.length === 0
                         ? "carried by nobody"
                         : `carried by ${[...new Set(carries.map((x) => x.by))].join(", ")}`}{" "}
-                      ·{" "}
-                      {hoursLeft < 1 ? "gone" : `${Math.round(hoursLeft)}h left`}
+                      · {hoursLeft < 1 ? "gone" : `${Math.round(hoursLeft)}h left`}
                     </span>
                   </div>
                 </button>

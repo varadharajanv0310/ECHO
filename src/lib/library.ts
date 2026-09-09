@@ -230,8 +230,7 @@ export const PLACES = [
   { id: "backloggd", label: "Backloggd" },
 ] as const;
 
-export const placeLabel = (id: string) =>
-  PLACES.find((p) => p.id === id)?.label ?? id;
+export const placeLabel = (id: string) => PLACES.find((p) => p.id === id)?.label ?? id;
 
 /** A handle for somebody the sky invented, stable to their star. */
 export function handlesFor(seed: number, name: string) {

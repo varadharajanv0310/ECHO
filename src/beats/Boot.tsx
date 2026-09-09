@@ -30,10 +30,7 @@ export function Boot() {
         <img className="boot__plate" src={loadingUrl} alt="" aria-hidden />
 
         <div className="boot__bar" role="progressbar" aria-label="Loading">
-          <span
-            className="boot__fill"
-            style={{ transform: `scaleX(${progress})` }}
-          />
+          <span className="boot__fill" style={{ transform: `scaleX(${progress})` }} />
         </div>
 
         <span className="boot__caption">{copy.voidCaption}</span>

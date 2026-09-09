@@ -1,0 +1,22 @@
+{
+  "name": "ECHO",
+  "short_name": "ECHO",
+  "description": "A social platform where content belongs to a place, travels only when a person carries it, and dies if nobody does.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#04030A",
+  "theme_color": "#04030A",
+  "categories": ["social", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

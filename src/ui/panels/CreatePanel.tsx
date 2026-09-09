@@ -58,12 +58,13 @@ export function CreatePanel() {
             <section className="u-card cr__sent">
               <h3 className="u-h">It is out.</h3>
               <p className="u-hint" style={{ lineHeight: 1.7 }}>
-                It is in {world} now. It will reach nobody unless somebody
-                carries it, and if nobody does it will be gone in {life} hours.
-                You will not be told either way.
+                It is in {world} now. It will reach nobody unless somebody carries it,
+                and if nobody does it will be gone in {life} hours. You will not be told
+                either way.
               </p>
               <div className="cr__after">
                 <button
+                  type="button"
                   className="u-btn u-btn--ghost"
                   onClick={() => {
                     setSent(false);
@@ -73,6 +74,7 @@ export function CreatePanel() {
                   Emit another
                 </button>
                 <button
+                  type="button"
                   className="u-btn u-btn--ghost"
                   onClick={() => {
                     if (myStar() >= 0) enterStar(myStar());
@@ -89,6 +91,7 @@ export function CreatePanel() {
                 <div className="u-chips">
                   {copy.worlds.map((w) => (
                     <button
+                      type="button"
                       key={w}
                       className="u-chip"
                       data-on={world === w}
@@ -101,8 +104,11 @@ export function CreatePanel() {
               </section>
 
               <section className="u-card">
-                <span className="u-label">The signal</span>
+                <label className="u-label" htmlFor="cr-signal">
+                  The signal
+                </label>
                 <textarea
+                  id="cr-signal"
                   className="u-textarea"
                   value={text}
                   onChange={(e) => setText(e.target.value.slice(0, 240))}
@@ -119,6 +125,7 @@ export function CreatePanel() {
                 <div className="u-chips">
                   {LIFETIMES.map((l) => (
                     <button
+                      type="button"
                       key={l.h}
                       className="u-chip"
                       data-on={life === l.h}
@@ -134,6 +141,7 @@ export function CreatePanel() {
               </section>
 
               <button
+                type="button"
                 className="u-btn u-btn--go"
                 disabled={!ready}
                 onClick={() => {
@@ -155,8 +163,11 @@ export function CreatePanel() {
       {tab === "World" && (
         <div className="u-grid">
           <section className="u-card">
-            <span className="u-label">Name of the place</span>
+            <label className="u-label" htmlFor="cr-world-name">
+              Name of the place
+            </label>
             <input
+              id="cr-world-name"
               className="u-input"
               value={newWorld}
               onChange={(e) => setNewWorld(e.target.value.slice(0, 32))}
@@ -165,8 +176,11 @@ export function CreatePanel() {
           </section>
 
           <section className="u-card">
-            <span className="u-label">What belongs here</span>
+            <label className="u-label" htmlFor="cr-world-what">
+              What belongs here
+            </label>
             <textarea
+              id="cr-world-what"
               className="u-textarea"
               value={newWhat}
               onChange={(e) => setNewWhat(e.target.value.slice(0, 160))}
@@ -174,13 +188,13 @@ export function CreatePanel() {
             />
           </section>
 
-          <button className="u-btn" disabled={!newWorld.trim()}>
+          <button type="button" className="u-btn" disabled={!newWorld.trim()}>
             Open {newWorld.trim() || "it"}
           </button>
 
           <p className="u-hint" style={{ lineHeight: 1.7 }}>
-            A World with nothing in it closes by itself. There is no way to
-            reserve a name and no way to own one.
+            A World with nothing in it closes by itself. There is no way to reserve a
+            name and no way to own one.
           </p>
         </div>
       )}

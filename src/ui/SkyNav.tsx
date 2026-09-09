@@ -122,7 +122,7 @@ export function SkyNav() {
       <ul className="skynav__list">
         {level !== "cluster" && (
           <li>
-            <button className="skynav__item" onClick={back}>
+            <button type="button" className="skynav__item" onClick={back}>
               Back to {level === "star" && world ? world.world : "all places"}
             </button>
           </li>
@@ -130,7 +130,12 @@ export function SkyNav() {
 
         {items.map((it) => (
           <li key={it.key}>
-            <button className="skynav__item" onClick={it.go} aria-label={it.label}>
+            <button
+              type="button"
+              className="skynav__item"
+              onClick={it.go}
+              aria-label={it.label}
+            >
               {it.text}
             </button>
           </li>
@@ -139,6 +144,7 @@ export function SkyNav() {
         {level === "star" && person && (
           <li>
             <button
+              type="button"
               className="skynav__item"
               onClick={() => openProfile(person.id)}
             >

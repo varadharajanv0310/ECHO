@@ -33,7 +33,13 @@ function Toggle({
   children: React.ReactNode;
 }) {
   return (
-    <button className="u-toggle" data-on={on} onClick={onClick} aria-pressed={on}>
+    <button
+      type="button"
+      className="u-toggle"
+      data-on={on}
+      onClick={onClick}
+      aria-pressed={on}
+    >
       <span className="u-toggle__text">{children}</span>
       <span className="u-switch" aria-hidden />
     </button>
@@ -95,6 +101,7 @@ export function MenuPanel() {
               <div className="u-chips">
                 {RECEIVE.map((r) => (
                   <button
+                    type="button"
                     key={r}
                     className="u-chip"
                     data-on={settings.receive.includes(r)}
@@ -111,6 +118,7 @@ export function MenuPanel() {
               <div className="u-chips">
                 {SHOW.map((r) => (
                   <button
+                    type="button"
                     key={r}
                     className="u-chip"
                     data-on={settings.show.includes(r)}
@@ -125,10 +133,10 @@ export function MenuPanel() {
             <section className="u-card">
               <h3 className="u-h">Replay</h3>
               <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
-                The entry sequence, from the first frame. Your profile and your
-                signals are untouched.
+                The entry sequence, from the first frame. Your profile and your signals
+                are untouched.
               </p>
-              <button className="u-btn" onClick={replay}>
+              <button type="button" className="u-btn" onClick={replay}>
                 Watch the opening again
               </button>
             </section>
@@ -136,8 +144,8 @@ export function MenuPanel() {
             <section className="u-card">
               <h3 className="u-h">Field guide</h3>
               <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
-                The longer version: what this place is, what it deliberately
-                does not have, and what the sky is actually showing you.
+                The longer version: what this place is, what it deliberately does not
+                have, and what the sky is actually showing you.
               </p>
               <a
                 className="u-btn"
@@ -152,10 +160,11 @@ export function MenuPanel() {
             <section className="u-card">
               <h3 className="u-h">Tutorial</h3>
               <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
-                What this place is, and what each control does. Runs once on
-                your first visit.
+                What this place is, and what each control does. Runs once on your first
+                visit.
               </p>
               <button
+                type="button"
                 className="u-btn"
                 onClick={() => {
                   setPanel(null);
@@ -180,12 +189,14 @@ export function MenuPanel() {
             </Toggle>
             <p className="u-hint" style={{ margin: "0.6rem 0 1.2rem" }}>
               The galaxy still opens, but the frame never blows out to white.
-              Recommended if bright full-screen transitions are a problem for
-              you.
+              Recommended if bright full-screen transitions are a problem for you.
             </p>
 
-            <span className="u-label">Film grain</span>
+            <label className="u-label" htmlFor="mn-grain">
+              Film grain
+            </label>
             <input
+              id="mn-grain"
               className="mn__range"
               type="range"
               min={0}
@@ -216,6 +227,7 @@ export function MenuPanel() {
                   ] as const
                 ).map(([id, label]) => (
                   <button
+                    type="button"
                     key={id}
                     className="u-chip"
                     data-on={settings.whoCanAdd === id}
@@ -230,12 +242,13 @@ export function MenuPanel() {
             <section className="u-card">
               <h3 className="u-h">What ECHO stores</h3>
               <p className="u-hint" style={{ lineHeight: 1.7 }}>
-                Your name, your mark, your Worlds and these settings, in this
-                browser only. There is no account, no server and no analytics.
-                Clearing your site data ends your existence here completely, and
-                there is nothing anywhere else to delete.
+                Your name, your mark, your Worlds and these settings, in this browser
+                only. There is no account, no server and no analytics. Clearing your
+                site data ends your existence here completely, and there is nothing
+                anywhere else to delete.
               </p>
               <button
+                type="button"
                 className="u-btn u-btn--ghost"
                 style={{ marginTop: "1rem" }}
                 onClick={() => setSettings(DEFAULT_SETTINGS)}

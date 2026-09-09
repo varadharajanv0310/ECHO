@@ -27,6 +27,12 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+
+      # Nothing reaches the live site without typechecking and passing its
+      # tests. A green deploy that ships a broken build is worse than a red one.
+      - run: pnpm typecheck
+      - run: pnpm test
+
       - run: pnpm build
         env:
           GITHUB_PAGES: "1"

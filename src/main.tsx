@@ -25,6 +25,4 @@ import "./ui/calm.css";
 // that cannot draw, App never mounts at all. Bailing out inside it would still
 // run its hooks - including leva's, which registers a store and puts its panel
 // on screen whether or not the <Leva> element that hides it ever renders.
-createRoot(document.getElementById("root")!).render(
-  hasWebGL() ? <App /> : <NoWebGL />,
-);
+createRoot(document.getElementById("root")!).render(hasWebGL() ? <App /> : <NoWebGL />);

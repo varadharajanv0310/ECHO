@@ -69,10 +69,38 @@ export type Sky = {
 };
 
 const NAMES = [
-  "havel", "orpheline", "nine", "brackish", "sunday", "vale", "tern", "moth",
-  "cinder", "north", "almost", "verity", "sixth", "low tide", "paper", "arden",
-  "still", "gallery", "wren", "quiet dog", "ember", "halfmoon", "sable", "pike",
-  "junot", "meridian", "olive", "rook", "sundial", "wax", "hollow", "iris",
+  "havel",
+  "orpheline",
+  "nine",
+  "brackish",
+  "sunday",
+  "vale",
+  "tern",
+  "moth",
+  "cinder",
+  "north",
+  "almost",
+  "verity",
+  "sixth",
+  "low tide",
+  "paper",
+  "arden",
+  "still",
+  "gallery",
+  "wren",
+  "quiet dog",
+  "ember",
+  "halfmoon",
+  "sable",
+  "pike",
+  "junot",
+  "meridian",
+  "olive",
+  "rook",
+  "sundial",
+  "wax",
+  "hollow",
+  "iris",
 ];
 
 const BLURBS: Record<string, string> = {
@@ -290,11 +318,7 @@ export function peopleIn(sky: Sky, world: string) {
   return c ? c.stars.map((id) => sky.stars[id].name).filter(Boolean) : [];
 }
 
-export function syncMine(
-  sky: Sky,
-  emissions: Emission[],
-  carried: Carried[] = [],
-) {
+export function syncMine(sky: Sky, emissions: Emission[], carried: Carried[] = []) {
   if (world.me < 0) return sky;
   const mine = sky.stars[world.me];
 
@@ -302,9 +326,7 @@ export function syncMine(
   sky.planets = sky.planets.filter((p) => p.star !== world.me);
   mine.planets = [];
 
-  let next = sky.planets.length
-    ? Math.max(...sky.planets.map((p) => p.id)) + 1
-    : 0;
+  let next = sky.planets.length ? Math.max(...sky.planets.map((p) => p.id)) + 1 : 0;
 
   emissions.forEach((e, i) => {
     const pid = next++;

@@ -57,7 +57,11 @@ export function MessageWindow({ star }: { star: number }) {
   }, []);
 
   const line = useMemo(
-    () => buildThread(dms.filter((d) => d.withStar === star), now),
+    () =>
+      buildThread(
+        dms.filter((d) => d.withStar === star),
+        now,
+      ),
     [dms, star, now],
   );
 
@@ -94,16 +98,21 @@ export function MessageWindow({ star }: { star: number }) {
           <div className="mw__scroll" data-lenis-prevent>
             <header className="mw__open">
               <div className="mw__open-mark">
-                <Mark mark={MARKS[star % MARKS.length] as MarkId} hue={them.hue} size={54} />
+                <Mark
+                  mark={MARKS[star % MARKS.length] as MarkId}
+                  hue={them.hue}
+                  size={54}
+                />
               </div>
               <h2 className="mw__open-name">{them.name}</h2>
               <p className="mw__open-line">
-                This is the beginning of everything you have said to{" "}
-                <b>{them.name}</b>. Nothing here leaves your browser, and
-                nothing here is delivered anywhere.
+                This is the beginning of everything you have said to <b>{them.name}</b>.
+                Nothing here leaves your browser, and nothing here is delivered
+                anywhere.
               </p>
               <div className="mw__open-acts">
                 <button
+                  type="button"
                   className="u-btn"
                   data-on={isFriend}
                   onClick={() => {
@@ -113,7 +122,11 @@ export function MessageWindow({ star }: { star: number }) {
                 >
                   {isFriend ? "Added" : "Add friend"}
                 </button>
-                <button className="u-btn" onClick={() => openProfile(star)}>
+                <button
+                  type="button"
+                  className="u-btn"
+                  onClick={() => openProfile(star)}
+                >
                   Their profile
                 </button>
               </div>
@@ -158,9 +171,7 @@ export function MessageWindow({ star }: { star: number }) {
                             <time>{clock(d.at)}</time>
                           </p>
                         )}
-                        {d.onText && (
-                          <p className="mw__msg-on">on “{d.onText}”</p>
-                        )}
+                        {d.onText && <p className="mw__msg-on">on “{d.onText}”</p>}
                         <p className="mw__msg-text">{d.text}</p>
                       </div>
                     </article>
@@ -172,15 +183,23 @@ export function MessageWindow({ star }: { star: number }) {
           </div>
 
           <div className="mw__compose">
+            <label className="sr-only" htmlFor="mw-compose">
+              Message {them.name}
+            </label>
             <input
+              id="mw-compose"
               className="mw__input"
               value={text}
               placeholder={`Say something to ${them.name}`}
               onChange={(e) => setText(e.target.value.slice(0, 300))}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              aria-label={`Message ${them.name}`}
             />
-            <button className="u-btn u-btn--go" onClick={send} disabled={!text.trim()}>
+            <button
+              type="button"
+              className="u-btn u-btn--go"
+              onClick={send}
+              disabled={!text.trim()}
+            >
               Send
             </button>
           </div>
@@ -190,13 +209,21 @@ export function MessageWindow({ star }: { star: number }) {
         <aside className="mw__who">
           <div className="mw__banner" data-b={star % 4} />
           <div className="mw__who-mark">
-            <Mark mark={MARKS[star % MARKS.length] as MarkId} hue={them.hue} size={46} />
+            <Mark
+              mark={MARKS[star % MARKS.length] as MarkId}
+              hue={them.hue}
+              size={46}
+            />
           </div>
           <div className="mw__who-body">
             {/* The card is the one part of this window that never scrolls
                 away, so it is where the way back to their profile belongs.
                 The name is the obvious thing to click for that. */}
-            <button className="mw__who-id" onClick={() => openProfile(star)}>
+            <button
+              type="button"
+              className="mw__who-id"
+              onClick={() => openProfile(star)}
+            >
               <h3 className="mw__who-name">{them.name}</h3>
               <p className="mw__who-sub">
                 Listening in {sky.constellations[them.constellation].world}
@@ -225,10 +252,15 @@ export function MessageWindow({ star }: { star: number }) {
             </dl>
 
             <div className="mw__who-acts">
-              <button className="u-btn mw__who-go" onClick={() => openProfile(star)}>
+              <button
+                type="button"
+                className="u-btn mw__who-go"
+                onClick={() => openProfile(star)}
+              >
                 Open their profile
               </button>
               <button
+                type="button"
                 className="u-btn mw__who-go"
                 onClick={() => {
                   closeMessages();

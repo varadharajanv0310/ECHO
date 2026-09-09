@@ -175,7 +175,5 @@ export function replyTo(dm: DirectMessage, now = Date.now()): DirectMessage[] {
  * without anything having been written while you were away.
  */
 export function thread(mine: DirectMessage[], now = Date.now()): DirectMessage[] {
-  return mine
-    .flatMap((d) => [d, ...replyTo(d, now)])
-    .sort((a, b) => a.at - b.at);
+  return mine.flatMap((d) => [d, ...replyTo(d, now)]).sort((a, b) => a.at - b.at);
 }

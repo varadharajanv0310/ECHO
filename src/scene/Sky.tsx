@@ -47,8 +47,6 @@ const CHAR_W = handheld ? 4.5 : 5.6;
 const LABEL_MAX = handheld ? 24 : 34;
 const fitDist = (aspect: number) => clamp(REF_ASPECT / aspect, 1, 2.3);
 
-
-
 /**
  * The sky.
  *
@@ -147,7 +145,7 @@ export function Sky() {
         orbit[w * 4 + 3] = orb[3];
       }
       sizes[w] = sz;
-      seeds[w] = (w * 37 % 100) / 100;
+      seeds[w] = ((w * 37) % 100) / 100;
       idx[w] = w;
       kind[w] = k;
       grp[w] = group;
@@ -335,7 +333,10 @@ export function Sky() {
   useEffect(() => {
     const el = gl.domElement;
     let dragging = false;
-    let lx = 0, ly = 0, dx0 = 0, dy0 = 0;
+    let lx = 0,
+      ly = 0,
+      dx0 = 0,
+      dy0 = 0;
 
     const active = () =>
       useSequence.getState().phase === "constellation" &&
@@ -573,7 +574,8 @@ export function Sky() {
       // Only what is actually on screen at this level is pickable, so you can
       // never click a person through the wall of the World they are in.
       if (k === 0 && ui.level !== "cluster") continue;
-      if (k === 1 && (ui.level === "cluster" || grpAttr.getX(i) !== ui.constellation)) continue;
+      if (k === 1 && (ui.level === "cluster" || grpAttr.getX(i) !== ui.constellation))
+        continue;
       if (k === 2 && (ui.level !== "star" || starAttr.getX(i) !== ui.star)) continue;
 
       if (k === 2) {
@@ -622,10 +624,7 @@ export function Sky() {
         kind: hit.kind,
         id: hit.id,
         hovered: false,
-        text:
-          text.length > LABEL_MAX
-            ? `${text.slice(0, LABEL_MAX - 1)}…`
-            : text,
+        text: text.length > LABEL_MAX ? `${text.slice(0, LABEL_MAX - 1)}…` : text,
         from: hit.kind === 2 ? borrowed.get(hit.id) : undefined,
         // Adding somebody did nothing you could see. Now their star is marked
         // wherever you meet it, so the sky is recognisably yours rather than

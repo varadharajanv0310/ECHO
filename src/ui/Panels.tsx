@@ -93,10 +93,7 @@ export function Panels() {
   const profileOf = useUI((s) => s.profileOf);
   const messaging = useUI((s) => s.messaging);
   const { shown, closing } = useExit(panel, CLOSE_MS);
-  const visiting = useExit(
-    typeof profileOf === "number" ? profileOf : null,
-    CLOSE_MS,
-  );
+  const visiting = useExit(typeof profileOf === "number" ? profileOf : null, CLOSE_MS);
   const talking = useExit(messaging, CLOSE_MS);
 
   const atSky = phase === "constellation";

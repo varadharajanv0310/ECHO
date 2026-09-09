@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  cue,
-  isMuted,
-  setAudioPhase,
-  setMuted,
-  startAudio,
-} from "@/lib/audio";
+import { cue, isMuted, setAudioPhase, setMuted, startAudio } from "@/lib/audio";
 import { useSequence } from "@/store/sequence";
 import "./sound.css";
 
@@ -54,9 +48,7 @@ export function Sound() {
   // of their own opt out with data-silent.
   useEffect(() => {
     const tap = (e: MouseEvent) => {
-      const el = (e.target as Element | null)?.closest?.(
-        "button, .u-chip, .rail__btn",
-      );
+      const el = (e.target as Element | null)?.closest?.("button, .u-chip, .rail__btn");
       if (!el || el.hasAttribute("data-silent")) return;
       cue("click");
     };
@@ -68,6 +60,7 @@ export function Sound() {
 
   return (
     <button
+      type="button"
       className="snd"
       style={{ zIndex: "var(--z-hud)" }}
       onClick={() => {

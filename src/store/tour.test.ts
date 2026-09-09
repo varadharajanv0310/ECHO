@@ -32,7 +32,9 @@ describe("first run", () => {
 
   it("goes back through the cards and into the welcome", () => {
     const t = useTour.getState();
-    t.begin(); t.next(); t.next();
+    t.begin();
+    t.next();
+    t.next();
     expect(useTour.getState().step).toBe(1);
     useTour.getState().back();
     expect(useTour.getState().step).toBe(0);

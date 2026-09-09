@@ -93,6 +93,7 @@ export function SkyDock() {
           data-lenis-prevent
         >
           <button
+            type="button"
             className="dock__close"
             onClick={() => openPlanet(null)}
             aria-label="Put it back"
@@ -116,6 +117,7 @@ export function SkyDock() {
               somebody keeps choosing to hold it. */}
           {mine && borrowed ? (
             <button
+              type="button"
               className="dock__carry"
               data-on
               onClick={() => {
@@ -128,6 +130,7 @@ export function SkyDock() {
             </button>
           ) : !mine ? (
             <button
+              type="button"
               className="dock__carry"
               data-on={holding}
               onClick={() => {
@@ -154,6 +157,7 @@ export function SkyDock() {
         {/* A name and a face on a bar is a thing people expect to be able to
             click, and this one did nothing. */}
         <button
+          type="button"
           className="dock__who"
           onClick={() => {
             cue("click");
@@ -193,7 +197,12 @@ export function SkyDock() {
           }}
         />
 
-        <button className="dock__send" onClick={send} disabled={!text.trim()}>
+        <button
+          type="button"
+          className="dock__send"
+          onClick={send}
+          disabled={!text.trim()}
+        >
           Send
         </button>
       </div>

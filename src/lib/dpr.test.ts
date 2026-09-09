@@ -6,9 +6,13 @@ const setEnv = (dpr: number, width: number, coarse: boolean) => {
   Object.defineProperty(window, "innerWidth", { value: width, configurable: true });
   window.matchMedia = ((q: string) => ({
     matches: q.includes("coarse") ? coarse : false,
-    media: q, onchange: null,
-    addEventListener: vi.fn(), removeEventListener: vi.fn(),
-    addListener: vi.fn(), removeListener: vi.fn(), dispatchEvent: vi.fn(),
+    media: q,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
   })) as unknown as typeof window.matchMedia;
 };
 

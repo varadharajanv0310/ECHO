@@ -4,8 +4,12 @@ import { useSequence, DEFAULT_SETTINGS } from "./sequence";
 const reset = () => {
   localStorage.clear();
   useSequence.setState({
-    emissions: [], carried: [], friends: [], dms: [],
-    profile: null, settings: { ...DEFAULT_SETTINGS },
+    emissions: [],
+    carried: [],
+    friends: [],
+    dms: [],
+    profile: null,
+    settings: { ...DEFAULT_SETTINGS },
   });
 };
 
@@ -30,7 +34,9 @@ describe("emit", () => {
 
   it("persists so a reload does not lose it", () => {
     useSequence.getState().emit("3AM", "remembered", 24);
-    expect(JSON.parse(localStorage.getItem("echo.emissions")!)[0].text).toBe("remembered");
+    expect(JSON.parse(localStorage.getItem("echo.emissions")!)[0].text).toBe(
+      "remembered",
+    );
   });
 });
 
@@ -75,7 +81,9 @@ describe("connections and messages", () => {
   });
 
   it("keeps what a reply was about", () => {
-    useSequence.getState().sendDM(0, "havel", "same here", "The bakery closes at four.");
+    useSequence
+      .getState()
+      .sendDM(0, "havel", "same here", "The bakery closes at four.");
     const [dm] = useSequence.getState().dms;
     expect(dm.onText).toBe("The bakery closes at four.");
     expect(dm.mine).toBe(true);

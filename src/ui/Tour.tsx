@@ -125,7 +125,8 @@ export function Tour() {
     fn();
   };
 
-  if (stage === "rail") return <RailTour step={step} onNext={go(next)} onSkip={go(end)} />;
+  if (stage === "rail")
+    return <RailTour step={step} onNext={go(next)} onSkip={go(end)} />;
 
   return (
     <div className="tour" style={{ zIndex: "var(--z-tour)" }}>
@@ -140,18 +141,18 @@ export function Tour() {
           <p className="tour__eyebrow">Signal acquired</p>
           <h2 className="tour__hello">You are in.</h2>
           <p className="tour__body">
-            Your star exists now, somewhere in the sky behind this. Everything
-            you say from here will orbit it until it dies or until somebody
-            carries it somewhere else.
+            Your star exists now, somewhere in the sky behind this. Everything you say
+            from here will orbit it until it dies or until somebody carries it somewhere
+            else.
             <br />
             <br />
             Six cards, about a minute, on how any of that works.
           </p>
           <div className="tour__foot">
-            <button className="tour__skip" onClick={go(end)}>
+            <button type="button" className="tour__skip" onClick={go(end)}>
               Skip
             </button>
-            <button className="tour__go" onClick={go(next)}>
+            <button type="button" className="tour__go" onClick={go(next)}>
               Show me
             </button>
           </div>
@@ -169,7 +170,7 @@ export function Tour() {
           </div>
 
           <div className="tour__foot">
-            <button className="tour__skip" onClick={go(end)}>
+            <button type="button" className="tour__skip" onClick={go(end)}>
               Skip
             </button>
 
@@ -180,10 +181,10 @@ export function Tour() {
             </div>
 
             <div className="tour__nav">
-              <button className="tour__back" onClick={go(back)}>
+              <button type="button" className="tour__back" onClick={go(back)}>
                 Back
               </button>
-              <button className="tour__go" onClick={go(next)}>
+              <button type="button" className="tour__go" onClick={go(next)}>
                 {step + 1 === CARDS ? "Show me the controls" : "Next"}
               </button>
             </div>
@@ -232,7 +233,10 @@ function RailTour({
   if (!box) return null;
 
   const tip = RAIL_TIPS[step];
-  const top = Math.min(Math.max(box.top + box.height / 2 - 74, 16), window.innerHeight - 190);
+  const top = Math.min(
+    Math.max(box.top + box.height / 2 - 74, 16),
+    window.innerHeight - 190,
+  );
 
   return (
     <div className="tour" style={{ zIndex: "var(--z-tour)" }}>
@@ -259,10 +263,10 @@ function RailTour({
         <h3 className="tour__tip-title">{tip.title}</h3>
         <p className="tour__body">{tip.body}</p>
         <div className="tour__foot">
-          <button className="tour__skip" onClick={onSkip}>
+          <button type="button" className="tour__skip" onClick={onSkip}>
             Skip
           </button>
-          <button className="tour__go" onClick={onNext}>
+          <button type="button" className="tour__go" onClick={onNext}>
             {step + 1 === RAIL ? "Done" : "Next"}
           </button>
         </div>

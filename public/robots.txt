@@ -1,0 +1,5 @@
+# ECHO — https://varadharajanv0310.github.io/ECHO/
+User-agent: *
+Allow: /
+
+Sitemap: https://varadharajanv0310.github.io/ECHO/sitemap.xml

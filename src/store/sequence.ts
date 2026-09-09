@@ -144,8 +144,20 @@ const calmRequested =
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
 
+/**
+ * The same argument as above, applied to the theme.
+ *
+ * ECHO is a dark piece and stays one by default, but somebody whose machine is
+ * set to light has already said which they prefer. Reading it here means the
+ * first visit opens in the theme they asked for, and the menu remains there to
+ * disagree with the operating system if they want to.
+ */
+const lightRequested =
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-color-scheme: light)").matches === true;
+
 export const DEFAULT_SETTINGS: Settings = {
-  mode: "dark",
+  mode: lightRequested ? "light" : "dark",
   accent: "violet",
   reducedFlash: calmRequested,
   grain: 1,
@@ -355,9 +367,7 @@ export const useSequence = create<SequenceState>((set, get) => ({
 
   toggleFriend: (star) => {
     const cur = get().friends;
-    const next = cur.includes(star)
-      ? cur.filter((x) => x !== star)
-      : [...cur, star];
+    const next = cur.includes(star) ? cur.filter((x) => x !== star) : [...cur, star];
     writeList("echo.friends", next);
     set({ friends: next });
   },

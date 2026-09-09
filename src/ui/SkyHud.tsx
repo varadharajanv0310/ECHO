@@ -82,6 +82,7 @@ export function SkyHud() {
         aria-label="Where you are"
       >
         <button
+          type="button"
           className="skb__crumb"
           data-on={level === "cluster"}
           onClick={() => {
@@ -100,6 +101,7 @@ export function SkyHud() {
               /
             </span>
             <button
+              type="button"
               className="skb__crumb"
               data-on={level === "constellation"}
               onClick={() => level === "star" && back()}
@@ -123,6 +125,7 @@ export function SkyHud() {
 
       {level !== "cluster" && (
         <button
+          type="button"
           className="skb__back"
           style={{ zIndex: "var(--z-hud)" }}
           onClick={back}

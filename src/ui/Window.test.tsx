@@ -12,8 +12,8 @@ const shell = (props: Partial<React.ComponentProps<typeof Window>> = {}) => (
     onClose={() => {}}
     {...props}
   >
-    <button>Inside one</button>
-    <button>Inside two</button>
+    <button type="button">Inside one</button>
+    <button type="button">Inside two</button>
   </Window>
 );
 

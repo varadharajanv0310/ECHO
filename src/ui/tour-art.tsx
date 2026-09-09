@@ -234,10 +234,7 @@ export function ArtNoFeed() {
         ].map(([x, y]) => (
           <circle key={x} cx={x} cy={y} r={3.6} className="ta-body" />
         ))}
-        <path
-          d="M206 40 L244 62 L282 36 M244 62 L268 92 L222 96"
-          className="ta-link"
-        />
+        <path d="M206 40 L244 62 L282 36 M244 62 L268 92 L222 96" className="ta-link" />
       </g>
       <Cap x={254} y={132}>
         A PLACE YOU GO INTO

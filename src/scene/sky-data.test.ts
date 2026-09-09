@@ -6,7 +6,9 @@ describe("buildSky", () => {
   it("is deterministic, so the sky is the same on every machine", () => {
     const a = buildSky();
     const b = buildSky();
-    expect(a.constellations.map((c) => c.world)).toEqual(b.constellations.map((c) => c.world));
+    expect(a.constellations.map((c) => c.world)).toEqual(
+      b.constellations.map((c) => c.world),
+    );
     expect(a.stars.map((s) => s.name)).toEqual(b.stars.map((s) => s.name));
     expect(a.planets.map((p) => p.text)).toEqual(b.planets.map((p) => p.text));
   });
@@ -102,7 +104,11 @@ describe("placeMe", () => {
 
 describe("syncMine", () => {
   const emission = (id: number, text: string): Emission => ({
-    id, world: "3AM", text, at: Date.now(), life: 24,
+    id,
+    world: "3AM",
+    text,
+    at: Date.now(),
+    life: 24,
   });
 
   it("turns what you said into things orbiting you", () => {
@@ -125,8 +131,13 @@ describe("syncMine", () => {
   it("marks what you are carrying with whose it is", () => {
     const sky = getSky();
     const held: Carried = {
-      id: 5, source: 2, from: "havel", hue: 320,
-      text: "Third night of rain.", at: Date.now(), life: 24,
+      id: 5,
+      source: 2,
+      from: "havel",
+      hue: 320,
+      text: "Third night of rain.",
+      at: Date.now(),
+      life: 24,
     };
     syncMine(sky, [], [held]);
     const borrowed = sky.planets.filter((p) => p.star === myStar() && p.borrowed);

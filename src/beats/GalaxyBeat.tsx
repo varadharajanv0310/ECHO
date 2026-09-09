@@ -22,6 +22,7 @@ export function GalaxyBeat() {
   return (
     <div className="gb" style={{ zIndex: "var(--z-content)" }}>
       <button
+        type="button"
         className="gb__target"
         onClick={enter}
         aria-label={copy.galaxy.action}
@@ -29,7 +30,7 @@ export function GalaxyBeat() {
 
       <div className="gb__copy">
         <p className="gb__invite">{copy.galaxy.invite}</p>
-        <button className="gb__action" onClick={enter}>
+        <button type="button" className="gb__action" onClick={enter}>
           <span>{copy.galaxy.action}</span>
           <i aria-hidden />
         </button>

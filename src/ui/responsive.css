@@ -155,3 +155,59 @@
     color: #000;
   }
 }
+
+/* ------------------------------------------------- contrast & forced colours */
+
+/* Windows high-contrast mode and its equivalents replace the palette wholesale.
+   The interface is built almost entirely from translucent glass and hairlines,
+   which in that mode resolve to nothing at all: a window becomes an invisible
+   rectangle of text floating over a canvas. Here every surface is given a real
+   border and a real ground from the system palette, and the decorative layers
+   are dropped rather than fought with. */
+@media (forced-colors: active) {
+  .win,
+  .rail,
+  .dock,
+  .u-card,
+  .u-btn,
+  .u-chip,
+  .skynav {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    forced-color-adjust: none;
+    color: CanvasText;
+  }
+
+  .grain-layer,
+  .vignette-layer,
+  .particles-layer,
+  .cursor {
+    display: none;
+  }
+
+  /* The focus ring is the one thing that must survive intact. */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* Somebody who has asked for more contrast has asked for the glass to stop
+   being glass. The hue survives - it is how a person is identified here - but
+   the surfaces it sits on stop being translucent. */
+@media (prefers-contrast: more) {
+  :root {
+    --glass-soft: hsl(var(--accent-h) 40% 10% / 0.92);
+    --hair-soft: hsl(var(--accent-h) 60% 70% / 0.55);
+  }
+
+  :root[data-mode="light"] {
+    --glass-soft: hsl(var(--accent-h) 40% 98% / 0.96);
+    --hair-soft: hsl(var(--accent-h) 60% 30% / 0.5);
+  }
+
+  .u-hint,
+  .u-empty {
+    color: var(--ink-2);
+  }
+}

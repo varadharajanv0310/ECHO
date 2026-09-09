@@ -70,7 +70,13 @@ export const useUI = create<UIState>((set) => ({
   setTab: (p, t) => set((s) => ({ tab: { ...s.tab, [p]: t } })),
 
   enterConstellation: (constellation) =>
-    set({ level: "constellation", constellation, star: null, planet: null, panel: null }),
+    set({
+      level: "constellation",
+      constellation,
+      star: null,
+      planet: null,
+      panel: null,
+    }),
 
   // Standing at a person implies being in their World. Search and the
   // dashboard both jump straight to a star, and without this the sky has no
@@ -92,7 +98,7 @@ export const useUI = create<UIState>((set) => ({
       constellation: who.constellation,
       planet: null,
       profileOf: null,
-  messaging: null,
+      messaging: null,
       panel: null,
     });
   },

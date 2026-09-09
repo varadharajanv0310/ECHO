@@ -118,12 +118,7 @@ export function Window({
 
   return (
     <>
-      <div
-        className="win-scrim"
-        onClick={onClose}
-        role="presentation"
-        aria-hidden
-      />
+      <div className="win-scrim" onClick={onClose} role="presentation" aria-hidden />
 
       <section
         ref={shell}
@@ -147,6 +142,7 @@ export function Window({
           <nav className="win__tabs">
             {tabs.map((t) => (
               <button
+                type="button"
                 key={t}
                 className="win__tab"
                 data-on={t === active}
@@ -163,7 +159,12 @@ export function Window({
             ))}
           </nav>
 
-          <button className="win__close" onClick={onClose} aria-label="Close">
+          <button
+            type="button"
+            className="win__close"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden>
               <path
                 d="M5 5 L19 19 M19 5 L5 19"

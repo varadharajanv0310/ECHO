@@ -43,9 +43,7 @@ export function ConstellationHud() {
           size={22}
         />
         <span className="ch__name">{profile?.name ?? "Unregistered"}</span>
-        <span className="ch__worlds">
-          {(profile?.worlds ?? []).join("  ·  ")}
-        </span>
+        <span className="ch__worlds">{(profile?.worlds ?? []).join("  ·  ")}</span>
       </div>
 
       <p className="ch__arrival" data-gone={settled || level !== "cluster"}>

@@ -49,9 +49,15 @@ export const copy = {
    */
   passage: [
     { kicker: "What it became", line: "The feed was designed never to end." },
-    { kicker: "What we removed", line: "No followers. No likes. No reach you can buy." },
+    {
+      kicker: "What we removed",
+      line: "No followers. No likes. No reach you can buy.",
+    },
     { kicker: "What it costs", line: "Speaking is free. Being carried is not." },
-    { kicker: "What a signal is", line: "A signal lives in a place, not on a profile." },
+    {
+      kicker: "What a signal is",
+      line: "A signal lives in a place, not on a profile.",
+    },
     { kicker: "What resonance does", line: "Every hop is a person who chose you." },
     { kicker: "What survives", line: "What nobody carries is gone by morning." },
   ],
@@ -107,7 +113,6 @@ export const copy = {
     "Bookworm",
     "Gamer",
   ],
-
 
   /** Beat 10. */
   constellation: {
@@ -182,12 +187,5 @@ export const copy = {
   ],
 
   /** Places, topics and moments. A signal belongs to one of these, never to you. */
-  worlds: [
-    "3AM",
-    "The Commons",
-    "Dead Air",
-    "First Light",
-    "The Long Now",
-    "Open Sky",
-  ],
+  worlds: ["3AM", "The Commons", "Dead Air", "First Light", "The Long Now", "Open Sky"],
 } as const;

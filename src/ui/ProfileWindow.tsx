@@ -3,7 +3,15 @@ import { Mark, MARKS } from "@/components/Mark";
 import type { MarkId } from "@/types";
 import { Cover } from "./Cover";
 import { copy } from "@/copy";
-import { GAMES, SONGS, PLACES, byId, pickFor, handlesFor, placeLabel } from "@/lib/library";
+import {
+  GAMES,
+  SONGS,
+  PLACES,
+  byId,
+  pickFor,
+  handlesFor,
+  placeLabel,
+} from "@/lib/library";
 import { getSky } from "@/scene/sky-data";
 import { thread as buildThread } from "@/lib/echoes";
 import { cue } from "@/lib/audio";
@@ -141,12 +149,17 @@ export function ProfileWindow({ star }: { star: number | null }) {
 
           <div className="pw__head">
             {own ? (
-              <input
-                className="pw__name-in"
-                value={view.name}
-                onChange={(e) => patch({ name: e.target.value.slice(0, 24) })}
-                aria-label="Name"
-              />
+              <>
+                <label className="sr-only" htmlFor="pw-name">
+                  Your name
+                </label>
+                <input
+                  id="pw-name"
+                  className="pw__name-in"
+                  value={view.name}
+                  onChange={(e) => patch({ name: e.target.value.slice(0, 24) })}
+                />
+              </>
             ) : (
               <h2 className="pw__name">{view.name}</h2>
             )}
@@ -162,6 +175,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
             {!own && (
               <div className="pw__actions">
                 <button
+                  type="button"
                   className="u-btn u-btn--go pw__act"
                   data-on={isFriend}
                   onClick={() => {
@@ -176,13 +190,21 @@ export function ProfileWindow({ star }: { star: number | null }) {
 
             {own ? (
               <>
+                <label className="sr-only" htmlFor="pw-status">
+                  Status
+                </label>
                 <input
+                  id="pw-status"
                   className="u-input"
                   value={view.status}
                   placeholder="Set a status"
                   onChange={(e) => patch({ status: e.target.value.slice(0, 60) })}
                 />
+                <label className="sr-only" htmlFor="pw-bio">
+                  About you
+                </label>
                 <textarea
+                  id="pw-bio"
                   className="u-textarea pw__bio-in"
                   value={view.bio}
                   placeholder="What you are here for"
@@ -215,7 +237,11 @@ export function ProfileWindow({ star }: { star: number | null }) {
                   </div>
                 )}
                 <div className="pw__dm-row">
+                  <label className="sr-only" htmlFor="pw-dm">
+                    Message {view.name}
+                  </label>
                   <input
+                    id="pw-dm"
                     className="u-input"
                     value={msg}
                     placeholder={`Say something to ${view.name}`}
@@ -229,6 +255,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
                     }}
                   />
                   <button
+                    type="button"
                     className="u-btn u-btn--ghost"
                     disabled={!msg.trim()}
                     onClick={() => {
@@ -339,8 +366,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
               </div>
               {own && (
                 <p className="u-hint" style={{ marginTop: "1rem" }}>
-                  Click to add or remove. The first one you pick is your
-                  favourite.
+                  Click to add or remove. The first one you pick is your favourite.
                 </p>
               )}
             </section>
@@ -352,6 +378,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
               {(own ? SONGS : SONGS.filter((s) => view.songs.includes(s.id))).map(
                 (s) => (
                   <button
+                    type="button"
                     className="pw__song pw__song--pick"
                     key={s.id}
                     data-on={view.songs.includes(s.id)}
@@ -374,8 +401,8 @@ export function ProfileWindow({ star }: { star: number | null }) {
               <h3 className="u-h">Elsewhere</h3>
               <p className="u-hint" style={{ lineHeight: 1.7 }}>
                 Stored in this browser. Nothing is verified and nothing is sent
-                anywhere, so these are handles rather than links - ECHO has no
-                way to know that any of them is really you.
+                anywhere, so these are handles rather than links - ECHO has no way to
+                know that any of them is really you.
               </p>
               <div className="pw__places">
                 {PLACES.map((pl) => (
@@ -383,19 +410,13 @@ export function ProfileWindow({ star }: { star: number | null }) {
                     <span>{pl.label}</span>
                     <input
                       className="u-input"
-                      value={
-                        view.links.find((l) => l.label === pl.id)?.value ?? ""
-                      }
+                      value={view.links.find((l) => l.label === pl.id)?.value ?? ""}
                       placeholder="handle"
                       onChange={(e) => {
                         const value = e.target.value.slice(0, 32);
-                        const rest = view.links.filter(
-                          (l) => l.label !== pl.id,
-                        );
+                        const rest = view.links.filter((l) => l.label !== pl.id);
                         patch({
-                          links: value
-                            ? [...rest, { label: pl.id, value }]
-                            : rest,
+                          links: value ? [...rest, { label: pl.id, value }] : rest,
                         });
                       }}
                     />
@@ -410,12 +431,13 @@ export function ProfileWindow({ star }: { star: number | null }) {
               <section className="u-card">
                 <h3 className="u-h">Your colour</h3>
                 <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
-                  This tints your mark, your star in the sky, your cursor, and
-                  every surface of your own interface.
+                  This tints your mark, your star in the sky, your cursor, and every
+                  surface of your own interface.
                 </p>
                 <div className="pw__hues">
                   {HUES.map((h) => (
                     <button
+                      type="button"
                       key={h}
                       className="pw__hue"
                       data-on={h === view.hue}
@@ -432,6 +454,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
                 <div className="pw__marks">
                   {MARKS.map((m) => (
                     <button
+                      type="button"
                       key={m}
                       className="pw__mark"
                       data-on={m === view.mark}
@@ -452,6 +475,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
                       latter these render as four empty outlines. */}
                   {BANNERS.map((b) => (
                     <button
+                      type="button"
                       key={b}
                       className="pw__banner pw__banner-pick"
                       data-b={b}
@@ -468,6 +492,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
                 <div className="u-chips">
                   {(["dark", "light"] as const).map((m) => (
                     <button
+                      type="button"
                       key={m}
                       className="u-chip"
                       data-on={settings.mode === m}
@@ -480,6 +505,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
                 <div className="u-chips" style={{ marginTop: "0.7rem" }}>
                   {ACCENTS.map((a) => (
                     <button
+                      type="button"
                       key={a.id}
                       className="u-chip"
                       data-on={settings.accent === a.id}
@@ -490,8 +516,8 @@ export function ProfileWindow({ star }: { star: number | null }) {
                   ))}
                 </div>
                 <p className="u-hint" style={{ marginTop: "0.9rem", lineHeight: 1.7 }}>
-                  Amber is not offered. It is the colour a signal turns when it
-                  is dying.
+                  Amber is not offered. It is the colour a signal turns when it is
+                  dying.
                 </p>
               </section>
 
@@ -500,6 +526,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
                 <div className="u-chips">
                   {copy.traits.map((t) => (
                     <button
+                      type="button"
                       key={t}
                       className="u-chip"
                       data-on={view.traits.includes(t)}

@@ -36,7 +36,6 @@ function Row({ className }: { className: string }) {
 export function Wordmark({ state }: { state: "out" | "in" }) {
   return (
     <div className="wm-wrap">
-
       <h1 className="wm" data-state={state} aria-label={copy.wordmark}>
         <Row className="wm__layer wm__layer--bleed-amber" />
         <Row className="wm__layer wm__layer--bleed-magenta" />

@@ -38,22 +38,28 @@ export function SearchPanel() {
 
   const signals = useMemo(() => {
     const term = q.trim().toLowerCase();
-    return sky.planets
-      .map((p) => {
-        const st = sky.stars[p.star];
-        return { ...p, author: st.name, world: sky.constellations[st.constellation].world };
-      })
-      .filter((p) => (world ? p.world === world : true))
-      .filter((p) => (onlyFading ? p.age > 0.72 : true))
-      .filter((p) => (term ? p.text.toLowerCase().includes(term) : true))
-      // Scrambled, not sorted. In stored order every signal by one person
-      // arrives in a block, and a run of six things by the same author at the
-      // top of the results looks exactly like a ranking - which is the one
-      // thing this panel says it does not do. The scramble is a hash of the
-      // id, so it is stable between renders and has no relationship to who
-      // wrote a thing, when, or how far it travelled.
-      .sort((a, b) => scramble(a.id) - scramble(b.id))
-      .slice(0, 40);
+    return (
+      sky.planets
+        .map((p) => {
+          const st = sky.stars[p.star];
+          return {
+            ...p,
+            author: st.name,
+            world: sky.constellations[st.constellation].world,
+          };
+        })
+        .filter((p) => (world ? p.world === world : true))
+        .filter((p) => (onlyFading ? p.age > 0.72 : true))
+        .filter((p) => (term ? p.text.toLowerCase().includes(term) : true))
+        // Scrambled, not sorted. In stored order every signal by one person
+        // arrives in a block, and a run of six things by the same author at the
+        // top of the results looks exactly like a ranking - which is the one
+        // thing this panel says it does not do. The scramble is a hash of the
+        // id, so it is stable between renders and has no relationship to who
+        // wrote a thing, when, or how far it travelled.
+        .sort((a, b) => scramble(a.id) - scramble(b.id))
+        .slice(0, 40)
+    );
   }, [sky, q, world, onlyFading]);
 
   const people = useMemo(
@@ -77,8 +83,13 @@ export function SearchPanel() {
       onClose={() => setPanel(null)}
     >
       <div className="u-grid">
+        <label className="sr-only" htmlFor="se-query">
+          {tab === "Signals" ? "Search signals" : "Search people"}
+        </label>
         <input
+          id="se-query"
           className="u-input"
+          type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder={
@@ -92,6 +103,7 @@ export function SearchPanel() {
           <div className="u-chips">
             {copy.worlds.map((w) => (
               <button
+                type="button"
                 key={w}
                 className="u-chip"
                 data-on={world === w}
@@ -106,6 +118,7 @@ export function SearchPanel() {
         {tab === "Signals" ? (
           <>
             <button
+              type="button"
               className="u-chip"
               data-on={onlyFading}
               onClick={() => setOnlyFading(!onlyFading)}
@@ -123,6 +136,7 @@ export function SearchPanel() {
               )}
               {signals.map((s) => (
                 <button
+                  type="button"
                   key={s.id}
                   className="u-row sr__hit"
                   onClick={() => enterStar(s.star)}
@@ -145,6 +159,7 @@ export function SearchPanel() {
               <div className="u-chips">
                 {copy.traits.map((t) => (
                   <button
+                    type="button"
                     key={t}
                     className="u-chip"
                     data-on={trait === t}
@@ -165,6 +180,7 @@ export function SearchPanel() {
               )}
               {people.map((p) => (
                 <button
+                  type="button"
                   className="u-row sr__hit"
                   key={p.id}
                   onClick={() => enterStar(p.id)}

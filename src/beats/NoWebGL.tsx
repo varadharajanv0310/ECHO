@@ -32,7 +32,10 @@ export function NoWebGL() {
         </div>
 
         <div className="ngl__links">
-          <a className="ngl__btn ngl__btn--go" href={`${import.meta.env.BASE_URL}guide.html`}>
+          <a
+            className="ngl__btn ngl__btn--go"
+            href={`${import.meta.env.BASE_URL}guide.html`}
+          >
             Read the field guide
           </a>
           <a

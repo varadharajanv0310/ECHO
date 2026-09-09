@@ -1,7 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#04030A">
+
 <title>The ECHO Field Guide</title>
+<meta name="description" content="How ECHO works: why content belongs to a place, what carrying does, and how a signal lives or dies. The written companion to the ECHO sky.">
+<meta name="author" content="V Varadharajan">
+<link rel="canonical" href="https://varadharajanv0310.github.io/ECHO/guide.html">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ECHO">
+<meta property="og:title" content="The ECHO Field Guide">
+<meta property="og:description" content="How ECHO works: why content belongs to a place, what carrying does, and how a signal lives or dies.">
+<meta property="og:url" content="https://varadharajanv0310.github.io/ECHO/guide.html">
+<meta name="twitter:card" content="summary_large_image">
+
+<!--
+  The two faces come from a CDN here rather than from the bundle, because this
+  page is plain HTML copied to the site root and has no build step to resolve a
+  hashed font asset. Loaded asynchronously so a slow font server cannot hold up
+  first paint: the preload warms the connection, the stylesheet arrives with a
+  print media type and promotes itself once it has, and the noscript copy keeps
+  the page correct without JavaScript.
+-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@300..600&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@300..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@300..600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Geist+Mono:wght@300..600&display=swap"></noscript>
 
 <style>
 /* =========================================================================
@@ -38,6 +68,31 @@
 
   --f-display: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+/* The guide follows the reader's machine, the same way the application does.
+   Ink on paper rather than a grey wash: the violet survives, the ground
+   inverts, and the hairlines darken enough to still be hairlines. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --ground: #f6f3fb;
+    --ground-2: #ece6f6;
+    --surface: rgba(24, 12, 48, 0.035);
+    --surface-2: rgba(24, 12, 48, 0.06);
+    --hair: rgba(86, 46, 150, 0.18);
+    --hair-2: rgba(86, 46, 150, 0.32);
+
+    --ink: rgba(19, 12, 32, 0.94);
+    --ink-2: rgba(38, 26, 62, 0.68);
+    --ink-3: rgba(38, 26, 62, 0.45);
+
+    --accent: hsl(276 74% 46%);
+    --accent-deep: hsl(276 70% 38%);
+    --magenta: hsl(322 72% 46%);
+    --amber: #b8480d;
+
+    --glow: 0 0 40px hsl(276 80% 55% / 0.16);
+  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -430,6 +485,9 @@ footer {
 
 footer a { color: var(--ink-2); }
 </style>
+</head>
+
+<body>
 
 <div class="wrap">
 
@@ -446,6 +504,8 @@ footer a { color: var(--ink-2); }
     <a class="btn" href="https://github.com/varadharajanv0310/ECHO">Source</a>
   </div>
 </header>
+
+<main id="main">
 
 <!-- ------------------------------------------------------------------ 1 -->
 <section>
@@ -902,9 +962,14 @@ footer a { color: var(--ink-2); }
   </div>
 </section>
 
+</main>
+
 <footer>
   ECHO · built for The Frontend Odyssey 2026 ·
   <a href="https://github.com/varadharajanv0310/ECHO">github.com/varadharajanv0310/ECHO</a>
 </footer>
 
 </div>
+
+</body>
+</html>

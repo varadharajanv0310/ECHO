@@ -27,11 +27,7 @@ export function Ignition() {
   }, [setPhase]);
 
   return (
-    <div
-      className="ig"
-      data-soft={reducedFlash}
-      style={{ zIndex: "var(--z-content)" }}
-    >
+    <div className="ig" data-soft={reducedFlash} style={{ zIndex: "var(--z-content)" }}>
       <div className="ig__bloom" aria-hidden />
       <div className="ig__flash" aria-hidden />
     </div>

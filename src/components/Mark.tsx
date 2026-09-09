@@ -23,8 +23,7 @@ const PATHS: Record<MarkId, string> = {
   // Broken diamond - the shape of something that did not survive intact.
   shard: "M50 3 L88 50 L50 97 L12 50 Z M50 24 L31 50 L50 76 L69 50 Z",
   // Thin cross, the quietest of the five.
-  cross:
-    "M45 3 H55 V45 H97 V55 H55 V97 H45 V55 H3 V45 H45 Z",
+  cross: "M45 3 H55 V45 H97 V55 H55 V97 H45 V55 H3 V45 H45 Z",
 };
 
 type Props = {
@@ -47,7 +46,9 @@ export function Mark({ mark, hue = 285, size = 40, glow = true, className }: Pro
       aria-hidden
       style={
         glow
-          ? { filter: `drop-shadow(0 0 ${size * 0.22}px ${colour}) drop-shadow(0 0 ${size * 0.6}px ${colour})` }
+          ? {
+              filter: `drop-shadow(0 0 ${size * 0.22}px ${colour}) drop-shadow(0 0 ${size * 0.6}px ${colour})`,
+            }
           : undefined
       }
     >

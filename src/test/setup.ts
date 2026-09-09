@@ -22,9 +22,10 @@ if (!window.matchMedia) {
 }
 
 if (!window.requestAnimationFrame) {
-  window.requestAnimationFrame = ((cb: FrameRequestCallback) =>
-    setTimeout(() => cb(performance.now()), 16) as unknown as number);
-  window.cancelAnimationFrame = ((id: number) => clearTimeout(id)) as typeof cancelAnimationFrame;
+  window.requestAnimationFrame = (cb: FrameRequestCallback) =>
+    setTimeout(() => cb(performance.now()), 16) as unknown as number;
+  window.cancelAnimationFrame = ((id: number) =>
+    clearTimeout(id)) as typeof cancelAnimationFrame;
 }
 
 afterEach(() => {

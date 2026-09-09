@@ -149,7 +149,9 @@ export function Galaxy() {
       (window as unknown as { galaxy: unknown }).galaxy = {
         scale: p.scale.x,
         pos: p.position.toArray(),
-        u: Object.fromEntries(Object.entries(u).map(([k, v]) => [k, (v as { value: unknown }).value])),
+        u: Object.fromEntries(
+          Object.entries(u).map(([k, v]) => [k, (v as { value: unknown }).value]),
+        ),
         count: (p.geometry.getAttribute("position") as { count: number }).count,
       };
     }
@@ -181,7 +183,13 @@ export function Galaxy() {
   });
 
   return (
-    <points ref={points} geometry={geometry} position={[0, GALAXY_Y, 0]} rotation={[1.15, 0, 0.2]} frustumCulled={false}>
+    <points
+      ref={points}
+      geometry={geometry}
+      position={[0, GALAXY_Y, 0]}
+      rotation={[1.15, 0, 0.2]}
+      frustumCulled={false}
+    >
       <shaderMaterial
         ref={mat}
         vertexShader={vert}

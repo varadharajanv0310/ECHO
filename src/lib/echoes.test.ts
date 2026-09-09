@@ -53,7 +53,8 @@ describe("echoesFor", () => {
     let silent = 0;
     const total = 400;
     for (let id = 0; id < total; id++) {
-      if (echoesFor(signal(id, 60 * 60 * 1000), WHO, NOW).carries.length === 0) silent++;
+      if (echoesFor(signal(id, 60 * 60 * 1000), WHO, NOW).carries.length === 0)
+        silent++;
     }
     expect(silent / total).toBeGreaterThan(0.1);
     expect(silent / total).toBeLessThan(0.6);
