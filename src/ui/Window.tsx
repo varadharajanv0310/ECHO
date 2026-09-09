@@ -17,6 +17,14 @@ type Props = {
   size?: "wide" | "mid" | "narrow";
   /** Hue this window is tinted by. Defaults to the app accent. */
   accent?: number;
+  /**
+   * The body fills the window instead of scrolling inside it.
+   *
+   * For a window that owns its own scrolling - a conversation, where the
+   * thread scrolls but the composer under it must stay put. Without this the
+   * body scrolls as one piece and the thing you type into leaves the screen.
+   */
+  fill?: boolean;
 };
 
 /**
@@ -41,6 +49,7 @@ export function Window({
   children,
   size = "wide",
   accent,
+  fill = false,
 }: Props) {
   // Escape closes. A window that can only be dismissed by hitting a small
   // target is a trap for anyone not using a mouse.
@@ -118,7 +127,7 @@ export function Window({
             ever completing. Keying a motion element gives the same arrival and
             nothing to hold. */}
         {/* Scrolls internally, so Lenis has to leave its gestures alone. */}
-        <div className="win__body" data-lenis-prevent>
+        <div className="win__body" data-fill={fill} data-lenis-prevent>
           <div key={active} className="win__tabin">
             {children}
           </div>

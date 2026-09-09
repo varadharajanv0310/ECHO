@@ -1,0 +1,365 @@
+/* =========================================================================
+   A conversation, with room to be one.
+
+   Two columns: the thread, which takes whatever is left, and a card saying who
+   you are talking to. Everything is tinted by their hue, the same as visiting
+   their profile - the window belongs to them while you are in it.
+   ========================================================================= */
+
+.mw {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  gap: clamp(1rem, 2.4vw, 1.8rem);
+  /* A flex child of the filled body, not a block with height 100%. As a flex
+     item its min-height defaults to auto, which refuses to shrink below the
+     content - so the thread grew past the window and took the composer with
+     it. flex:1 plus min-height:0 is what lets it be exactly the space left. */
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  .mw {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* On a narrow window the thread is the point; who they are is one tap away
+     on their profile. */
+  .mw__who {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------- thread */
+
+.mw__talk {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.mw__scroll {
+  flex: 1;
+  min-height: 0;
+  overscroll-behavior: contain;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--accent-h) 70% 60% / 0.34) transparent;
+}
+
+.mw__scroll::-webkit-scrollbar {
+  width: 9px;
+}
+
+.mw__scroll::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: var(--r-pill);
+  background: hsl(var(--accent-h) 70% 62% / 0.3);
+  background-clip: content-box;
+}
+
+/* The head of the thread. Every messaging app says the same thing here, and
+   it is the one place ECHO can be honest about what a message actually is. */
+.mw__open {
+  padding: 0.5rem 0 1.6rem;
+}
+
+.mw__open-mark {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  margin-bottom: 0.9rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    hsl(var(--accent-h) 90% 60% / 0.28),
+    rgba(8, 5, 18, 0.9)
+  );
+}
+
+.mw__open-name {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-variation-settings: "wdth" 92, "wght" 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.mw__open-line {
+  max-width: 54ch;
+  margin: 0 0 1.1rem;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.mw__open-line b {
+  font-variation-settings: "wdth" 100, "wght" 620;
+  color: var(--ink);
+}
+
+.mw__open-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.mw__open-acts .u-btn[data-on="true"] {
+  border-color: hsl(var(--accent-h) 85% 70% / 0.5);
+  color: hsl(var(--accent-h) 90% 82%);
+}
+
+.mw__empty {
+  padding: 1.4rem 0;
+}
+
+/* A date, once, across the thread. */
+.mw__day {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 1.5rem 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.mw__day::before,
+.mw__day::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--hair-soft);
+}
+
+/* ------------------------------------------------------------- messages */
+
+.mw__msg {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 0 0.85rem;
+  padding: 0.32rem 0;
+}
+
+/* A run of lines from one person indents under their mark rather than
+   repeating it, so speech looks like speech. */
+.mw__msg[data-run="true"] {
+  padding-top: 0.1rem;
+}
+
+.mw__msg-mark {
+  display: grid;
+  place-items: start center;
+  padding-top: 0.2rem;
+}
+
+.mw__msg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 0.2rem;
+}
+
+.mw__msg-head b {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-variation-settings: "wdth" 98, "wght" 620;
+  color: var(--ink);
+}
+
+.mw__msg-head time {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+.mw__msg-on {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0 0.25rem;
+  padding: 0.16rem 0.5rem;
+  border-left: 2px solid hsl(var(--accent-h) 85% 65% / 0.6);
+  border-radius: 0 6px 6px 0;
+  background: var(--glass-soft);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mw__msg-text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-variation-settings: "wdth" 100, "wght" 400;
+  line-height: 1.5;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* -------------------------------------------------------------- compose */
+
+.mw__compose {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  margin-top: 0.4rem;
+  border-top: 1px solid var(--hair-soft);
+}
+
+.mw__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--hair-soft);
+  border-radius: var(--r-pill);
+  background: var(--glass-soft);
+  outline: none;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.mw__input::placeholder {
+  color: var(--ink-3);
+  opacity: 0.7;
+}
+
+.mw__input:focus {
+  border-color: hsl(var(--accent-h) 90% 70%);
+  box-shadow: 0 0 0 3px hsl(var(--accent-h) 90% 60% / 0.14);
+}
+
+/* ----------------------------------------------------------------- who */
+
+.mw__who {
+  position: relative;
+  align-self: start;
+  border: 1px solid var(--hair-soft);
+  border-radius: var(--r-lg);
+  background: var(--glass-soft);
+  overflow: hidden;
+}
+
+.mw__banner {
+  height: 68px;
+  background:
+    radial-gradient(120% 160% at 20% 0%, hsl(var(--accent-h) 95% 62% / 0.85), transparent 70%),
+    linear-gradient(140deg, hsl(var(--accent-h) 80% 44%), hsl(var(--accent-h) 70% 18%));
+}
+
+.mw__banner[data-b="1"] {
+  background: linear-gradient(200deg, hsl(calc(var(--accent-h) + 30) 85% 40%), hsl(var(--accent-h) 75% 14%));
+}
+.mw__banner[data-b="2"] {
+  background: linear-gradient(20deg, hsl(var(--accent-h) 70% 30%), hsl(var(--accent-h) 90% 12%));
+}
+.mw__banner[data-b="3"] {
+  background: conic-gradient(
+    from 200deg at 30% 20%,
+    hsl(var(--accent-h) 90% 56%),
+    hsl(calc(var(--accent-h) + 40) 85% 40%),
+    hsl(var(--accent-h) 80% 18%),
+    hsl(var(--accent-h) 90% 56%)
+  );
+}
+
+.mw__who-mark {
+  position: absolute;
+  top: 42px;
+  left: 18px;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 4px solid rgba(10, 6, 22, 0.9);
+  background: radial-gradient(
+    closest-side,
+    hsl(var(--accent-h) 90% 60% / 0.3),
+    rgba(8, 5, 18, 0.95)
+  );
+}
+
+:root[data-mode="light"] .mw__who-mark {
+  border-color: rgba(252, 250, 255, 0.95);
+}
+
+.mw__who-body {
+  padding: 2.4rem 1.1rem 1.1rem;
+}
+
+.mw__who-name {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-variation-settings: "wdth" 96, "wght" 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.mw__who-sub {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.mw__who-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.mw__facts {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0 0 1.1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--hair-soft);
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.mw__facts div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mw__facts dt {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.mw__facts dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-variation-settings: "wdth" 96, "wght" 600;
+  color: var(--ink);
+}
+
+.mw__who-go {
+  width: 100%;
+  justify-content: center;
+}

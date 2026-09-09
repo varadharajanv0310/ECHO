@@ -12,7 +12,7 @@ import { Window } from "./Window";
 import "./profile-window.css";
 
 const OWN_TABS = ["Board", "Games", "Sound", "Links", "Theme"] as const;
-const THEIR_TABS = ["Board", "Games", "Sound"] as const;
+const THEIR_TABS = ["Board", "Games", "Sound", "Messages"] as const;
 
 const HUES = [258, 268, 278, 292, 306, 322, 336];
 const BANNERS = [0, 1, 2, 3];
@@ -49,6 +49,7 @@ export function ProfileWindow({ star }: { star: number | null }) {
 
   const setPanel = useUI((s) => s.setPanel);
   const closeProfile = useUI((s) => s.closeProfile);
+  const openMessages = useUI((s) => s.openMessages);
   const tab = useUI((s) => s.tab.profile);
   const setTab = useUI((s) => s.setTab);
 
@@ -113,8 +114,19 @@ export function ProfileWindow({ star }: { star: number | null }) {
       title={view.name}
       subtitle={view.worlds.join("  ·  ")}
       tabs={own ? OWN_TABS : THEIR_TABS}
-      active={own ? tab : tab === "Links" || tab === "Theme" ? "Board" : tab}
-      onTab={(t) => setTab("profile", t)}
+      active={
+        own
+          ? tab
+          : tab === "Links" || tab === "Theme" || tab === "Messages"
+            ? "Board"
+            : tab
+      }
+      onTab={(t) => {
+        // Messages is a place rather than a panel of this window, so choosing
+        // it leaves for the conversation instead of swapping the body.
+        if (t === "Messages" && star !== null) return openMessages(star);
+        setTab("profile", t);
+      }}
       onClose={() => (own ? setPanel(null) : closeProfile())}
       accent={view.hue}
     >

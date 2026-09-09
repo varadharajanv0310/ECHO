@@ -1091,3 +1091,25 @@
 @media (prefers-reduced-motion: reduce) {
   .rail__dot { animation: none; }
 }
+
+/* A window that owns its own scrolling. The body stops being a scroller and
+   becomes a frame, so whatever is pinned inside it - a composer under a
+   thread - stays where it was put.
+   
+   The tab wrapper has to pass the constraint down as well. It sits between the
+   body and the content and is a plain block, so on its own it grows to fit
+   whatever is inside it and the height limit never reaches the thing that
+   needed it. */
+.win__body[data-fill="true"] {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.win__body[data-fill="true"] > .win__tabin {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}

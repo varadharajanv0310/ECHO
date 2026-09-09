@@ -2,6 +2,7 @@ import { useSequence } from "@/store/sequence";
 import { useUI } from "@/store/ui";
 import { useExit } from "@/lib/useExit";
 import { ProfileWindow } from "./ProfileWindow";
+import { MessageWindow } from "./MessageWindow";
 import { MenuPanel } from "./panels/MenuPanel";
 import { CreatePanel } from "./panels/CreatePanel";
 import { SearchPanel } from "./panels/SearchPanel";
@@ -34,11 +35,13 @@ export function Panels() {
   const phase = useSequence((s) => s.phase);
   const panel = useUI((s) => s.panel);
   const profileOf = useUI((s) => s.profileOf);
+  const messaging = useUI((s) => s.messaging);
   const { shown, closing } = useExit(panel, CLOSE_MS);
   const visiting = useExit(
     typeof profileOf === "number" ? profileOf : null,
     CLOSE_MS,
   );
+  const talking = useExit(messaging, CLOSE_MS);
 
   if (phase !== "constellation") return null;
 
@@ -56,6 +59,16 @@ export function Panels() {
           style={{ zIndex: "var(--z-window)" }}
         >
           <ProfileWindow star={visiting.shown} />
+        </div>
+      )}
+
+      {talking.shown !== null && (
+        <div
+          className="win-layer"
+          data-closing={talking.closing}
+          style={{ zIndex: "var(--z-window)" }}
+        >
+          <MessageWindow star={talking.shown} />
         </div>
       )}
 

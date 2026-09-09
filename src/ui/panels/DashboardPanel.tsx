@@ -37,7 +37,7 @@ export function DashboardPanel() {
 
   const setPanel = useUI((s) => s.setPanel);
   const enterStar = useUI((s) => s.enterStar);
-  const openProfile = useUI((s) => s.openProfile);
+  const openMessages = useUI((s) => s.openMessages);
   const tab = useUI((s) => s.tab.dashboard);
   const setTab = useUI((s) => s.setTab);
 
@@ -152,7 +152,7 @@ export function DashboardPanel() {
                 <button
                   className="u-row sr__hit"
                   key={t.star}
-                  onClick={() => openProfile(t.star)}
+                  onClick={() => openMessages(t.star)}
                 >
                   <Mark
                     mark={MARKS[t.star % MARKS.length] as MarkId}
@@ -186,7 +186,7 @@ export function DashboardPanel() {
                     <button
                       className="u-row sr__hit"
                       key={id}
-                      onClick={() => openProfile(id)}
+                      onClick={() => openMessages(id)}
                     >
                       <Mark
                         mark={MARKS[id % MARKS.length] as MarkId}

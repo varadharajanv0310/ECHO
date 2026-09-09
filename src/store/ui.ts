@@ -26,6 +26,14 @@ type UIState = {
   planet: number | null;
   /** Whose profile is open. A star id, or "me", or null. */
   profileOf: number | "me" | null;
+  /**
+   * Star whose conversation is open, as its own window.
+   *
+   * A thread squeezed into the side of a profile is a widget; every app people
+   * actually use gives a conversation the whole screen, because that is what
+   * you are doing while you are doing it.
+   */
+  messaging: number | null;
 
   setPanel: (p: PanelId | null) => void;
   setTab: (p: PanelId, t: string) => void;
@@ -35,6 +43,8 @@ type UIState = {
   openPlanet: (i: number | null) => void;
   openProfile: (who: number | "me") => void;
   closeProfile: () => void;
+  openMessages: (star: number) => void;
+  closeMessages: () => void;
   /** One level out. */
   back: () => void;
 };
@@ -53,9 +63,10 @@ export const useUI = create<UIState>((set) => ({
   star: null,
   planet: null,
   profileOf: null,
+  messaging: null,
 
   setPanel: (panel) =>
-    set({ panel, profileOf: panel === "profile" ? "me" : null }),
+    set({ panel, profileOf: panel === "profile" ? "me" : null, messaging: null }),
   setTab: (p, t) => set((s) => ({ tab: { ...s.tab, [p]: t } })),
 
   enterConstellation: (constellation) =>
@@ -81,14 +92,21 @@ export const useUI = create<UIState>((set) => ({
       constellation: who.constellation,
       planet: null,
       profileOf: null,
+  messaging: null,
       panel: null,
     });
   },
 
   openPlanet: (planet) => set({ planet }),
 
-  openProfile: (profileOf) => set({ profileOf, panel: null }),
+  openProfile: (profileOf) => set({ profileOf, panel: null, messaging: null }),
   closeProfile: () => set({ profileOf: null }),
+
+  // One window at a time. Opening a conversation replaces the profile rather
+  // than stacking on it, the same way tapping a name in any messaging app
+  // takes you to the thread rather than opening a second thing over it.
+  openMessages: (messaging) => set({ messaging, profileOf: null, panel: null }),
+  closeMessages: () => set({ messaging: null }),
 
   back: () =>
     set((s) =>
