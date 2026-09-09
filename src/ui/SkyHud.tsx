@@ -39,6 +39,12 @@ export function SkyHud() {
       while (pool.current.length < list.length) {
         const b = document.createElement("button");
         b.className = "skl";
+        // Decorative: these are names painted over the canvas, positioned by
+        // transform every frame. They carry no keyboard affordance and would
+        // otherwise be focus stops that do nothing. SkyNav is the accessible
+        // equivalent of this view and does the same navigation properly.
+        b.tabIndex = -1;
+        b.setAttribute("aria-hidden", "true");
         host.appendChild(b);
         pool.current.push(b);
       }

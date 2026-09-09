@@ -24,6 +24,78 @@ and nothing ever leaves it.
 
 ---
 
+## Mandatory features
+
+Every required capability, where it is implemented, and how to reach it in the
+running app.
+
+### 1. Content Creation & Sharing
+
+Users create content and share it into the network.
+
+| | |
+| --- | --- |
+| **Create** | `src/ui/panels/CreatePanel.tsx` — compose a post, choose the place it is published to, and set how long it lives (12 hours / 1 day / 3 days). |
+| **Publish** | `emit()` in `src/store/sequence.ts` — writes the post and renders it immediately in the 3D scene. |
+| **Share / repost** | `carry()` in `src/store/sequence.ts`, control in `src/ui/SkyDock.tsx` — resharing another user's post adds it to your own space, credits the original author, and extends its lifetime. This is the sharing mechanic. |
+| **Reply** | `sendDM()` with subject context — replying to a post keeps a reference to what it replied to. |
+| **Try it** | Rail → **+** → pick a place → write → *Emit*. Then open anyone's post and press *Carry this*. |
+
+### 2. Content Discovery
+
+Users find content and other users through multiple discovery surfaces.
+
+| | |
+| --- | --- |
+| **Search** | `src/ui/panels/SearchPanel.tsx` — full-text search across all posts and all users, with filters by place and by post lifetime. |
+| **Browse** | Four-level spatial browse — all places → one place → one user → their posts (`src/scene/Sky.tsx`). |
+| **Explore by topic** | Six topic communities. Entering one shows only the users publishing there. |
+| **Activity feed** | Dashboard → *Responses* — replies and reshares your content received. |
+| **Try it** | Rail → **search icon**, or click any place in the 3D view to browse into it. |
+
+### 3. Personalized Experience
+
+Every user configures their own identity and their own interface.
+
+| | |
+| --- | --- |
+| **Profile** | `src/ui/ProfileWindow.tsx` — display name, status, bio, avatar mark, banner, and interest tags. |
+| **Theming** | User-selected accent colour drives the entire interface through one `--accent-h` custom property, plus light/dark mode. Profile → *Theme*. |
+| **Interests** | Curated catalogue of 70 games and 59 songs (`src/lib/library.ts`); the shelf a user builds is shown on their profile. |
+| **Connections** | Add users; their star is marked everywhere you meet them and they are listed in the Dashboard. |
+| **Preferences** | `src/ui/panels/MenuPanel.tsx` — notification settings, visibility settings, motion and grain controls, all persisted. |
+| **Try it** | Rail → **profile icon** → *Theme*. |
+
+### 4. Navigation & User Flow
+
+| | |
+| --- | --- |
+| **Primary navigation** | Persistent rail, `src/ui/Rail.tsx` — five destinations, `<nav>` landmark, active state, keyboard reachable. |
+| **Breadcrumb** | `src/ui/SkyHud.tsx` — always shows current location and every level is clickable to go back. |
+| **Back** | Explicit back control at every depth, plus browser-consistent behaviour. |
+| **Onboarding flow** | `src/ui/Tour.tsx` — a guided first-run walkthrough plus coach marks over each control. |
+| **Deep links** | `?phase=` routes to any stage for direct entry. |
+
+### 5. Responsive & Accessible UI
+
+| | |
+| --- | --- |
+| **Responsive** | Breakpoint system in `src/ui/responsive.css` — mobile, tablet, laptop and wide tiers, plus touch refinements. Fluid type and spacing throughout via `clamp()`. |
+| **Accessible** | Semantic landmarks, heading hierarchy, skip link, ARIA roles and labels, focus trap in dialogs, full keyboard navigation including the 3D scene, visible focus states, `prefers-reduced-motion` support, and a documented no-WebGL fallback. |
+| **Verified** | See `docs/ACCESSIBILITY.md`. |
+
+### 6. Creative & Original Design
+
+An original interaction model, not a restyled feed. Content is addressed to a
+place rather than an audience; it propagates only by user action; and it expires
+without it. The interface is a custom WebGL environment with hand-written GLSL,
+a synthesised audio score, and a variable-font wordmark treatment — no UI kit,
+no component library, no template.
+
+---
+
+---
+
 ## Running it
 
 ```bash

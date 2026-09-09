@@ -1,10 +1,11 @@
 /* =========================================================================
-   The handheld pass.
+   Small-screen layout.
 
-   Gated on `(pointer: coarse) and (max-width: 900px)` rather than width alone.
-   A desktop browser dragged narrow is still a desktop - it has a GPU, a mouse
-   and a hover state - and should keep the full treatment. What changes here is
-   only what a finger on a small screen actually requires.
+   Driven by the width available, so a narrow desktop window gets the same
+   treatment a phone does - that is what responsive means. Refinements that are
+   genuinely about the input device rather than the size, such as larger hit
+   targets and dropping the drawn cursor, are gated separately on
+   `pointer: coarse` at the foot of this file.
 
    The sky itself is untouched. It is the one thing that already works at any
    size, because it is a camera pointed at a world rather than a layout. What
@@ -12,36 +13,7 @@
    edges of a wide screen and none of which fits on a tall thin one.
    ========================================================================= */
 
-@media (pointer: coarse) and (max-width: 900px) {
-  /* ------------------------------------------------------------- pointer */
-
-  /* There is no pointer to draw, and `cursor: none` on every control would
-     leave a device with no cursor and no fallback. Give the controls back
-     their default and take the drawn one away. */
-  .cursor {
-    display: none !important;
-  }
-
-  button,
-  a,
-  input,
-  textarea,
-  select,
-  label,
-  .u-btn,
-  .u-chip,
-  .skl {
-    cursor: auto;
-  }
-
-  /* A finger needs a target, not a hairline. */
-  .rail__btn,
-  .win__close,
-  .u-chip,
-  .u-btn {
-    min-height: 40px;
-  }
-
+@media (max-width: 900px) {
   /* ---------------------------------------------------------------- rail */
 
   /* Vertical down the left is a desktop shape: it uses the empty margin of a
@@ -232,7 +204,7 @@
 
 /* Landscape on a handheld is short, not narrow: the vertical rail fits again
    and the bottom bar would eat most of the frame. */
-@media (pointer: coarse) and (max-width: 900px) and (orientation: landscape) {
+@media (max-width: 900px) and (orientation: landscape) {
   .rail {
     left: 0.6rem;
     right: auto;
@@ -262,7 +234,7 @@
 /* Sky labels, at a size that leaves room for six of them on a 375px screen.
    The collision test suppresses whatever will not fit, so oversized type here
    does not overlap - it silently costs you a World. */
-@media (pointer: coarse) and (max-width: 900px) {
+@media (max-width: 900px) {
   .skl[data-kind="0"] {
     font-size: 10px;
     letter-spacing: 0.2em;
@@ -280,7 +252,7 @@
 /* The dock's identity block competes with the input for a 375px row. The
    name and mark stay; the traits and the "your own sky" note are the parts
    that can go. */
-@media (pointer: coarse) and (max-width: 900px) {
+@media (max-width: 900px) {
   .dock__who i {
     display: none;
   }
@@ -297,7 +269,7 @@
 /* The rail tour points at the rail, and the rail is now the bottom bar. The
    tip has to sit above it rather than on it - and the little arrow that points
    sideways at a vertical rail means nothing here. */
-@media (pointer: coarse) and (max-width: 900px) {
+@media (max-width: 900px) {
   .tour__tip {
     left: 0.7rem !important;
     right: 0.7rem;
@@ -309,5 +281,41 @@
 
   .tour__tip-arrow {
     display: none;
+  }
+}
+
+
+/* =========================================================================
+   Touch input, at any width.
+
+   These are about the pointing device, not the viewport: a drawn cursor is
+   meaningless without a mouse, and a hairline target is unusable with a
+   finger. Kept apart from the width rules above so each says what it means.
+   ========================================================================= */
+
+@media (pointer: coarse) {
+  .cursor {
+    display: none !important;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  label,
+  .u-btn,
+  .u-chip,
+  .skl {
+    cursor: auto;
+  }
+
+  /* WCAG 2.5.8 asks for 24px; 44px is the comfortable target on a phone. */
+  .rail__btn,
+  .win__close,
+  .u-chip,
+  .u-btn,
+  .win__tab {
+    min-height: 44px;
   }
 }

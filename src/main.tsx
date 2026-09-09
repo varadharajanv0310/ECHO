@@ -13,6 +13,7 @@ import { hasWebGL } from "./lib/webgl";
 // Last on purpose. Every rule in here overrides one from a component
 // stylesheet at the same specificity, so it has to be evaluated after all of
 // them - which means importing it after the tree that pulls them in.
+import "./ui/responsive.css";
 import "./ui/handheld.css";
 import "./ui/calm.css";
 

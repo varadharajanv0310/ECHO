@@ -1,0 +1,157 @@
+/* =========================================================================
+   Breakpoint system.
+
+   Four tiers, driven by the width available rather than by the input device,
+   so the layout adapts identically whether it is a phone or a desktop window
+   dragged narrow. Device-specific refinements - hit target size, dropping the
+   drawn cursor - live in handheld.css and are gated on `pointer: coarse`,
+   because those are properties of the pointer and not of the viewport.
+
+     mobile    …640px    one column, chrome collapses to the edges
+     tablet    641…1024  one column, chrome returns to the margins
+     laptop    1025…1440 the designed layout
+     wide      1441px…   the designed layout, with more room around it
+
+   Type and spacing are fluid between tiers via clamp(), so the steps below
+   only handle what genuinely has to change shape.
+   ========================================================================= */
+
+:root {
+  /* Breakpoints, published as tokens so the values are stated once. */
+  --bp-mobile: 640px;
+  --bp-tablet: 1024px;
+  --bp-laptop: 1440px;
+
+  /* Fluid type scale. Every step interpolates between the mobile and wide
+     ends, so there is no jump at a breakpoint. */
+  --step--1: clamp(0.72rem, 0.69rem + 0.14vw, 0.79rem);
+  --step-0: clamp(0.88rem, 0.85rem + 0.16vw, 0.95rem);
+  --step-1: clamp(1.05rem, 0.99rem + 0.28vw, 1.2rem);
+  --step-2: clamp(1.3rem, 1.19rem + 0.53vw, 1.6rem);
+  --step-3: clamp(1.6rem, 1.4rem + 1vw, 2.15rem);
+  --step-4: clamp(2rem, 1.62rem + 1.9vw, 3rem);
+
+  /* Spacing scale, 4px based. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Gutter grows with the viewport rather than stepping at a breakpoint. */
+  --gutter: clamp(0.9rem, 0.4rem + 2.2vw, 3rem);
+}
+
+/* ------------------------------------------------------------ mobile */
+
+@media (max-width: 640px) {
+  /* One column everywhere. Anything that was two columns collapses. */
+  .pw,
+  .mw,
+  .pw__places,
+  .db__stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Windows take the whole screen: on a phone an open panel is the screen. */
+  .win,
+  .win[data-size="mid"],
+  .win[data-size="narrow"] {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .win__body {
+    padding: var(--space-4);
+  }
+}
+
+/* ------------------------------------------------------------ tablet */
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Room for the chrome to return to the margins, but not for two columns of
+     content - a profile at this width is more readable stacked. */
+  .pw {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The conversation keeps its aside, at a narrower measure. */
+  .mw {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
+  }
+
+  .win,
+  .win[data-size="mid"] {
+    width: min(92vw, 900px);
+  }
+
+  .db__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------ laptop */
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .win {
+    width: min(94vw, 1180px);
+  }
+}
+
+/* -------------------------------------------------------------- wide */
+
+@media (min-width: 1441px) {
+  /* More air around the same layout rather than a wider measure: running text
+     past about 70 characters is harder to read, not easier. */
+  .win {
+    width: min(80vw, 1280px);
+  }
+
+  .mw {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  }
+}
+
+/* ------------------------------------------------- orientation & height */
+
+/* A short landscape window - a phone turned sideways, or a split screen - has
+   width but no height, so vertical chrome has to give way rather than the
+   horizontal kind. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .win,
+  .win[data-size="mid"],
+  .win[data-size="narrow"] {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .ch__arrival,
+  .ch__hint {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------- print */
+
+/* Nothing here is meant for paper, but a page that produces a black rectangle
+   in a print preview is a page that ignored the question. */
+@media print {
+  .scene-layer,
+  .particles-layer,
+  .grain-layer,
+  .vignette-layer,
+  .cursor,
+  .rail,
+  .dock {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+}

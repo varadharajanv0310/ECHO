@@ -36,9 +36,14 @@ export function Hud({ opacity = 1 }: { opacity?: number }) {
   const branded = phase !== "void";
 
   return (
-    <div
+    // A contentinfo landmark: this is the running information about the page
+    // itself - the mark, the index, the status and the clock - rather than part
+    // of the sky. It also keeps every pixel of the interface inside some
+    // landmark, which is what assistive navigation relies on.
+    <footer
       className="pointer-events-none fixed inset-0 transition-opacity duration-[1400ms]"
       style={{ zIndex: "var(--z-hud)", opacity }}
+      aria-label="Session status"
     >
       <div className="absolute inset-0 p-6 md:p-9">
         <span
@@ -67,6 +72,6 @@ export function Hud({ opacity = 1 }: { opacity?: number }) {
           00:00:00
         </span>
       </div>
-    </div>
+    </footer>
   );
 }

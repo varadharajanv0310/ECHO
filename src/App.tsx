@@ -18,6 +18,7 @@ import { Panels } from "@/ui/Panels";
 import { useLenis } from "@/lib/useLenis";
 import { useSequence, LAYER_MIX } from "@/store/sequence";
 import { tuning } from "@/lib/tuning";
+import { copy } from "@/copy";
 
 /** Panel is on in dev, and reachable on the deployed build with ?debug. */
 const PANEL =
@@ -116,6 +117,12 @@ export default function App() {
 
   return (
     <>
+      {/* First thing in the tab order. The entry sequence is long and scroll
+          driven, so somebody arriving on a keyboard needs a way past it. */}
+      <a className="skip-link" href="#main">
+        Skip to the main content
+      </a>
+
       <Leva hidden={!PANEL} collapsed titleBar={{ title: "ECHO" }} />
 
       <FluidParticlesBackground
@@ -124,14 +131,23 @@ export default function App() {
       />
 
       <Defs />
-      <Scene />
-      <Entry boost={c.nebulaBoost} />
-      <Passage />
-      <GalaxyBeat />
-      {phase === "ignition" && <Ignition />}
-      {phase === "profile" && <Profile />}
-      <ConstellationHud />
-      <Panels />
+
+      <main id="main" tabIndex={-1} aria-label="ECHO">
+        <Scene />
+        <Entry boost={c.nebulaBoost} />
+        <Passage />
+        <GalaxyBeat />
+        {phase === "ignition" && <Ignition />}
+        {phase === "profile" && <Profile />}
+        <ConstellationHud />
+        <Panels />
+      </main>
+
+      {/* Phase changes are announced once, politely, for anyone who cannot see
+          the transition happen. */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {copy.status[phase]}
+      </p>
 
       <GrainLayer
         opacity={mix.grain * c.grain * grainSetting}

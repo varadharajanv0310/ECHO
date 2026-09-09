@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "./ui.css";
 
 type Props = {
@@ -61,6 +61,53 @@ export function Window({
     return () => window.removeEventListener("keydown", key);
   }, [onClose]);
 
+  /**
+   * Keep focus inside the dialog, and give it back afterwards.
+   *
+   * A modal that does not trap focus is a modal only for people using a
+   * mouse: tab once and you are behind it, operating a sky you cannot see,
+   * with no way to tell where you are. Returning focus to whatever opened it
+   * is the other half - otherwise closing a window drops you at the top of
+   * the document every time.
+   */
+  const shell = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    const root = shell.current;
+    if (!root) return;
+
+    const focusable = (): HTMLElement[] =>
+      Array.from(
+        root.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el: HTMLElement) => el.offsetParent !== null);
+
+    focusable()[0]?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const items = focusable();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !root.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    root.addEventListener("keydown", onKey);
+    return () => {
+      root.removeEventListener("keydown", onKey);
+      opener?.focus?.();
+    };
+  }, []);
+
   return (
     <>
       <div
@@ -71,6 +118,7 @@ export function Window({
       />
 
       <section
+        ref={shell}
         className="win"
         data-size={size}
         style={
