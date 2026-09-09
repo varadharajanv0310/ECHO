@@ -341,10 +341,25 @@ export function Sky() {
       useSequence.getState().phase === "constellation" &&
       useUI.getState().panel === null &&
       useUI.getState().profileOf === null &&
-      useUI.getState().planet === null;
+      useUI.getState().messaging === null;
+
+    /**
+     * Did this land on the sky, or on something in front of it?
+     *
+     * These listen on the window, because a drag has to keep working when the
+     * pointer leaves the canvas. The cost is that everything drawn over the
+     * sky - the dock, the rail, a label - also arrives here, and the old guard
+     * against that was to stop picking entirely while a planet was open.
+     *
+     * Which meant that opening one thing somebody was carrying made every
+     * other thing in their sky unclickable: no second planet, no going back to
+     * the star, nothing until you closed it. Asking where the click actually
+     * landed does the same job without turning the sky off.
+     */
+    const onSky = (e: PointerEvent) => e.target === el;
 
     const down = (e: PointerEvent) => {
-      if (!active()) return;
+      if (!active() || !onSky(e)) return;
       dragging = true;
       lx = dx0 = e.clientX;
       ly = dy0 = e.clientY;
@@ -527,7 +542,30 @@ export function Sky() {
 
     const labels: SkyLabel[] = [];
     let best = -1;
-    let bestD = 34;
+    let bestD = Infinity;
+
+    /**
+     * How close counts as clicking a thing.
+     *
+     * One radius for everything does not work here, because these are drawn at
+     * wildly different sizes: the person you are standing at fills a third of
+     * the frame, and a planet is a speck. Thirty-four pixels made the sun
+     * clickable only in its dead centre - the visible glow was inert, and
+     * clicking a star to open who they are simply did nothing anywhere except
+     * one exact point.
+     *
+     * Per-point instead, so the nearest thing whose own radius you are inside
+     * wins. A planet still beats the sun it orbits, because the planet's
+     * centre is nearer to the pointer than the sun's.
+     */
+    const reach = (k: number, i: number) =>
+      k === 2
+        ? 30
+        : k === 1
+          ? ui.level === "star" && starAttr.getX(i) === ui.star
+            ? 120
+            : 36
+          : 40;
 
     for (let i = 0; i < posAttr.count; i++) {
       const k = kindAttr.getX(i);
@@ -556,7 +594,7 @@ export function Sky() {
       const sy = (-v.y * 0.5 + 0.5) * size.height;
 
       const d = Math.hypot(sx - px, sy - py);
-      if (d < bestD) {
+      if (d <= reach(k, i) && d < bestD) {
         bestD = d;
         best = i;
       }

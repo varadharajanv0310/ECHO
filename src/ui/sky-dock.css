@@ -180,13 +180,32 @@
   gap: 0.5rem;
   flex-shrink: 0;
   max-width: 34%;
+  /* It is a button now. Nothing about how it looks should change until you
+     point at it. */
+  padding: 0.3rem 0.5rem;
+  margin: -0.3rem -0.2rem -0.3rem -0.5rem;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  cursor: none;
+  text-align: left;
+  transition: background 220ms ease;
+}
+
+.dock__who:hover,
+.dock__who:focus-visible {
+  background: var(--glass-soft);
+  outline: none;
 }
 
 .dock__who b {
   font-family: var(--font-display);
   font-size: 0.9rem;
   font-variation-settings: "wdth" 96, "wght" 600;
-  color: #fff;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dock__who i {

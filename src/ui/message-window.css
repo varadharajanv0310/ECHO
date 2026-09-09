@@ -363,3 +363,33 @@
   width: 100%;
   justify-content: center;
 }
+
+/* The name on the card is the way back to the profile. Looks like type until
+   you point at it, because it is type. */
+.mw__who-id {
+  display: block;
+  width: 100%;
+  padding: 0.2rem 0.4rem;
+  margin: 0 0 0.9rem -0.4rem;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  cursor: none;
+  text-align: left;
+  transition: background 220ms ease;
+}
+
+.mw__who-id:hover,
+.mw__who-id:focus-visible {
+  background: var(--glass-soft);
+  outline: none;
+}
+
+.mw__who-id .mw__who-sub {
+  margin-bottom: 0;
+}
+
+.mw__who-acts {
+  display: grid;
+  gap: 0.45rem;
+}

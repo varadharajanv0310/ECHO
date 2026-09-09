@@ -151,11 +151,26 @@ export function SkyDock() {
       </div>
 
       <div className="dock__bar">
-        <span className="dock__who">
+        {/* A name and a face on a bar is a thing people expect to be able to
+            click, and this one did nothing. */}
+        <button
+          className="dock__who"
+          onClick={() => {
+            cue("click");
+            const ui = useUI.getState();
+            if (mine) {
+              ui.openProfile("me");
+              ui.setPanel("profile");
+            } else {
+              ui.openProfile(who.id);
+            }
+          }}
+          title={mine ? "Open your profile" : `Open ${who.name}'s profile`}
+        >
           <Mark mark={MARKS[who.id % MARKS.length] as MarkId} hue={who.hue} size={20} />
           <b>{mine ? "You" : who.name}</b>
           <i>{mine ? "your own sky" : who.traits.join(" · ")}</i>
-        </span>
+        </button>
 
         <textarea
           ref={input}

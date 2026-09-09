@@ -193,10 +193,15 @@ export function MessageWindow({ star }: { star: number }) {
             <Mark mark={MARKS[star % MARKS.length] as MarkId} hue={them.hue} size={46} />
           </div>
           <div className="mw__who-body">
-            <h3 className="mw__who-name">{them.name}</h3>
-            <p className="mw__who-sub">
-              Listening in {sky.constellations[them.constellation].world}
-            </p>
+            {/* The card is the one part of this window that never scrolls
+                away, so it is where the way back to their profile belongs.
+                The name is the obvious thing to click for that. */}
+            <button className="mw__who-id" onClick={() => openProfile(star)}>
+              <h3 className="mw__who-name">{them.name}</h3>
+              <p className="mw__who-sub">
+                Listening in {sky.constellations[them.constellation].world}
+              </p>
+            </button>
 
             {them.traits.length > 0 && (
               <div className="mw__who-traits">
@@ -219,15 +224,20 @@ export function MessageWindow({ star }: { star: number }) {
               </div>
             </dl>
 
-            <button
-              className="u-btn mw__who-go"
-              onClick={() => {
-                closeMessages();
-                enterStar(star);
-              }}
-            >
-              Go and stand at them
-            </button>
+            <div className="mw__who-acts">
+              <button className="u-btn mw__who-go" onClick={() => openProfile(star)}>
+                Open their profile
+              </button>
+              <button
+                className="u-btn mw__who-go"
+                onClick={() => {
+                  closeMessages();
+                  enterStar(star);
+                }}
+              >
+                Go and stand at them
+              </button>
+            </div>
           </div>
         </aside>
       </div>
