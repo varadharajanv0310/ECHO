@@ -2,11 +2,9 @@ import { useMemo, useState } from "react";
 import { Mark, MARKS } from "@/components/Mark";
 import type { MarkId } from "@/types";
 import { Cover } from "./Cover";
-import { copy } from "@/copy";
 import {
   GAMES,
   SONGS,
-  PLACES,
   byId,
   pickFor,
   handlesFor,
@@ -17,20 +15,11 @@ import { thread as buildThread } from "@/services/echoes";
 import { cue } from "@/services/audio";
 import { useSequence, useUI } from "@/store";
 import { Window } from "./Window";
+import { GamesTab, SoundTab, LinksTab, ThemeTab, BANNERS } from "./profile/ProfileTabs";
 import "./profile-window.css";
 
 const OWN_TABS = ["Board", "Games", "Sound", "Links", "Theme"] as const;
 const THEIR_TABS = ["Board", "Games", "Sound", "Messages"] as const;
-
-const HUES = [258, 268, 278, 292, 306, 322, 336];
-const BANNERS = [0, 1, 2, 3];
-
-const ACCENTS = [
-  { id: "violet", label: "Violet", swatch: "#b026ff" },
-  { id: "magenta", label: "Magenta", swatch: "#fa42b0" },
-  { id: "indigo", label: "Indigo", swatch: "#6f5bff" },
-  { id: "ice", label: "Ice", swatch: "#9db4ff" },
-] as const;
 
 /**
  * A profile, yours or somebody else's.
@@ -346,222 +335,22 @@ export function ProfileWindow({ star }: { star: number | null }) {
           )}
 
           {tab === "Games" && (
-            <section className="u-card">
-              <h3 className="u-h">{own ? "Your shelf" : `${view.name} plays`}</h3>
-              <div className="pw__shelf">
-                {/* On your own shelf a tile is a control, so it is a button
-                    and can be reached with the tab key. On somebody else's it
-                    is a picture of a thing they like, so it stays a figure -
-                    a control that does nothing is worse than no control. */}
-                {(own ? GAMES : GAMES.filter((g) => view.games.includes(g.id))).map(
-                  (g) =>
-                    own ? (
-                      <button
-                        type="button"
-                        className="pw__tile"
-                        key={g.id}
-                        data-on={view.games.includes(g.id)}
-                        data-pick
-                        aria-pressed={view.games.includes(g.id)}
-                        onClick={() => toggleIn("games", g.id)}
-                      >
-                        <Cover title={g.title} size={92} />
-                        <span className="pw__tile-name">{g.title}</span>
-                      </button>
-                    ) : (
-                      <figure
-                        className="pw__tile"
-                        key={g.id}
-                        data-on={view.games.includes(g.id)}
-                      >
-                        <Cover title={g.title} size={92} />
-                        <figcaption>{g.title}</figcaption>
-                      </figure>
-                    ),
-                )}
-              </div>
-              {own && (
-                <p className="u-hint" style={{ marginTop: "1rem" }}>
-                  Click to add or remove. The first one you pick is your favourite.
-                </p>
-              )}
-            </section>
+            <GamesTab view={view} own={own} onToggle={(id) => toggleIn("games", id)} />
           )}
 
           {tab === "Sound" && (
-            <section className="u-card">
-              <h3 className="u-h">{own ? "Your songs" : `${view.name} listens to`}</h3>
-              {(own ? SONGS : SONGS.filter((s) => view.songs.includes(s.id))).map(
-                (s) => (
-                  <button
-                    type="button"
-                    className="pw__song pw__song--pick"
-                    key={s.id}
-                    data-on={view.songs.includes(s.id)}
-                    onClick={own ? () => toggleIn("songs", s.id) : undefined}
-                    disabled={!own}
-                  >
-                    <Cover title={s.title} size={44} radius={8} />
-                    <div className="u-row__main">
-                      <span className="u-row__title">{s.title}</span>
-                      <span className="u-row__meta">{s.by}</span>
-                    </div>
-                  </button>
-                ),
-              )}
-            </section>
+            <SoundTab view={view} own={own} onToggle={(id) => toggleIn("songs", id)} />
           )}
 
-          {own && tab === "Links" && (
-            <section className="u-card">
-              <h3 className="u-h">Elsewhere</h3>
-              <p className="u-hint" style={{ lineHeight: 1.7 }}>
-                Stored in this browser. Nothing is verified and nothing is sent
-                anywhere, so these are handles rather than links - ECHO has no way to
-                know that any of them is really you.
-              </p>
-              <div className="pw__places">
-                {PLACES.map((pl) => (
-                  <label className="pw__place" key={pl.id}>
-                    <span>{pl.label}</span>
-                    <input
-                      className="u-input"
-                      value={view.links.find((l) => l.label === pl.id)?.value ?? ""}
-                      placeholder="handle"
-                      onChange={(e) => {
-                        const value = e.target.value.slice(0, 32);
-                        const rest = view.links.filter((l) => l.label !== pl.id);
-                        patch({
-                          links: value ? [...rest, { label: pl.id, value }] : rest,
-                        });
-                      }}
-                    />
-                  </label>
-                ))}
-              </div>
-            </section>
-          )}
+          {own && tab === "Links" && <LinksTab view={view} onPatch={patch} />}
 
           {own && tab === "Theme" && (
-            <>
-              <section className="u-card">
-                <h3 className="u-h">Your colour</h3>
-                <p className="u-hint" style={{ marginBottom: "0.9rem" }}>
-                  This tints your mark, your star in the sky, your cursor, and every
-                  surface of your own interface.
-                </p>
-                <div className="pw__hues">
-                  {HUES.map((h) => (
-                    <button
-                      type="button"
-                      key={h}
-                      className="pw__hue"
-                      data-on={h === view.hue}
-                      onClick={() => patch({ hue: h })}
-                      aria-label={`hue ${h}`}
-                      style={{ "--h": h } as React.CSSProperties}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              <section className="u-card">
-                <h3 className="u-h">Mark</h3>
-                <div className="pw__marks">
-                  {MARKS.map((m) => (
-                    <button
-                      type="button"
-                      key={m}
-                      className="pw__mark"
-                      data-on={m === view.mark}
-                      onClick={() => patch({ mark: m })}
-                      aria-label={m}
-                    >
-                      <Mark mark={m} hue={view.hue} size={26} glow={m === view.mark} />
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <section className="u-card">
-                <h3 className="u-h">Banner</h3>
-                <div className="pw__banners">
-                  {/* Both classes: the gradients are defined on .pw__banner,
-                      the swatch sizing on .pw__banner-pick. With only the
-                      latter these render as four empty outlines. */}
-                  {BANNERS.map((b) => (
-                    <button
-                      type="button"
-                      key={b}
-                      className="pw__banner pw__banner-pick"
-                      data-b={b}
-                      data-on={b === view.banner}
-                      onClick={() => patch({ banner: b })}
-                      aria-label={`banner ${b}`}
-                    />
-                  ))}
-                </div>
-              </section>
-
-              <section className="u-card">
-                <h3 className="u-h">Ground</h3>
-                <div className="u-chips">
-                  {(["dark", "light"] as const).map((m) => (
-                    <button
-                      type="button"
-                      key={m}
-                      className="u-chip"
-                      data-on={settings.mode === m}
-                      onClick={() => setSettings({ mode: m })}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
-                <div className="u-chips" style={{ marginTop: "0.7rem" }}>
-                  {ACCENTS.map((a) => (
-                    <button
-                      type="button"
-                      key={a.id}
-                      className="u-chip"
-                      data-on={settings.accent === a.id}
-                      onClick={() => setSettings({ accent: a.id })}
-                    >
-                      {a.label}
-                    </button>
-                  ))}
-                </div>
-                <p className="u-hint" style={{ marginTop: "0.9rem", lineHeight: 1.7 }}>
-                  Amber is not offered. It is the colour a signal turns when it is
-                  dying.
-                </p>
-              </section>
-
-              <section className="u-card">
-                <h3 className="u-h">{copy.profile.traitsLabel}</h3>
-                <div className="u-chips">
-                  {copy.traits.map((t) => (
-                    <button
-                      type="button"
-                      key={t}
-                      className="u-chip"
-                      data-on={view.traits.includes(t)}
-                      onClick={() =>
-                        patch({
-                          traits: view.traits.includes(t)
-                            ? view.traits.filter((x) => x !== t)
-                            : view.traits.length >= 5
-                              ? view.traits
-                              : [...view.traits, t],
-                        })
-                      }
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            </>
+            <ThemeTab
+              view={view}
+              settings={settings}
+              onPatch={patch}
+              onSettings={setSettings}
+            />
           )}
         </div>
       </div>
