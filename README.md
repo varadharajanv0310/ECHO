@@ -112,6 +112,43 @@ The dev server runs on port 5180.
 pnpm build
 ```
 
+### Scripts
+
+| Script | What it does |
+| --- | --- |
+| `pnpm dev` | Vite dev server with HMR, on port 5180 |
+| `pnpm build` | `tsc -b`, then a production build into `dist/` |
+| `pnpm preview` | Serve the built `dist/` locally |
+| `pnpm test` | Run the Vitest suite once |
+| `pnpm test:watch` | Vitest in watch mode |
+| `pnpm coverage` | The suite with v8 coverage |
+| `pnpm typecheck` | Types only, no emit |
+
+## Testing
+
+```bash
+pnpm test
+```
+
+102 tests across 9 files, run with Vitest against the same Vite transform
+pipeline as the application. Pure logic — the world generator, the derived
+social layer, all three stores, the maths helpers — is tested directly for
+determinism and for the invariants the rest of the app assumes. Components are
+tested through the accessibility tree with Testing Library, so a passing test
+is also evidence that the control is reachable. `src/ui/Window.test.tsx`
+asserts the dialog role, Escape to close, and focus containment under both
+`Tab` and `Shift+Tab`.
+
+## Documentation
+
+| Document | What is in it |
+| --- | --- |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Layering, data flow, state, the rendering pipeline, and the reasoning behind each choice |
+| [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) | Keyboard model, screen reader support, focus management, contrast, motion, what was tested, and what is still not solved |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, code style, testing expectations, the accessibility bar and the performance budget |
+| [docs/echo-components.md](docs/echo-components.md) | The provided components, and what was done with them |
+| [LICENSE](LICENSE) | MIT |
+
 ## Reviewing it
 
 The whole thing is one continuous piece of choreography, so reviewing a later

@@ -3,7 +3,7 @@ import { PassageLine } from "@/components/PassageLine";
 import { copy } from "@/copy";
 import { clamp, remap } from "@/lib/utils";
 import { PASSAGE_VH } from "@/lib/useLenis";
-import { useSequence } from "@/store/sequence";
+import { useSequence } from "@/store";
 import "./passage.css";
 
 /** Where the first and last stops sit in overall scroll progress. */

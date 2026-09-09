@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSequence } from "@/store/sequence";
+import { useSequence } from "@/store";
 import "./ignition.css";
 
 /** How long the galaxy takes to open before profile creation resolves. */

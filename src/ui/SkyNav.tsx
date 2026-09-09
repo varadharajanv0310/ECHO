@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getSky } from "@/scene/sky-data";
-import { useSequence } from "@/store/sequence";
-import { useUI } from "@/store/ui";
+import { useSequence, useUI } from "@/store";
 import "./sky-nav.css";
 
 /**

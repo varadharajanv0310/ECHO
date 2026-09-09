@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Mark, MARKS, type MarkId } from "@/components/Mark";
+import { Mark, MARKS } from "@/components/Mark";
+import type { MarkId } from "@/types";
 import { copy } from "@/copy";
-import { useSequence } from "@/store/sequence";
+import { useSequence } from "@/store";
 import "./profile.css";
 
 /**

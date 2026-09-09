@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Mark, MARKS, type MarkId } from "@/components/Mark";
+import { Mark, MARKS } from "@/components/Mark";
+import type { MarkId } from "@/types";
 import { getSky, myStar } from "@/scene/sky-data";
 import { cue } from "@/lib/audio";
-import { useUI } from "@/store/ui";
-import { useSequence } from "@/store/sequence";
+import { useUI, useSequence } from "@/store";
 import { useExit } from "@/lib/useExit";
 import "./sky-dock.css";
 

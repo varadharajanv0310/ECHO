@@ -16,7 +16,7 @@ import { Profile } from "@/beats/Profile";
 import { ConstellationHud } from "@/beats/ConstellationHud";
 import { Panels } from "@/ui/Panels";
 import { useLenis } from "@/lib/useLenis";
-import { useSequence, LAYER_MIX } from "@/store/sequence";
+import { useSequence, LAYER_MIX } from "@/store";
 import { tuning } from "@/lib/tuning";
 import { copy } from "@/copy";
 

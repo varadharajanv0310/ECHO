@@ -1,6 +1,6 @@
 import loadingUrl from "@/assets/loading.jpg";
 import { copy } from "@/copy";
-import { useSequence } from "@/store/sequence";
+import { useSequence } from "@/store";
 import "./boot.css";
 
 /**

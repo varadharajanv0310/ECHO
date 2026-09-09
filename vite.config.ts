@@ -21,5 +21,25 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react", "react-dom", "three", "@react-three/fiber"],
   },
-  build: { target: "es2022", assetsInlineLimit: 0 },
+  build: {
+    target: "es2022",
+    assetsInlineLimit: 0,
+    // three is by far the largest dependency and it never changes between
+    // deploys, so it gets its own chunk with its own cache lifetime. React is
+    // split for the same reason. Everything else stays with the app, and the
+    // six panels split themselves through dynamic import in ui/Panels.tsx.
+    rollupOptions: {
+      output: {
+        // Rolldown, which Vite 8 builds with, takes the function form only.
+        manualChunks(id: string) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("three") || id.includes("@react-three")) return "three";
+          if (id.includes("react") || id.includes("scheduler")) return "react";
+        },
+      },
+    },
+    // The scene is the payload; a warning at the default 500kB is noise that
+    // trains you to ignore the one that matters.
+    chunkSizeWarningLimit: 900,
+  },
 });

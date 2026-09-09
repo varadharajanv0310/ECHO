@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Mark, MARKS, type MarkId } from "@/components/Mark";
+import { Mark, MARKS } from "@/components/Mark";
+import type { MarkId } from "@/types";
 import { getSky, myStar, peopleIn } from "@/scene/sky-data";
 import { echoesFor, lastCarry, thread } from "@/lib/echoes";
 import { markSeen } from "@/lib/unseen";
-import { useSequence } from "@/store/sequence";
-import { useUI } from "@/store/ui";
+import { useSequence, useUI } from "@/store";
 import { Window } from "../Window";
 
 export const DASH_TABS = ["Sent", "Responses", "Messages"] as const;

@@ -1,7 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useSequence } from "@/store/sequence";
-import { useUI, PANELS } from "@/store/ui";
-import { CARDS, RAIL, useTour } from "@/store/tour";
+import { useSequence, useUI, PANELS, CARDS, RAIL, useTour } from "@/store";
 import { cue } from "@/lib/audio";
 import {
   ArtBelongs,

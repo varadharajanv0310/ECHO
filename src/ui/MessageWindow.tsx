@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Mark, MARKS, type MarkId } from "@/components/Mark";
+import { Mark, MARKS } from "@/components/Mark";
+import type { MarkId } from "@/types";
 import { getSky } from "@/scene/sky-data";
 import { thread as buildThread } from "@/lib/echoes";
 import { cue } from "@/lib/audio";
-import { useSequence } from "@/store/sequence";
-import { useUI } from "@/store/ui";
+import { useSequence, useUI } from "@/store";
 import { Window } from "./Window";
 import "./message-window.css";
 

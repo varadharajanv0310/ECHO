@@ -1,4 +1,5 @@
-import { PANELS, useUI, type PanelId } from "@/store/ui";
+import { PANELS, useUI } from "@/store";
+import type { PanelId } from "@/types";
 import { useUnseen } from "@/lib/unseen";
 import "./ui.css";
 

@@ -2,13 +2,57 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#04030A" />
-    <title>ECHO</title>
-    <meta name="description" content="Content does not belong to you. It belongs to a place, it travels through people, and it dies if nobody carries it." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#04030A" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FBF9FF" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
+
+    <title>ECHO — content belongs to a place</title>
+    <meta
+      name="description"
+      content="Content does not belong to you. It belongs to a place, it travels through people, and it dies if nobody carries it."
+    />
+    <meta name="author" content="V Varadharajan" />
+    <link rel="canonical" href="https://varadharajanv0310.github.io/ECHO/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ECHO" />
+    <meta property="og:title" content="ECHO — content belongs to a place" />
+    <meta
+      property="og:description"
+      content="A social space where a signal belongs to a place, travels by being carried, and dies if nobody carries it."
+    />
+    <meta property="og:url" content="https://varadharajanv0310.github.io/ECHO/" />
+    <meta property="og:image" content="https://varadharajanv0310.github.io/ECHO/docs/shots/cluster.jpg" />
+    <meta property="og:image:alt" content="Six places drawn as constellations against a dark field" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ECHO — content belongs to a place" />
+    <meta
+      name="twitter:description"
+      content="A social space where a signal belongs to a place, travels by being carried, and dies if nobody carries it."
+    />
+    <meta name="twitter:image" content="https://varadharajanv0310.github.io/ECHO/docs/shots/cluster.jpg" />
+
+    <!--
+      No preconnect and no font preload: the two variable faces are bundled
+      with the app rather than fetched from a CDN, so there is no third origin
+      to warm up. Vite emits the modulepreload hints for the entry, runtime and
+      vendor chunks itself - writing them by hand here would point at source
+      paths that only exist in dev.
+    -->
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="font: 16px/1.6 system-ui; max-width: 42ch; margin: 4rem auto; color: #cfc9e6">
+        ECHO is a rendered space rather than a document, so it needs JavaScript
+        to draw anything. The source and a full written walkthrough are at
+        <a style="color: #b79cff" href="https://github.com/varadharajanv0310/ECHO">github.com/varadharajanv0310/ECHO</a>.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

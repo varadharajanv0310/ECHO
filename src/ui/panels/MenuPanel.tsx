@@ -1,7 +1,5 @@
 import { getLenis } from "@/lib/useLenis";
-import { useSequence, DEFAULT_SETTINGS } from "@/store/sequence";
-import { useUI } from "@/store/ui";
-import { useTour } from "@/store/tour";
+import { useSequence, DEFAULT_SETTINGS, useUI, useTour } from "@/store";
 import { Window } from "../Window";
 
 // No Appearance tab. Ground and accent belong to the profile, where a person

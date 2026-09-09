@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Mark, type MarkId } from "@/components/Mark";
+import { Mark } from "@/components/Mark";
+import type { MarkId } from "@/types";
 import { copy } from "@/copy";
-import { useSequence } from "@/store/sequence";
-import { useUI } from "@/store/ui";
+import { useSequence, useUI } from "@/store";
 import "./constellation-hud.css";
 import { getSky } from "@/scene/sky-data";
 

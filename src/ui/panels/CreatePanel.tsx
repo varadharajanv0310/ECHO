@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { copy } from "@/copy";
-import { useSequence } from "@/store/sequence";
+import { useSequence, useUI } from "@/store";
 import { cue } from "@/lib/audio";
 import { myStar } from "@/scene/sky-data";
-import { useUI } from "@/store/ui";
 import { Window } from "../Window";
 
 export const CREATE_TABS = ["Signal", "World"] as const;

@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { Mark, MARKS, type MarkId } from "@/components/Mark";
+import { Mark, MARKS } from "@/components/Mark";
+import type { MarkId } from "@/types";
 import { copy } from "@/copy";
 import { getSky } from "@/scene/sky-data";
-import { useUI } from "@/store/ui";
+import { useUI } from "@/store";
 import { Window } from "../Window";
 
 export const SEARCH_TABS = ["Signals", "People"] as const;

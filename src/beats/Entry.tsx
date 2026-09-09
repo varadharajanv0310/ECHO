@@ -3,7 +3,7 @@ import { NebulaShader } from "@/components/ui/nebula-shader";
 import { Wordmark } from "@/components/Wordmark";
 import { Boot } from "./Boot";
 import { copy } from "@/copy";
-import { PHASES, useSequence } from "@/store/sequence";
+import { PHASES, useSequence } from "@/store";
 import { easeInOutCubic, remap } from "@/lib/utils";
 import "./entry.css";
 
